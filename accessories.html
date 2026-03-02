@@ -221,33 +221,8 @@
       border: 2px solid #000;
       box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
-
-    /* High Demand Badge */
-    .high-demand-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #cc0000;
-      color: white;
-      font-size: 0.65rem;
-      font-weight: 800;
-      padding: 0.2rem 0.8rem;
-      border-radius: 60px;
-      z-index: 20;
-      letter-spacing: 0.3px;
-      border: 2px solid #000;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      text-transform: uppercase;
-      animation: pulse 2s infinite;
-    }
     
-    .high-demand-badge i {
-      color: white;
-      font-size: 0.7rem;
-    }
-
+    /* Sale badge on price line with shimmer + small pulse */
 .sale-price-badge {
   background: #d4af37;
   color: #000;
@@ -264,6 +239,7 @@
   overflow: hidden;
 }
 
+/* Shimmer effect that pulses when it moves */
 .sale-price-badge::after {
   content: '';
   position: absolute;
@@ -307,6 +283,46 @@
   }
 }
 
+    /* High Demand Badge */
+    .high-demand-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #ff6b6b;
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.2rem 0.8rem;
+      border-radius: 60px;
+      z-index: 20;
+      letter-spacing: 0.3px;
+      border: 2px solid #000;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+    
+    .high-demand-badge i {
+      color: white;
+      font-size: 0.7rem;
+    }
+    
+    /* Sale badge on price line */
+    .sale-price-badge {
+      background: #d4af37;
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 60px;
+      border: 1.5px solid #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: auto;
+      white-space: nowrap;
+    }
     
     @keyframes pulse {
       0% { transform: scale(1); }
