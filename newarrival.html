@@ -580,7 +580,6 @@
       });
     }
 
-    // ===== MAIN RENDERING FUNCTION - UPDATED TO MATCH ACCESSORIES PAGE STYLE =====
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
@@ -642,33 +641,34 @@
           // Determine new badge text
           const newBadgeText = isBrandNew ? 'just landed' : 'new';
           
-          gridHtml += `
-            <div class="product-card" data-product-id="${product.id}">
-              <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
-                <div class="image-frame">
-                  <!-- New badge (left) -->
-                  <span class="new-badge">
-                    <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> ${newBadgeText}
-                  </span>
-                  <!-- Sale badge on image (right) - EXACT same as accessories page -->
-                  ${hasSale ? '<span class="sale-badge-image">SALE</span>' : ''}
-                  
-                  <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                  <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-                </div>
-                <p class="product-category">${product.category || 'new arrival'}</p>
-                <h3 class="product-title">${product.title}</h3>
-                <div class="product-rating">${renderRating(product.rating)}</div>
-                <!-- PRICE BLOCK exactly like accessories page: old price + current price, no extra sale-price-badge -->
-                <div class="product-price-block">
-                  ${hasSale ? `<span class="old-price">₹${formatPrice(oldPrice)}</span>` : ''}
-                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
-                </div>
-              <button class="card-add-btn" onclick="handleNewArrivalAdd('${product.id}', this); event.stopPropagation();">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-            </div>
-          `;
+        gridHtml += `
+  <div class="product-card" data-product-id="${product.id}">
+    <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+      <div class="image-frame">
+        <!-- New badge (left) -->
+        <span class="new-badge">
+          <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> ${newBadgeText}
+        </span>
+        <!-- Sale badge on image (right) -->
+        ${hasSale ? '<span class="sale-badge-image">SALE</span>' : ''}
+        
+        <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+        <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+      </div>
+      <p class="product-category">${product.category || 'new arrival'}</p>
+      <h3 class="product-title">${product.title}</h3>
+      <div class="product-rating">${renderRating(product.rating)}</div>
+      <!-- PRICE BLOCK -->
+      <div class="product-price-block">
+        ${hasSale ? `<span class="old-price">₹${formatPrice(oldPrice)}</span>` : ''}
+        <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+      </div>
+    </a>
+    <button class="card-add-btn" onclick="handleNewArrivalAdd('${product.id}', this); event.stopPropagation();">
+      <i class="fa-solid fa-cart-plus"></i> add
+    </button>
+  </div>
+`;
         });
         
         gridContainer.innerHTML = gridHtml;
@@ -682,44 +682,31 @@
       }
     }
 
-    // ===== HANDLE ADD TO CART WITH FEEDBACK (mirroring accessories page) =====
-    window.handleNewArrivalAdd = function(productId, btn) {
-      // Use the master function from common.js if available
-      if (typeof window.masterAddToCart === 'function') {
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        window.masterAddToCart(productId, false);
-        
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
-      } else {
-        // Fallback
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        if (typeof window.addToCart === 'function') {
-          window.addToCart(productId);
-        }
-        
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
-      }
-    };
+// ===== HANDLE ADD TO CART WITH FEEDBACK - MATCHING ACCESSORIES PAGE =====
+window.handleNewArrivalAdd = function(productId, btn) {
+  // Show added effect
+  btn.classList.add('added');
+  btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+  
+  // Use the standard addToCart function from common.js
+  if (typeof window.addToCart === 'function') {
+    window.addToCart(productId);
+  } else {
+    console.warn('addToCart not available');
+  }
+  
+  // Open cart modal after a short delay
+  setTimeout(() => {
+    if (typeof window.openCart === 'function') {
+      window.openCart();
+    }
+    // Reset button after cart opens
+    setTimeout(() => {
+      btn.classList.remove('added');
+      btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+    }, 500);
+  }, 200);
+};
 
     // ===== ADD TEST SALE DATA TO PRODUCTS (kept from original but ensures oldPrice exists) =====
     function addTestSaleData() {
