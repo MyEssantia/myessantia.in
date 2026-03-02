@@ -274,20 +274,20 @@ async function loadComponents() {
 function setupEventListeners() {
   console.log('Setting up event listeners');
   
+  // Mobile menu elements
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-  const navMenu = document.getElementById('nav-menu');
+  const mobileDropdown = document.getElementById('mobileDropdown');
+  const mobileMenuClose = document.getElementById('mobileMenuClose');
   
-  if (mobileMenuToggle && navMenu) {
-    // Toggle menu on hamburger click
+  if (mobileMenuToggle && mobileDropdown) {
+    // Open menu on hamburger click
     mobileMenuToggle.addEventListener('click', function(e) {
       e.stopPropagation();
       this.classList.toggle('active');
-      navMenu.classList.toggle('show');
+      mobileDropdown.classList.toggle('show');
       
-      // Toggle body class for overlay
-      if (navMenu.classList.contains('show')) {
+      if (mobileDropdown.classList.contains('show')) {
         document.body.classList.add('menu-open');
-        // Prevent body scrolling when menu is open
         document.body.style.overflow = 'hidden';
       } else {
         document.body.classList.remove('menu-open');
@@ -295,44 +295,41 @@ function setupEventListeners() {
       }
     });
 
+    // Close menu with close button
+    if (mobileMenuClose) {
+      mobileMenuClose.addEventListener('click', function() {
+        mobileMenuToggle.classList.remove('active');
+        mobileDropdown.classList.remove('show');
+        document.body.classList.remove('menu-open');
+        document.body.style.overflow = '';
+      });
+    }
+
     // Close menu when clicking on a navigation link
-    const navLinks = navMenu.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
+    const mobileLinks = document.querySelectorAll('.mobile-menu-link');
+    mobileLinks.forEach(link => {
       link.addEventListener('click', () => {
         mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('show');
+        mobileDropdown.classList.remove('show');
         document.body.classList.remove('menu-open');
         document.body.style.overflow = '';
       });
     });
 
-    // Close menu when clicking on the close button (X) - using event delegation
-    navMenu.addEventListener('click', function(e) {
-      // Check if click is on the close button (the ::before pseudo-element is tricky)
-      // Instead, we'll check if click is near the top-right area when menu is open
-      const rect = this.getBoundingClientRect();
-      const clickX = e.clientX;
-      const clickY = e.clientY;
-      
-      // Close button area (top 60px, right 60px)
-      if (clickY < rect.top + 60 && clickX > rect.right - 60) {
-        mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
-      }
-      
-      // Close if clicking on the overlay background
-      if (e.target === navMenu) {
-        mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+      if (mobileDropdown.classList.contains('show')) {
+        if (!mobileDropdown.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+          mobileMenuToggle.classList.remove('active');
+          mobileDropdown.classList.remove('show');
+          document.body.classList.remove('menu-open');
+          document.body.style.overflow = '';
+        }
       }
     });
   }
 
-  // Use event delegation for cart icon to ensure it works even if element is reloaded
+  // Use event delegation for cart icon
   document.addEventListener('click', function(e) {
     const cartIcon = e.target.closest('#cart-icon');
     if (cartIcon) {
@@ -341,9 +338,9 @@ function setupEventListeners() {
       openCart();
       
       // Close mobile menu if open
-      if (navMenu && navMenu.classList.contains('show')) {
+      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
-        navMenu.classList.remove('show');
+        mobileDropdown.classList.remove('show');
         document.body.classList.remove('menu-open');
         document.body.style.overflow = '';
       }
@@ -358,9 +355,9 @@ function setupEventListeners() {
       openProfile();
       
       // Close mobile menu if open
-      if (navMenu && navMenu.classList.contains('show')) {
+      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
-        navMenu.classList.remove('show');
+        mobileDropdown.classList.remove('show');
         document.body.classList.remove('menu-open');
         document.body.style.overflow = '';
       }
@@ -434,9 +431,9 @@ function setupEventListeners() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
       // Close mobile menu if open
-      if (navMenu && navMenu.classList.contains('show')) {
+      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
-        navMenu.classList.remove('show');
+        mobileDropdown.classList.remove('show');
         document.body.classList.remove('menu-open');
         document.body.style.overflow = '';
       }
@@ -446,26 +443,13 @@ function setupEventListeners() {
       closeModal('profile-modal');
     }
   });
-
-  // Close mobile menu when clicking outside (existing functionality enhanced)
-  document.addEventListener('click', function(e) {
-    if (navMenu && navMenu.classList.contains('show')) {
-      // Check if click is outside both the menu and the toggle button
-      if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
-        mobileMenuToggle.classList.remove('active');
-        navMenu.classList.remove('show');
-        document.body.classList.remove('menu-open');
-        document.body.style.overflow = '';
-      }
-    }
-  });
   
   // Handle window resize - close mobile menu on resize to desktop
   window.addEventListener('resize', function() {
     if (window.innerWidth > 768) {
-      if (navMenu && navMenu.classList.contains('show')) {
+      if (mobileDropdown && mobileDropdown.classList.contains('show')) {
         mobileMenuToggle?.classList.remove('active');
-        navMenu.classList.remove('show');
+        mobileDropdown.classList.remove('show');
         document.body.classList.remove('menu-open');
         document.body.style.overflow = '';
       }
