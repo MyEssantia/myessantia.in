@@ -1,11 +1,13 @@
 /* ---------- HEADER STYLES - MyEssantia Brand ---------- */
+/* Aligned with checkout page aesthetic: bold borders, gold accents, crisp shadows */
+
 /* TOP BAR */
 .top-bar {
-  background: #000000;
-  color: #ffffff;
+  background: #000000;        /* solid black to match checkout header */
+  color: #f0f0f0;
   padding: 0.6rem 0;
   font-size: 0.7rem;
-  border-bottom: 2px solid #d4af37;
+  border-bottom: 2px solid #d4af37;    /* bold gold border */
   width: 100%;
 }
 
@@ -28,17 +30,15 @@
 
 .top-bar-links a {
   text-decoration: none;
-  color: #f0f0f0;
+  color: #ddd;
   font-size: 0.7rem;
-  font-weight: 500;
+  font-weight: 400;           /* slightly heavier for readability */
   transition: color 0.2s;
   padding: 0.2rem 0;
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-family: 'Inter', 'Montserrat', sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .top-bar-links a:hover {
@@ -49,27 +49,21 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  background: #d4af37;
-  color: #000;
-  padding: 0.2rem 0.8rem;
-  border-radius: 40px;
-  font-weight: 600;
-  border: 1px solid #000;
 }
 
 .trust-badge i { 
-  color: #000; 
+  color: #d4af37; 
 }
 
 /* MAIN HEADER */
 .main-header {
   background: #ffffff;
   padding: 0.8rem 0;
-  box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);  /* signature checkout shadow */
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 2px solid #000;
+  border-bottom: 2px solid #000000;        /* bold black border */
   width: 100%;
 }
 
@@ -84,12 +78,12 @@
   flex-wrap: wrap;
 }
 
-/* MyEssantia Logo - matching checkout aesthetic */
+/* MyEssantia Logo – refined with gold accent */
 .logo {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
+  font-weight: 800;            /* extra bold to match checkout */
   font-size: 2rem;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.02em;     /* tighter like checkout */
   color: #000;
   text-decoration: none;
   line-height: 1.2;
@@ -102,31 +96,32 @@
   font-weight: 900;
   font-size: 2.4rem;
   color: #d4af37;
+  -webkit-text-fill-color: #d4af37;
+  background: none;
   display: inline-block;
   margin-left: 2px;
+  font-style: normal;          /* removed italic for stronger look */
+  transform: none;
 }
 
-/* Mobile Menu Toggle */
+/* Mobile Menu Toggle – matches checkout button style */
 .mobile-menu-toggle {
   display: none;
   background: #000;
-  border: 2px solid #000;
+  border: 2px solid #d4af37;
   font-size: 1.5rem;
   color: #d4af37;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 40px;          /* pill shape like checkout */
   transition: all 0.2s;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  align-items: center;
-  justify-content: center;
+  line-height: 1;
 }
 
 .mobile-menu-toggle:hover {
   background: #d4af37;
   color: #000;
-  border-color: #d4af37;
+  border-color: #000;
 }
 
 /* Navigation Menu */
@@ -147,66 +142,68 @@
 
 .nav-link {
   text-decoration: none;
-  color: #000;
+  color: #1e1e1e;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 0.9rem;
-  border: 2px solid transparent;
+  border-bottom: 2px solid transparent;  /* thicker border */
   transition: all 0.2s;
-  padding: 0.5rem 1rem;
+  padding: 0.3rem 0;
   display: inline-block;
   letter-spacing: 0.5px;
-  text-transform: uppercase;
-  border-radius: 40px;
+  text-transform: uppercase;              /* matches checkout uppercase */
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: #000;
-  border-color: #d4af37;
-  background: #fcf9f4;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  color: #d4af37;
+  border-bottom-color: #d4af37;
 }
 
-/* Header Icons - matching checkout */
+/* Header Icons – account, cart, search – now with consistent styling */
 .header-icons {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   align-items: center;
   flex-shrink: 0;
 }
 
-.header-icons a {
+.header-icons a,
+.header-icons .search-trigger {      /* search trigger styled as icon */
   color: #000;
   font-size: 1.3rem;
   transition: all 0.2s;
   position: relative;
-  padding: 0.5rem;
+  padding: 0.4rem;
   text-decoration: none;
-  border: 2px solid transparent;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  display: flex;
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 50%;                 /* perfect circle like scroll-top button */
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
-.header-icons a:hover {
-  color: #d4af37;
-  border-color: #d4af37;
-  background: #fcf9f4;
-  transform: translateY(-2px);
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-}
-
-.cart-count {
-  position: absolute;
-  top: -2px;
-  right: -2px;
+.header-icons a:hover,
+.header-icons .search-trigger:hover {
   background: #d4af37;
   color: #000;
-  font-size: 0.6rem;
+  border-color: #d4af37;
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+}
+
+/* Cart count badge – matches checkout secure-badge style */
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #000;
+  color: #d4af37;
+  font-size: 0.65rem;
   font-weight: 800;
   width: 20px;
   height: 20px;
@@ -214,12 +211,12 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
+  border: 2px solid #d4af37;
   font-family: 'Montserrat', sans-serif;
-  border: 2px solid #000;
 }
 
-/* ==================== MODAL STYLES - matching checkout ==================== */
-/* Modal Base */
+/* ==================== MODAL STYLES ==================== */
+/* Modal Base – now with checkout card aesthetics */
 .modal {
   display: none;
   position: fixed;
@@ -238,13 +235,13 @@
 }
 
 .modal-content {
-  background-color: #ffffff;
+  background-color: #fff;
   margin: 2rem auto;
   padding: 2rem;
   width: 90%;
   max-width: 500px;
-  border-radius: 32px;
-  border: 2px solid #000;
+  border-radius: 32px;                 /* rounded like checkout cards */
+  border: 2px solid #000;              /* bold border */
   box-shadow: 8px 8px 0 rgba(0,0,0,0.15);
   max-height: 80vh;
   display: flex;
@@ -268,8 +265,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 1.5rem;
-  border-bottom: 2px solid #000;
+  padding-bottom: 1.2rem;
+  border-bottom: 2px solid #000;       /* solid black border */
 }
 
 .modal-header h3 {
@@ -284,30 +281,31 @@
 
 .modal-header h3 span {
   color: #d4af37;
+  font-weight: 900;
 }
 
 .close-modal {
-  background: #000;
+  background: none;
   border: 2px solid #000;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
-  color: #d4af37;
+  color: #000;
   transition: all 0.2s;
   line-height: 1;
-  padding: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  padding: 0 0.5rem;
+  font-weight: 300;
+  border-radius: 40px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 300;
 }
 
 .close-modal:hover {
   background: #d4af37;
-  color: #000;
   border-color: #d4af37;
+  color: #000;
 }
 
 .modal-footer {
@@ -317,7 +315,7 @@
 
 /* ==================== CART MODAL ==================== */
 .cart-modal-content {
-  max-width: 500px;
+  max-width: 550px;
 }
 
 .cart-items {
@@ -332,7 +330,6 @@
 .cart-items::-webkit-scrollbar {
   width: 4px;
 }
-
 .cart-items::-webkit-scrollbar-thumb {
   background: #d4af37;
   border-radius: 4px;
@@ -341,30 +338,21 @@
 .cart-item {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
-  border: 2px solid #eee;
-  border-radius: 20px;
-  margin-bottom: 1rem;
-  transition: all 0.2s;
+  padding: 1rem 0;
+  border-bottom: 2px solid #f0f0f0;
   position: relative;
-  background: #fff;
-}
-
-.cart-item:hover {
-  border-color: #d4af37;
-  background: #fcf9f4;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  align-items: center;
 }
 
 .cart-item-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 16px;
+  width: 70px;
+  height: 70px;
+  border-radius: 16px;                 /* match checkout item image */
   background-size: cover;
   background-position: center;
   background-color: #ece5dc;
   flex-shrink: 0;
-  border: 2px solid #000;
+  border: 2px solid #000;               /* bold border */
 }
 
 .cart-item-details {
@@ -374,16 +362,17 @@
 .cart-item-title {
   font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  font-size: 1rem;
-  margin-bottom: 0.25rem;
+  font-size: 0.95rem;
+  margin-bottom: 0.2rem;
   color: #000;
   text-transform: uppercase;
+  letter-spacing: -0.02em;
 }
 
 .cart-item-category {
-  font-family: 'Inter', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
   color: #666;
   text-transform: uppercase;
   margin-bottom: 0.5rem;
@@ -394,31 +383,31 @@
   color: #d4af37;
   font-family: 'Montserrat', sans-serif;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
 }
 
 .cart-item-actions {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
 .quantity-btn {
   background: #f5f2ee;
   border: 2px solid #000;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   font-size: 1rem;
+  font-weight: 700;
   transition: all 0.2s;
   color: #000;
-  font-weight: 700;
 }
 
 .quantity-btn:hover:not(:disabled) {
@@ -442,22 +431,22 @@
 
 .remove-item {
   background: none;
-  border: 2px solid #000;
+  border: 2px solid #c00;
   color: #c00;
   cursor: pointer;
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.2rem 0.8rem;
+  border-radius: 40px;
   margin-left: auto;
   font-family: 'Montserrat', sans-serif;
-  text-transform: uppercase;
-  padding: 0.3rem 0.8rem;
-  border-radius: 40px;
   transition: all 0.2s;
 }
 
 .remove-item:hover {
   background: #c00;
-  color: white;
+  color: #fff;
   border-color: #c00;
 }
 
@@ -465,18 +454,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-weight: 800;
-  margin: 1.5rem 0;
+  margin: 1rem 0 1.2rem;
   color: #000;
   font-family: 'Montserrat', sans-serif;
-  border-top: 2px solid #000;
-  padding-top: 1rem;
+  text-transform: uppercase;
 }
 
 #cart-total-amount {
   color: #d4af37;
   font-weight: 900;
+  font-size: 1.3rem;
 }
 
 .checkout-btn {
@@ -485,14 +474,13 @@
   border: 2px solid #000;
   color: #000;
   font-weight: 700;
-  padding: 1.2rem;
+  padding: 1rem;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: all 0.2s;
+  transition: all 0.3s;
   border-radius: 60px;
   cursor: pointer;
-  font-size: 1rem;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
@@ -518,13 +506,14 @@
 
 .empty-cart-message p {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0;
+  color: #000;
 }
 
 /* ==================== PROFILE MODAL ==================== */
 .profile-modal-content {
-  max-width: 400px;
+  max-width: 450px;
 }
 
 .profile-content {
@@ -536,13 +525,13 @@
 /* Logged In State */
 .profile-info {
   text-align: center;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .profile-avatar {
   width: 80px;
   height: 80px;
-  background: #f5f2ee;
+  background: #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -550,7 +539,8 @@
   margin: 0 auto 1.5rem;
   font-size: 2.5rem;
   color: #d4af37;
-  border: 2px solid #000;
+  border: 3px solid #d4af37;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .profile-details {
@@ -560,6 +550,7 @@
   border-radius: 24px;
   border: 2px solid #000;
   margin-bottom: 1.5rem;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .profile-details p {
@@ -568,8 +559,9 @@
   align-items: center;
   gap: 0.8rem;
   color: #000;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.95rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .profile-details p:last-child {
@@ -582,9 +574,11 @@
 }
 
 .profile-details .label {
-  font-weight: 500;
-  color: #666;
+  font-weight: 600;
+  color: #444;
   min-width: 70px;
+  text-transform: uppercase;
+  font-size: 0.75rem;
 }
 
 .profile-details .value {
@@ -596,36 +590,32 @@
 .logout-btn {
   width: 100%;
   background: #fff;
-  border: 2px solid #000;
-  color: #000;
+  border: 2px solid #c00;
+  color: #c00;
   padding: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 60px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .logout-btn:hover {
-  background: #d4af37;
-  color: #000;
-  border-color: #d4af37;
+  background: #c00;
+  color: #fff;
+  border-color: #c00;
   transform: translateY(-2px);
   box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
 }
 
-.logout-btn i {
-  font-size: 1rem;
-}
-
-/* Logged Out State (Login Form) */
+/* Logged Out State (Login Form) – now with checkout card styling */
 .login-form {
   padding: 0.5rem 0;
 }
@@ -643,7 +633,7 @@
 
 .login-header h4 {
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #000;
   margin-bottom: 0.5rem;
@@ -653,7 +643,7 @@
 .login-header p {
   color: #666;
   font-size: 0.9rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 400;
   margin: 0;
 }
@@ -664,10 +654,10 @@
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   color: #000;
   font-weight: 600;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -675,10 +665,10 @@
 
 .form-group input {
   width: 100%;
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1.2rem;
   border: 2px solid #000;
   border-radius: 50px;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
   transition: all 0.2s;
   box-sizing: border-box;
@@ -688,7 +678,7 @@
 .form-group input:focus {
   outline: none;
   border-color: #d4af37;
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
 }
 
 .form-group input::placeholder {
@@ -703,7 +693,7 @@
   align-items: center;
   margin: 1rem 0 1.5rem;
   font-size: 0.8rem;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .remember-me {
@@ -711,6 +701,7 @@
   align-items: center;
   gap: 0.5rem;
   color: #000;
+  font-weight: 500;
 }
 
 .remember-me input[type="checkbox"] {
@@ -723,8 +714,9 @@
 .forgot-password {
   color: #d4af37;
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.8rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
 }
 
 .forgot-password:hover {
@@ -742,14 +734,14 @@
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  transition: all 0.2s;
+  transition: all 0.3s;
   margin-bottom: 1.5rem;
   font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 60px;
   cursor: pointer;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .login-btn:hover {
@@ -787,10 +779,10 @@
 .login-divider span {
   background: #fff;
   padding: 0 1rem;
-  color: #666;
+  color: #000;
   font-size: 0.8rem;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   position: relative;
   z-index: 1;
 }
@@ -814,38 +806,45 @@
   justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.85rem;
-  text-transform: uppercase;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.15);
 }
 
 .social-btn:hover {
-  background: #fcf9f4;
+  background: #d4af37;
   border-color: #d4af37;
   transform: translateY(-2px);
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+  box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
 }
 
 .social-btn.google {
   color: #DB4437;
 }
-
+.social-btn.google:hover {
+  color: #000;
+}
 .social-btn.facebook {
   color: #4267B2;
+}
+.social-btn.facebook:hover {
+  color: #000;
 }
 
 .signup-prompt {
   text-align: center;
   font-size: 0.85rem;
-  color: #666;
-  font-family: 'Inter', sans-serif;
+  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
 }
 
 .signup-prompt a {
   color: #d4af37;
   text-decoration: none;
   font-weight: 700;
+  text-transform: uppercase;
 }
 
 .signup-prompt a:hover {
@@ -855,13 +854,13 @@
 .error-message {
   background: #fee;
   color: #c00;
-  padding: 0.8rem;
+  padding: 0.8rem 1rem;
   border-radius: 50px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   margin-bottom: 1rem;
   display: none;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   border: 2px solid #c00;
 }
 
@@ -870,7 +869,6 @@
 }
 
 /* ==================== RESPONSIVE STYLES ==================== */
-/* Tablet Styles (640px and up) */
 @media (min-width: 640px) {
   .top-bar .container {
     flex-direction: row;
@@ -907,7 +905,6 @@
   }
 }
 
-/* Desktop Styles (1024px and up) */
 @media (min-width: 1024px) {
   .logo {
     font-size: 2.4rem;
@@ -922,7 +919,7 @@
   }
 }
 
-/* Mobile Styles (639px and below) */
+/* Mobile Styles */
 @media (max-width: 639px) {
   .main-header .container {
     flex-wrap: wrap;
@@ -943,15 +940,18 @@
     gap: 0.5rem;
   }
   
-  .header-icons a {
+  .header-icons a,
+  .header-icons .search-trigger {
+    width: 38px;
+    height: 38px;
     font-size: 1.1rem;
-    width: 40px;
-    height: 40px;
   }
   
   .mobile-menu-toggle {
-    display: flex;
+    display: block;
     order: 3;
+    font-size: 1.3rem;
+    padding: 0.4rem 0.7rem;
   }
   
   .nav-menu {
@@ -977,7 +977,7 @@
   .nav-link {
     display: block;
     text-align: center;
-    padding: 0.75rem 0.25rem;
+    padding: 0.8rem 0.5rem;
     background: #f8f8f8;
     border: 2px solid #000;
     border-radius: 40px;
@@ -987,7 +987,6 @@
     text-decoration: none;
     transition: all 0.15s ease;
     width: 100%;
-    text-transform: uppercase;
   }
   
   .nav-link:active {
@@ -1040,19 +1039,18 @@
   }
 }
 
-/* Small Mobile Optimization (480px and below) */
+/* Small Mobile Optimization */
 @media (max-width: 480px) {
   .top-bar-links {
     gap: 0.8rem;
   }
   
   .top-bar-links a {
-    font-size: 0.6rem;
+    font-size: 0.65rem;
   }
   
-  .trust-badge {
-    font-size: 0.6rem;
-    padding: 0.2rem 0.6rem;
+  .trust-badge span {
+    font-size: 0.65rem;
   }
   
   .logo {
@@ -1064,21 +1062,22 @@
   }
   
   .header-icons {
-    gap: 0.3rem;
+    gap: 0.4rem;
   }
   
-  .header-icons a {
+  .header-icons a,
+  .header-icons .search-trigger {
+    width: 34px;
+    height: 34px;
     font-size: 1rem;
-    width: 36px;
-    height: 36px;
   }
   
   .cart-count {
     width: 18px;
     height: 18px;
-    font-size: 0.55rem;
-    top: -2px;
-    right: -2px;
+    font-size: 0.6rem;
+    top: -6px;
+    right: -6px;
   }
   
   .modal-content {
