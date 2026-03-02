@@ -3,26 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>MyEssantia · new arrivals</title>
-  
+  <title>MyEssantia · essentials – EXACT format (old price + sale badge)</title>
+
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  
+
   <!-- Premium Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
-  
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Common CSS -->
+
+  <!-- Common CSS (loaded dynamically via JS but we also link for reliability) -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
-  
+
   <style>
     /* ===== GLOBAL & RESETS ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -166,64 +166,17 @@
       color: #fff;
     }
 
-    /* ===== RESULTS COUNT ===== */
-    .results-wrapper {
-      display: flex;
-      justify-content: flex-end;
-      margin: 0.5rem 0 1rem;
-    }
-    .results-count {
-      color: #666;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: #f5f5f5;
-      padding: 0.2rem 1rem;
-      border-radius: 60px;
-      border: 1px solid #000;
-      display: inline-block;
-    }
-
-    /* ===== PRODUCT GRID - 2 COLUMNS ON MOBILE ===== */
+    /* ===== PRODUCT GRID ===== */
     .product-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.5rem;
-      margin: 1rem 0 3rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+      margin: 1rem 0 4rem;
     }
-    
-    @media (min-width: 1400px) {
-      .product-grid {
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1.8rem;
-      }
-    }
-    
-    @media (min-width: 1800px) {
-      .product-grid {
-        grid-template-columns: repeat(6, 1fr);
-        gap: 2rem;
-      }
-    }
-    
-    @media (max-width: 1200px) {
-      .product-grid {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-    
-    @media (max-width: 800px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
-      }
-    }
-    
-    @media (max-width: 500px) {
-      .product-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-      }
-    }
+    @media (min-width: 600px) { .product-grid { gap: 1.8rem; } }
+    @media (min-width: 800px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1100px) { .product-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+    @media (min-width: 1400px) { .product-grid { grid-template-columns: repeat(5, 1fr); gap: 2rem; } }
 
     .product-card {
       background: transparent;
@@ -238,42 +191,52 @@
       cursor: pointer;
       position: relative;
     }
-    .product-card:hover { transform: translateY(-3px); }
+    .product-card:hover { transform: translateY(-4px); }
 
     .image-frame {
       position: relative;
       width: 100%;
       aspect-ratio: 1/1;
-      border-radius: 16px;
+      border-radius: 20px;
       overflow: hidden;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.8rem;
       background: #f8f6f2;
       border: 2px solid #000;
-      box-shadow: 0 4px 10px -6px rgba(0,0,0,0.2);
+      box-shadow: 0 8px 16px -8px rgba(0,0,0,0.15);
     }
     
-    /* ===== NEW BADGE (left) and SALE BADGE ON IMAGE (right) ===== */
-    .new-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: #000;
-      color: #d4af37;
-      font-size: 0.65rem;
-      font-weight: 700;
-      padding: 0.2rem 0.8rem;
-      border-radius: 60px;
-      z-index: 20;
-      letter-spacing: 0.3px;
-      border: 2px solid #d4af37;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      text-transform: uppercase;
-      pointer-events: none;
+    /* Image hover effect - show second image */
+    .primary-img, .secondary-img { 
+      position: absolute; 
+      inset: 0; 
+      background-size: cover; 
+      background-position: center; 
+      transition: opacity 0.3s ease;
+    }
+    .primary-img { 
+      opacity: 1; 
+      z-index: 2; 
+    }
+    .secondary-img { 
+      opacity: 0; 
+      z-index: 1; 
+    }
+    .image-frame:hover .primary-img { 
+      opacity: 0; 
+    }
+    .image-frame:hover .secondary-img { 
+      opacity: 1; 
+    }
+    @media (hover: none) { 
+      .secondary-img { 
+        opacity: 0; 
+      }
+      .image-frame:hover .primary-img { 
+        opacity: 1; 
+      }
     }
 
-    /* Sale badge on image (exact style from accessories page) */
+    /* Sale badge positioned top right on image */
     .sale-badge-image {
       position: absolute;
       top: 10px;
@@ -290,7 +253,7 @@
       z-index: 30;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      pointer-events: none;
+      pointer-events: none; /* Prevents badge from interfering with hover */
     }
     .sale-badge-image::after {
       content: '';
@@ -314,28 +277,37 @@
       100% { left: 100%; opacity: 0; transform: rotate(25deg) scale(1); }
     }
 
-    /* Image hover effect */
-    .primary-img, .secondary-img { 
-      position: absolute; inset:0; background-size: cover; background-position: center; 
-      transition: opacity 0.3s ease;
+    .new-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #000;
+      color: #d4af37;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.8rem;
+      border-radius: 60px;
+      z-index: 20;
+      letter-spacing: 0.3px;
+      border: 2px solid #d4af37;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      text-transform: uppercase;
+      pointer-events: none; /* Prevents badge from interfering with hover */
     }
-    .primary-img { opacity:1; z-index:2; }
-    .secondary-img { opacity:0; z-index:1; }
-    .image-frame:hover .primary-img { opacity:0; }
-    .image-frame:hover .secondary-img { opacity:1; }
-    @media (hover:none) { .secondary-img { opacity:0; } }
 
     .product-category {
-      font-size: 0.65rem;
+      font-size: 0.7rem;
       color: #666;
       text-transform: uppercase;
       font-weight: 600;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
     }
     .product-title { 
       font-weight: 800;
-      font-size: 0.9rem;
-      margin: 0.1rem 0;
+      font-size: 1rem;
+      margin: 0.2rem 0;
       color: #000;
       line-height: 1.3;
       text-transform: uppercase;
@@ -346,18 +318,15 @@
       display: flex;
       align-items: center;
       gap: 2px;
-      margin: 0.1rem 0;
-      font-size: 0.75rem;
+      margin: 0.2rem 0;
+      font-size: 0.8rem;
     }
     .product-rating i { color: #d4af37; }
     .product-rating span {
       margin-left: 4px;
       color: #666;
       font-weight: 600;
-      font-size: 0.7rem;
     }
-
-    /* ===== PRODUCT PRICE BLOCK (exact style from accessories page) ===== */
     .product-price-block {
       display: flex;
       align-items: center;
@@ -379,44 +348,30 @@
       font-size: 0.9rem; 
       text-decoration: line-through; 
     }
-
-    .stock-badge { 
-      font-size: 0.65rem; 
-      margin-top: 0.1rem; 
-      font-weight: 600; 
-    }
+    
     .card-add-btn {
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      gap: 4px;
+      gap: 6px;
       background: #000; 
       border: 2px solid #000; 
       border-radius: 60px;
-      padding: 0.5rem 0.2rem; 
-      font-size: 0.75rem; 
+      padding: 0.7rem 0.3rem; 
+      font-size: 0.85rem; 
       font-weight: 600; 
       color: #fff;
       cursor: pointer; 
       width: 100%; 
-      margin: 0.4rem 0 0; 
-      min-height: 38px;
-      transition: 0.15s; 
+      margin: 0.5rem 0 0; 
+      min-height: 44px;
+      transition: all 0.15s; 
       text-transform: uppercase;
     }
-    .card-add-btn i { 
-      color: #d4af37; 
-      font-size: 0.8rem;
-    }
-    .card-add-btn:hover { 
-      background: #d4af37; 
-      color: #000; 
-      border-color: #d4af37; 
-    }
-    .card-add-btn:hover i { 
-      color: #000; 
-    }
-
+    .card-add-btn i { color: #d4af37; transition: color 0.15s; }
+    .card-add-btn:hover { background: #d4af37; color: #000; border-color: #d4af37; }
+    .card-add-btn:hover i { color: #000; }
+    
     /* Added state for add-to-cart feedback */
     .card-add-btn.added {
       background: #2e7d32;
@@ -432,41 +387,40 @@
     .empty-state {
       grid-column: 1/-1;
       text-align: center;
-      padding: 3rem 2rem;
+      padding: 4rem 2rem;
       background: #fcfaf7;
-      border-radius: 30px;
+      border-radius: 40px;
       border: 2px solid #000;
-      box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
     }
     .empty-state i {
-      font-size: 3rem;
+      font-size: 4rem;
       color: #d4af37;
-      margin-bottom: 0.8rem;
+      margin-bottom: 1rem;
     }
     .empty-state h3 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: 800;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.5rem;
       font-family: 'Montserrat', sans-serif;
     }
     .empty-state p {
       color: #666;
-      font-size: 1rem;
+      font-size: 1.1rem;
     }
 
     /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
-      background: #000; color: #d4af37; width: 44px; height: 44px; border-radius: 50%;
+      background: #000; color: #d4af37; width: 52px; height: 52px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; 
-      border: 2px solid #d4af37; box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
       opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
-      font-size: 1.2rem; cursor: pointer;
+      font-size: 1.4rem; cursor: pointer;
     }
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
-    /* ===== RESPONSIVE ADJUSTMENTS ===== */
     @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
@@ -483,25 +437,23 @@
       .sort-select select {
         flex: 1;
       }
-      .results-wrapper {
-        justify-content: center;
-      }
-      .container {
-        padding: 0 20px;
-      }
     }
 
-    /* In stock styles */
-    .in-stock { color: #2e7d32; }
-    .low-stock { color: #ed6c02; }
-    .out-of-stock { color: #d32f2f; }
-    .stock-badge i { margin-right: 3px; }
+    @media (max-width: 480px) {
+      .page-title {
+        font-size: 2.2rem;
+      }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Header will be loaded dynamically -->
   <div id="header"></div>
-  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+  
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
 
   <main>
     <!-- PAGE HEADER WITH SORT INTEGRATED -->
@@ -509,23 +461,20 @@
       <div class="page-header-bg"></div>
       <div class="container">
         <div class="header-content">
-          <!-- Title Section -->
           <div class="title-section">
             <div class="breadcrumbs">
               <a href="index.html">home</a>
               <i class="fa-solid fa-chevron-right"></i>
-              <span>new arrivals</span>
+              <span>essentials</span>
             </div>
-            <h1 class="page-title">new <span>arrivals</span></h1>
-            <p class="page-desc">Fresh drops — discover the latest accessories & essentials.</p>
+            <h1 class="page-title">all <span>essentials</span></h1>
+            <p class="page-desc">Minimal, premium & daily essentials — curated for the modern lifestyle.</p>
           </div>
-          
-          <!-- Sort Section - Right Side -->
           <div class="sort-header-section">
             <div class="sort-select">
               <i class="fa-solid fa-arrow-down-wide-short"></i>
               <select id="sort-select" aria-label="Sort products">
-                <option value="newest">sort: newest</option>
+                <option value="popular">sort: popular</option>
                 <option value="price-low">price: low to high</option>
                 <option value="price-high">price: high to low</option>
                 <option value="rating">top rated</option>
@@ -544,75 +493,69 @@
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
+  <!-- Footer will be loaded dynamically -->
   <div id="footer"></div>
-
-  <!-- Common Modals -->
+  
+  <!-- Common modals container -->
   <div id="common-modals"></div>
 
+  <!-- Load common.js first (contains Firebase, cart logic, component loading) -->
   <script src="common.js"></script>
+  
   <script>
-    // ===== UTILITY FUNCTIONS =====
-    function renderRating(rating) {
-      if (!rating || rating === 0) return '<span>★ 0.0</span>';
-      const full = Math.floor(rating);
-      let stars = '';
-      for (let i = 0; i < 5; i++) {
-        stars += i < full ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-      }
-      return stars + `<span> ${rating.toFixed(1)}</span>`;
-    }
+    // ===== LOCAL FUNCTIONS THAT DEPEND ON common.js =====
     
-    function formatPrice(price) {
-      return price?.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') || '0.00';
+    // Add test data to enrich demo products
+    function addTestData() {
+      if (window.products && window.products.length > 0) {
+        window.products.forEach(product => {
+          if (!product.oldPrice) {
+            product.oldPrice = product.price * 1.2;
+          }
+          // Ensure category is set for filtering
+          if (!product.category) product.category = 'essentials';
+        });
+      }
     }
 
-    function handleScroll() {
-      const btn = document.getElementById('scrollTop');
-      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
-    }
-
-    // ===== NEW ARRIVALS FUNCTIONS =====
-    function getNewArrivals() {
+    // Check if product is new (within 24h)
+    function isNewProduct(product) {
+      if (!product.createdAt) return false;
       const now = new Date();
-      const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-      
-      return (window.products || []).filter(product => {
-        // Check if product has showOnNew flag
-        if (product.showOnNew === true) return true;
-        
-        // Check creation date if available
-        if (product.creationDate) {
-          const productDate = new Date(product.creationDate);
-          return productDate >= sevenDaysAgo;
-        }
-        return false;
-      });
+      const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
+      const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
+      return hoursDiff < 24;
     }
 
-    // ===== MAIN RENDERING FUNCTION - UPDATED TO MATCH ACCESSORIES PAGE STYLE =====
+    // Render products in grid
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
       
       if (!gridContainer) return;
 
-      // Get new arrivals
-      const newArrivals = getNewArrivals();
+      // Ensure products exist
+      if (!window.products) window.products = [];
+      addTestData();
 
-      if (newArrivals.length === 0) {
+      // Filter essentials products
+      const essentialsProducts = (window.products || []).filter(p => 
+        p.category === 'essentials' || p.showOnEssentials === true
+      );
+
+      if (essentialsProducts.length === 0) {
         gridContainer.innerHTML = `
           <div class="empty-state">
-            <i class="fa-regular fa-clock"></i>
-            <h3>no new arrivals yet</h3>
-            <p>Check back soon for fresh products!</p>
+            <i class="fa-solid fa-box-open"></i>
+            <h3>no essentials found</h3>
+            <p>Check back later for new arrivals!</p>
           </div>
         `;
         return;
       }
 
       function getSortedProducts() {
-        let sorted = [...newArrivals];
+        let sorted = [...essentialsProducts];
         switch (sortSelect.value) {
           case 'price-low':
             sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
@@ -623,14 +566,7 @@
           case 'rating':
             sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             break;
-          case 'newest':
-          default:
-            sorted.sort((a, b) => {
-              const dateA = a.creationDate ? new Date(a.creationDate) : new Date(0);
-              const dateB = b.creationDate ? new Date(b.creationDate) : new Date(0);
-              return dateB - dateA;
-            });
-            break;
+          default: break;
         }
         return sorted;
       }
@@ -642,41 +578,34 @@
         sortedProducts.forEach(product => {
           const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
           const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
-          const isBrandNew = product.creationDate ? (new Date() - new Date(product.creationDate)) < 24 * 60 * 60 * 1000 : false;
           
-          // For demo: simulate sale on all new arrivals using oldPrice logic exactly like accessories page
-          // If real oldPrice exists, use it; otherwise create a 20% higher old price for demonstration
-          const hasSale = product.oldPrice ? product.oldPrice > product.price : true; // force sale for demo
-          const oldPrice = product.oldPrice && product.oldPrice > product.price ? product.oldPrice : product.price * 1.2;
-          
-          // Determine new badge text
-          const newBadgeText = isBrandNew ? 'just landed' : 'new';
+          const hasSale = product.oldPrice && product.oldPrice > product.price;
+          const isNew = isNewProduct(product);
           
           gridHtml += `
             <div class="product-card" data-product-id="${product.id}">
               <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
                 <div class="image-frame">
-                  <!-- New badge (left) -->
-                  <span class="new-badge">
-                    <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> ${newBadgeText}
-                  </span>
-                  <!-- Sale badge on image (right) - EXACT same as accessories page -->
-                  ${hasSale ? '<span class="sale-badge-image">SALE</span>' : ''}
-                  
+                  ${isNew ? `
+                    <span class="new-badge">
+                      <i class="fa-regular fa-star"></i> NEW
+                    </span>
+                  ` : ''}
+                  ${hasSale ? `
+                    <span class="sale-badge-image">SALE</span>
+                  ` : ''}
                   <div class="primary-img" style="background-image: url('${mainImage}');"></div>
                   <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
                 </div>
-                <p class="product-category">${product.category || 'new arrival'}</p>
+                <p class="product-category">${product.category || 'essential'}</p>
                 <h3 class="product-title">${product.title}</h3>
-                <div class="product-rating">${renderRating(product.rating)}</div>
-                <!-- PRICE BLOCK exactly like accessories page: old price + current price, no extra sale-price-badge -->
+                <div class="product-rating">${window.renderRating ? window.renderRating(product.rating) : '<span>★ 0.0</span>'}</div>
                 <div class="product-price-block">
-                  ${hasSale ? `<span class="old-price">₹${formatPrice(oldPrice)}</span>` : ''}
-                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
+                  ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
+                  <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
                 </div>
-                ${getStockStatus(product.stock)}
               </a>
-              <button class="card-add-btn" onclick="handleNewArrivalAdd('${product.id}', this); event.stopPropagation();">
+              <button class="card-add-btn" onclick="handleEssentialAdd('${product.id}', this); event.stopPropagation();">
                 <i class="fa-solid fa-cart-plus"></i> add
               </button>
             </div>
@@ -694,29 +623,35 @@
       }
     }
 
-    // ===== HANDLE ADD TO CART WITH FEEDBACK (mirroring accessories page) =====
-    window.handleNewArrivalAdd = function(productId, btn) {
-      // Use the master function from common.js if available
+    // Handle add to cart with button feedback and cart opening
+    window.handleEssentialAdd = function(productId, btn) {
+      // Use the master function from common.js
       if (typeof window.masterAddToCart === 'function') {
+        // Show added effect
         btn.classList.add('added');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
         
+        // Call master function (it will add to cart, sync, etc.)
         window.masterAddToCart(productId, false);
         
+        // Open cart modal after a short delay
         setTimeout(() => {
           if (typeof window.openCart === 'function') {
             window.openCart();
           }
+          // Reset button after cart opens (optional, but keeps UI consistent)
           setTimeout(() => {
             btn.classList.remove('added');
             btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
           }, 500);
         }, 200);
       } else {
-        // Fallback
+        // Fallback if master function not ready
+        console.warn('masterAddToCart not available yet');
         btn.classList.add('added');
         btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
         
+        // Try to use standard addToCart
         if (typeof window.addToCart === 'function') {
           window.addToCart(productId);
         }
@@ -733,106 +668,186 @@
       }
     };
 
-    // ===== ADD TEST SALE DATA TO PRODUCTS (kept from original but ensures oldPrice exists) =====
-    function addTestSaleData() {
-      if (window.products && window.products.length > 0) {
-        window.products.forEach(product => {
-          // Only set oldPrice if not already present to keep data integrity
-          if (!product.oldPrice) {
-            product.oldPrice = product.price * 1.2; // Add 20% as old price
-          }
-        });
-        renderProducts();
-      }
-    }
-
     // ===== INITIALIZATION =====
-    document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      if (typeof window.loadComponents === 'function') window.loadComponents();
-      
-      // Set active nav
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Load components (header, footer, modals) using common.js function
+      if (typeof window.loadComponents === 'function') {
+        await window.loadComponents();
+      } else {
+        // Fallback manual loading with error handling
+        try {
+          // Try to load header
+          const headerRes = await fetch('header.html').catch(() => null);
+          if (headerRes && headerRes.ok) {
+            const headerData = await headerRes.text();
+            document.getElementById('header').innerHTML = headerData;
+          } else {
+            // Insert a simple fallback header
+            document.getElementById('header').innerHTML = `
+              <header style="background:#000; color:#fff; padding:1rem 0; border-bottom:3px solid #d4af37;">
+                <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+                  <a href="index.html" style="color:#d4af37; font-weight:800; font-size:1.8rem; text-decoration:none;">MYESSANTIA</a>
+                  <nav>
+                    <a href="index.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">HOME</a>
+                    <a href="accessories.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">ACCESSORIES</a>
+                    <a href="essentials.html" class="nav-link active" style="color:#d4af37; margin:0 1rem; text-decoration:none;">ESSENTIALS</a>
+                  </nav>
+                </div>
+              </header>
+            `;
+          }
+          
+          // Try to load footer
+          const footerRes = await fetch('footer.html').catch(() => null);
+          if (footerRes && footerRes.ok) {
+            const footerData = await footerRes.text();
+            document.getElementById('footer').innerHTML = footerData;
+          } else {
+            // Insert a simple fallback footer
+            document.getElementById('footer').innerHTML = `
+              <footer style="background:#000; color:#fff; padding:2rem 0; margin-top:4rem; border-top:3px solid #d4af37;">
+                <div class="container" style="text-align:center;">
+                  <p style="color:#d4af37;">&copy; 2025 MyEssantia — premium essentials</p>
+                </div>
+              </footer>
+            `;
+          }
+          
+          // Try to load modals
+          const modalsRes = await fetch('common.html').catch(() => null);
+          if (modalsRes && modalsRes.ok) {
+            const modalsData = await modalsRes.text();
+            document.getElementById('common-modals').innerHTML = modalsData;
+          }
+        } catch (e) {
+          console.warn('Error loading components manually:', e);
+        }
+      }
+
+      // Set active nav link after components are loaded
       setTimeout(() => {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll('.nav-link[href="new-arrivals.html"]').forEach(l => l.classList.add('active'));
-      }, 200);
-
-      // Wait for products to load from common.js
-      const checkProducts = setInterval(() => {
-        if (window.products && window.products.length > 0) {
-          addTestSaleData();
-          renderProducts();
-          clearInterval(checkProducts);
-        } else {
-          const cached = localStorage.getItem('MyEssantia_products');
-          if (cached) {
-            try {
-              window.products = JSON.parse(cached);
-              addTestSaleData();
-              renderProducts();
-              clearInterval(checkProducts);
-            } catch (e) {
-              console.warn('Error parsing cached products');
+        document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+        // Also try matching by text content or any other selector
+        if (document.querySelectorAll('.nav-link.active').length === 0) {
+          document.querySelectorAll('.nav-link').forEach(l => {
+            if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
+              l.classList.add('active');
             }
+          });
+        }
+      }, 300);
+
+      // Create sample products if window.products is empty
+      if (!window.products || window.products.length === 0) {
+        window.products = [
+          {
+            id: 'ess1',
+            title: 'Premium Cable Organiser',
+            category: 'essentials',
+            price: 1299,
+            oldPrice: 1799,
+            rating: 4.5,
+            images: [
+              'https://images.unsplash.com/photo-1625723044792-44de16ccb0e9?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1615529179035-e760f6a0b6b4?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1625723044792-44de16ccb0e9?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1615529179035-e760f6a0b6b4?w=300&auto=format&fit=crop',
+            stock: 15,
+            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours old - NEW
+          },
+          {
+            id: 'ess2',
+            title: 'Stainless Steel Bottle',
+            category: 'essentials',
+            price: 2199,
+            oldPrice: 2799,
+            rating: 4.8,
+            images: [
+              'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1625772452859-1b03dabf6c33?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1625772452859-1b03dabf6c33?w=300&auto=format&fit=crop',
+            stock: 8,
+            createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000) // 48 hours old - not new
+          },
+          {
+            id: 'ess3',
+            title: 'Minimal Card Holder',
+            category: 'essentials',
+            price: 1899,
+            oldPrice: 2499,
+            rating: 4.3,
+            images: [
+              'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1622560480605-d6c3c4d7c0f5?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1622560480605-d6c3c4d7c0f5?w=300&auto=format&fit=crop',
+            stock: 5,
+            createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000) // 12 hours old - NEW
+          },
+          {
+            id: 'ess4',
+            title: 'Vegan Leather Notebook',
+            category: 'essentials',
+            price: 1299,
+            oldPrice: 1699,
+            rating: 4.2,
+            images: [
+              'https://images.unsplash.com/photo-1531346680769-a15dbb1726ad?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1531346680769-a15dbb1726ad?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=300&auto=format&fit=crop',
+            stock: 20,
+            // No createdAt - not new
+          },
+          {
+            id: 'ess5',
+            title: 'Tech Pouch',
+            category: 'essentials',
+            price: 2499,
+            oldPrice: 3299,
+            rating: 4.7,
+            images: [
+              'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1621805245186-7f2a86b6a93b?w=300&auto=format&fit=crop',
+            stock: 3,
+            createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000) // 5 hours old - NEW
+          },
+          {
+            id: 'ess6',
+            title: 'Slim Wallet RFID',
+            category: 'essentials',
+            price: 1699,
+            oldPrice: 1699, // No sale
+            rating: 4.1,
+            images: [
+              'https://images.unsplash.com/photo-1627222927040-169e4d2d6a7f?w=300&auto=format&fit=crop',
+              'https://images.unsplash.com/photo-1625917512083-abcdccaacb4d?w=300&auto=format&fit=crop'
+            ],
+            primaryImg: 'https://images.unsplash.com/photo-1627222927040-169e4d2d6a7f?w=300&auto=format&fit=crop',
+            secondaryImg: 'https://images.unsplash.com/photo-1625917512083-abcdccaacb4d?w=300&auto=format&fit=crop',
+            stock: 12,
+            // No createdAt - not new
           }
-        }
-      }, 100);
+        ];
+      }
 
-      // Update every minute for real-time new arrivals
-      setInterval(() => {
-        if (window.products?.length) {
-          addTestSaleData();
-          renderProducts();
-        }
-      }, 60000);
+      // Render products
+      renderProducts();
     });
 
-    window.addEventListener('load', () => {
-      if (!window.products?.length) {
-        const cached = localStorage.getItem('MyEssantia_products');
-        if (cached) { 
-          try {
-            window.products = JSON.parse(cached); 
-            addTestSaleData();
-            renderProducts();
-          } catch (e) {}
-        }
-      }
-    });
-
-    async function loadCommonModals() {
-      try {
-        const res = await fetch('common.html');
-        const data = await res.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (e) { console.warn('modals not loaded'); }
-    }
-
-    window.addEventListener('scroll', handleScroll);
-
-    // ===== MODAL CLOSE FUNCTIONS =====
-    window.closeModal = function(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) {
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    };
-
-    window.addEventListener('click', function(e) {
-      if (e.target.classList.contains('modal')) {
-        e.target.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-    });
-
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') {
-        document.querySelectorAll('.modal.show').forEach(modal => {
-          modal.classList.remove('show');
-          document.body.style.overflow = '';
-        });
-      }
+    // Scroll top button visibility
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
     });
   </script>
 </body>
