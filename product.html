@@ -18,7 +18,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   
-  <!-- Common CSS (linked exactly like sample page) -->
+  <!-- Common JS (loaded once) -->
+  <script src="common.js"></script>
+  
+  <!-- Common CSS -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -380,19 +383,12 @@
   <div id="common-modals"></div>
 
   <script>
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
-      authDomain: "myessantia.firebaseapp.com",
-      projectId: "myessantia",
-      storageBucket: "myessantia.firebasestorage.app",
-      messagingSenderId: "701726517205",
-      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-
+    // ========== PRODUCT PAGE SPECIFIC CODE ==========
+    // Note: Firebase is already initialized in common.js
+    // We can use the existing db instance from common.js
+    
     let currentProduct = null;
+    
     function getRandomSold() { return Math.floor(Math.random() * (2000 - 500 + 1)) + 500; }
     function getRandomViewers() { return Math.floor(Math.random() * (35 - 8 + 1)) + 8; }
 
@@ -421,24 +417,37 @@
     async function loadProduct() {
       const productId = getProductId();
       if (!productId) return showNotFound();
+      
       try {
+        // Use the db instance from common.js
         const doc = await db.collection('products').doc(productId).get();
         if (!doc.exists) return showNotFound();
+        
         currentProduct = { id: doc.id, ...doc.data() };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         renderProduct(currentProduct);
-        // loadRelated omitted for brevity
-      } catch (error) { console.error(error); showNotFound(); }
+      } catch (error) { 
+        console.error('Error loading product:', error); 
+        showNotFound(); 
+      }
     }
 
     function showNotFound() {
-      document.getElementById('product-container').innerHTML = `...`;
+      document.getElementById('product-container').innerHTML = `
+        <div style="text-align: center; padding: 4rem 2rem;">
+          <i class="fa-solid fa-box-open" style="font-size: 4rem; color: #d4af37;"></i>
+          <h2 style="margin: 1rem 0;">Product Not Found</h2>
+          <p>The product you're looking for doesn't exist or has been removed.</p>
+          <a href="collection.html" class="btn btn-primary" style="display: inline-block; margin-top: 2rem;">Browse Collection</a>
+        </div>
+      `;
     }
 
     function renderProduct(product) {
       const images = [];
       if (product.media?.images) images.push(...product.media.images.map(i => i.url));
       if (images.length === 0) images.push(product.primaryImg || 'https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600');
+      
       const stock = product.stock || 10;
       const originalPrice = Math.round(product.price * 1.25);
       const discount = Math.round(((originalPrice - product.price) / originalPrice) * 100);
@@ -457,16 +466,53 @@
             <div class="thumbnail-grid">
               ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}"></div>`).join('')}
             </div>
-            <div class="desktop-reviews">...</div> <!-- shortened for brevity, same as before -->
+            <div class="desktop-reviews">
+              <div class="review-mini-card">
+                <div class="review-mini-header">
+                  <span>Top Reviews</span>
+                  <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
+                </div>
+                ${reviews.slice(0, 2).map(r => `
+                  <div class="review-mini-item">
+                    <div class="review-mini-avatar">${r.avatar}</div>
+                    <div>
+                      <div style="font-weight: 700;">${r.name}</div>
+                      <div style="font-size: 0.8rem; color: #666;">${r.city}</div>
+                      <div style="margin-top: 4px;">${'★'.repeat(Math.floor(r.rating))}</div>
+                      <p style="margin-top: 8px;">${r.comment}</p>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
           </div>
+          
           <!-- INFO -->
           <div class="product-info">
-            <div class="social-strip"><span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span><span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing now</span></div>
+            <div class="social-strip">
+              <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span>
+              <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing now</span>
+            </div>
             <div class="product-category">${product.category || 'Accessories'}</div>
             <h1 class="product-title">${product.title}</h1>
             <div class="rating-row">
-              <div class="stars">${getStars(product.rating)}</div><span>${(product.rating || 4.5).toFixed(1)}</span><span>(128 reviews)</span>
-              <div class="share-wrapper"><button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button><div class="share-menu" id="shareMenu">...</div></div>
+              <div class="stars">${getStars(product.rating)}</div>
+              <span>${(product.rating || 4.5).toFixed(1)}</span>
+              <span>(128 reviews)</span>
+              <div class="share-wrapper">
+                <button class="share-btn" onclick="toggleShare(event)"><i class="fa-solid fa-share-alt"></i> Share</button>
+                <div class="share-menu" id="shareMenu">
+                  <div class="share-grid">
+                    <div class="share-option" onclick="shareOn('facebook')"><i class="fa-brands fa-facebook"></i><span>Facebook</span></div>
+                    <div class="share-option" onclick="shareOn('twitter')"><i class="fa-brands fa-twitter"></i><span>Twitter</span></div>
+                    <div class="share-option" onclick="shareOn('whatsapp')"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></div>
+                  </div>
+                  <div class="copy-link">
+                    <input id="shareLink" value="${window.location.href}" readonly>
+                    <button class="copy-btn" onclick="copyLink()">Copy</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- PRICE CARD with quantity + stock inline -->
@@ -478,44 +524,84 @@
               </div>
               <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
               <div class="price-options">
-                <div class="price-option prepaid"><div class="option-label">Prepaid</div><div class="option-price">₹${prepaidPrice}</div></div>
-                <div class="price-option cod"><div class="option-label">Cash on Delivery</div><div class="option-price">₹${codPrice}</div></div>
+                <div class="price-option prepaid">
+                  <div class="option-label">Prepaid</div>
+                  <div class="option-price">₹${prepaidPrice}</div>
+                </div>
+                <div class="price-option cod">
+                  <div class="option-label">Cash on Delivery</div>
+                  <div class="option-price">₹${codPrice}</div>
+                </div>
               </div>
+              
               <!-- quantity + stock row inside price card -->
               <div class="quantity-stock-row">
                 <div class="quantity-controls">
-                  <button class="qty-btn" onclick="updateQuantity(-1)" ${stock===0?'disabled':''}>−</button>
+                  <button class="qty-btn" onclick="updateQuantity(-1)" ${stock === 0 ? 'disabled' : ''}>−</button>
                   <input type="text" class="qty-input" id="productQuantity" value="1" readonly>
-                  <button class="qty-btn" onclick="updateQuantity(1)" ${stock===0?'disabled':''}>+</button>
+                  <button class="qty-btn" onclick="updateQuantity(1)" ${stock === 0 ? 'disabled' : ''}>+</button>
                 </div>
-                <div class="stock-badge"><i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${stock > 10 ? 'In Stock' : `Only ${stock} left`}</div>
+                <div class="stock-badge">
+                  <i class="fa-solid ${stock > 10 ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> 
+                  ${stock > 10 ? 'In Stock' : `Only ${stock} left`}
+                </div>
               </div>
             </div>
 
-            <!-- DELIVERY BAR (moved up) -->
+            <!-- DELIVERY BAR -->
             <div class="delivery-card">
-              <div class="delivery-header"><span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span><span class="delivery-min">Min. ₹1,299</span></div>
-              <div class="progress-bar"><div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div></div>
-              <div class="delivery-message" id="deliveryMessage"><i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i><span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more`}</span></div>
-              <div class="delivery-eta"><i class="fa-regular fa-calendar"></i> <span>Delivery by <span class="eta-bold">5–7 business days</span></span></div>
+              <div class="delivery-header">
+                <span class="delivery-title"><i class="fa-solid fa-truck"></i> Free Delivery</span>
+                <span class="delivery-min">Min. ₹1,299</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" id="deliveryProgress" style="width: ${Math.min(100, (product.price / 1299) * 100)}%"></div>
+              </div>
+              <div class="delivery-message" id="deliveryMessage">
+                <i class="fa-solid ${product.price >= 1299 ? 'fa-circle-check' : 'fa-circle-info'}" style="color:#d4af37;"></i>
+                <span id="deliveryText">${product.price >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - product.price).toFixed(2)}</span> more`}</span>
+              </div>
+              <div class="delivery-eta">
+                <i class="fa-regular fa-calendar"></i> 
+                <span>Delivery by <span class="eta-bold">5–7 business days</span></span>
+              </div>
             </div>
 
             <!-- COMBINED FEATURE + RAZORPAY CARD -->
             <div class="feature-razor-card">
               <div class="features-grid">
-                <div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div><div class="feature-text"><h4>Free Shipping</h4><p>Above ₹1,299</p></div></div>
-                <div class="feature-item"><div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div><div class="feature-text"><h4>Easy Returns</h4><p>48 hours</p></div></div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                  <div class="feature-text">
+                    <h4>Free Shipping</h4>
+                    <p>Above ₹1,299</p>
+                  </div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                  <div class="feature-text">
+                    <h4>Easy Returns</h4>
+                    <p>48 hours</p>
+                  </div>
+                </div>
               </div>
               <div class="razorpay-promise">
                 <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
-                <div class="promise-content"><h4>Razorpay Money Back Promise</h4><p>100% refund on non-delivery or defects</p></div>
+                <div class="promise-content">
+                  <h4>Razorpay Money Back Promise</h4>
+                  <p>100% refund on non-delivery or defects</p>
+                </div>
               </div>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
-              <button class="btn btn-secondary" onclick="addToCart()" ${stock===0?'disabled':''}><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
-              <button class="btn btn-primary" onclick="buyNow()" ${stock===0?'disabled':''}><i class="fa-solid fa-bolt"></i> Buy Now</button>
+              <button class="btn btn-secondary" onclick="addToCart()" ${stock === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+              </button>
+              <button class="btn btn-primary" onclick="buyNow()" ${stock === 0 ? 'disabled' : ''}>
+                <i class="fa-solid fa-bolt"></i> Buy Now
+              </button>
             </div>
 
             <!-- TABS (description, specs, videos) -->
@@ -525,38 +611,258 @@
                 <div class="tab-header" onclick="switchTab('specs')">Specs</div>
                 <div class="tab-header" onclick="switchTab('videos')">Videos</div>
               </div>
-              <div class="tab-content active" id="tab-desc"><p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p></div>
-              <div class="tab-content" id="tab-specs"><div class="specs-grid"><div class="spec-item"><div class="spec-label">Material</div><div class="spec-value">Premium Quality</div></div><div class="spec-item"><div class="spec-label">Brand</div><div class="spec-value">${product.brand || 'MyEssantia'}</div></div></div></div>
-              <div class="tab-content" id="tab-videos"><div class="video-grid"><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div><div class="video-item"><img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400"><i class="fa-solid fa-play"></i></div></div></div>
+              <div class="tab-content active" id="tab-desc">
+                <p>${product.description || product.shortDesc || 'Premium quality product from MyEssantia.'}</p>
+              </div>
+              <div class="tab-content" id="tab-specs">
+                <div class="specs-grid">
+                  <div class="spec-item">
+                    <div class="spec-label">Material</div>
+                    <div class="spec-value">Premium Quality</div>
+                  </div>
+                  <div class="spec-item">
+                    <div class="spec-label">Brand</div>
+                    <div class="spec-value">${product.brand || 'MyEssantia'}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-content" id="tab-videos">
+                <div class="video-grid">
+                  <div class="video-item">
+                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400">
+                    <i class="fa-solid fa-play"></i>
+                  </div>
+                  <div class="video-item">
+                    <img src="https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=400">
+                    <i class="fa-solid fa-play"></i>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <!-- mobile reviews (only on mobile) -->
             <div class="mobile-reviews">
-              <div class="reviews-header"><span>Customer Reviews</span><span>★ ${(product.rating || 4.5).toFixed(1)}</span></div>
-              ${reviews.slice(0,2).map(r => `<div class="review-card">...</div>`).join('')}
+              <div class="reviews-header">
+                <span>Customer Reviews</span>
+                <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
+              </div>
+              ${reviews.slice(0, 2).map(r => `
+                <div class="review-card">
+                  <div style="display: flex; gap: 12px; margin-bottom: 8px;">
+                    <div class="reviewer-avatar">${r.avatar}</div>
+                    <div>
+                      <div style="font-weight: 700;">${r.name}</div>
+                      <div style="font-size: 0.8rem;">${r.city}</div>
+                    </div>
+                  </div>
+                  <div class="stars" style="margin-bottom: 8px;">${'★'.repeat(Math.floor(r.rating))}</div>
+                  <p>${r.comment}</p>
+                </div>
+              `).join('')}
             </div>
           </div>
         </div>
       `;
 
-      document.getElementById('shareMenu').innerHTML = `<div class="share-grid">...</div><div class="copy-link"><input id="shareLink" value="${window.location.href}" readonly><button class="copy-btn" onclick="copyLink()">Copy</button></div>`;
       updateDeliveryBar(product.price);
     }
 
-    // Helper functions (same as before, simplified for clarity)
-    function getStars(r) { r=parseFloat(r)||4.5; let s=''; for(let i=1;i<=5;i++) { if(r>=i) s+='<i class="fa-solid fa-star"></i>'; else if(r>i-1 && r<i) s+='<i class="fa-solid fa-star-half-alt"></i>'; else s+='<i class="fa-regular fa-star"></i>'; } return s; }
-    window.changeImage = function(src, el) { document.getElementById('mainImage').src = src; document.querySelectorAll('.thumbnail').forEach(t=>t.classList.remove('active')); el.classList.add('active'); };
-    window.updateQuantity = function(delta) { const inp=document.getElementById('productQuantity'); let v=parseInt(inp.value)||1; v+=delta; if(v<1)v=1; if(currentProduct && v>currentProduct.stock) v=currentProduct.stock; inp.value=v; if(currentProduct) updateDeliveryBar(currentProduct.price*v); };
-    function updateDeliveryBar(t) { const p=document.getElementById('deliveryProgress'); const tx=document.getElementById('deliveryText'); if(!p||!tx)return; p.style.width=Math.min(100,(t/1299)*100)+'%'; tx.innerHTML= t>=1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299-t).toFixed(2)}</span> more`; }
-    window.toggleShare = function(e) { e.stopPropagation(); const m=document.getElementById('shareMenu'); m.classList.toggle('show'); if(m.classList.contains('show')) setTimeout(()=>document.addEventListener('click',function f(e){ if(!m.contains(e.target)&&!e.target.closest('.share-btn')){ m.classList.remove('show'); document.removeEventListener('click',f); } }),100); };
-    window.copyLink = function() { const i=document.getElementById('shareLink'); i.select(); navigator.clipboard.writeText(i.value); document.querySelector('.copy-btn').textContent='Copied!'; setTimeout(()=>document.querySelector('.copy-btn').textContent='Copy',2000); };
-    window.addToCart = function() { showNotification('Added to cart!'); };
-    window.buyNow = function() { addToCart(); setTimeout(()=>window.location.href='checkout.html',500); };
-    function showNotification(m) { const n=document.createElement('div'); n.className='notification'; n.innerHTML=`<i class="fa-solid fa-check-circle"></i> ${m}`; document.body.appendChild(n); setTimeout(()=>n.remove(),2000); }
-    window.switchTab = function(t) { document.querySelectorAll('.tab-header').forEach(h=>h.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active')); document.querySelector(`.tab-header[onclick="switchTab('${t}')"]`).classList.add('active'); document.getElementById(`tab-${t}`).classList.add('active'); };
-    function loadComponents() { fetch('header.html').then(r=>r.text()).then(d=>document.getElementById('header').innerHTML = d); fetch('footer.html').then(r=>r.text()).then(d=>document.getElementById('footer').innerHTML = d); }
-    document.addEventListener('DOMContentLoaded', ()=>{ loadComponents(); loadProduct(); });
-    window.addEventListener('scroll', ()=>{ document.getElementById('scrollTop').classList.toggle('visible', window.scrollY>200); });
+    // Helper functions
+    function getStars(r) { 
+      r = parseFloat(r) || 4.5; 
+      let s = ''; 
+      for(let i = 1; i <= 5; i++) { 
+        if(r >= i) s += '<i class="fa-solid fa-star"></i>'; 
+        else if(r > i-1 && r < i) s += '<i class="fa-solid fa-star-half-alt"></i>'; 
+        else s += '<i class="fa-regular fa-star"></i>'; 
+      } 
+      return s; 
+    }
+
+    window.changeImage = function(src, el) { 
+      document.getElementById('mainImage').src = src; 
+      document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active')); 
+      el.classList.add('active'); 
+    };
+
+    window.updateQuantity = function(delta) { 
+      const inp = document.getElementById('productQuantity'); 
+      let v = parseInt(inp.value) || 1; 
+      v += delta; 
+      if(v < 1) v = 1; 
+      if(currentProduct && v > currentProduct.stock) v = currentProduct.stock; 
+      inp.value = v; 
+      if(currentProduct) updateDeliveryBar(currentProduct.price * v); 
+    };
+
+    function updateDeliveryBar(t) { 
+      const p = document.getElementById('deliveryProgress'); 
+      const tx = document.getElementById('deliveryText'); 
+      if(!p || !tx) return; 
+      p.style.width = Math.min(100, (t/1299) * 100) + '%'; 
+      tx.innerHTML = t >= 1299 ? 'You get free delivery!' : `Add <span style="font-weight:800; color:#d4af37;">₹${(1299 - t).toFixed(2)}</span> more`; 
+    }
+
+    window.toggleShare = function(e) { 
+      e.stopPropagation(); 
+      const m = document.getElementById('shareMenu'); 
+      m.classList.toggle('show'); 
+      if(m.classList.contains('show')) {
+        setTimeout(() => document.addEventListener('click', function f(e) { 
+          if(!m.contains(e.target) && !e.target.closest('.share-btn')) { 
+            m.classList.remove('show'); 
+            document.removeEventListener('click', f); 
+          } 
+        }), 100); 
+      }
+    };
+
+    window.copyLink = function() { 
+      const i = document.getElementById('shareLink'); 
+      i.select(); 
+      navigator.clipboard.writeText(i.value); 
+      document.querySelector('.copy-btn').textContent = 'Copied!'; 
+      setTimeout(() => document.querySelector('.copy-btn').textContent = 'Copy', 2000); 
+    };
+
+    window.shareOn = function(platform) {
+      const url = encodeURIComponent(window.location.href);
+      const title = encodeURIComponent(currentProduct?.title || 'Check this product');
+      let shareUrl = '';
+      
+      switch(platform) {
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+          break;
+        case 'twitter':
+          shareUrl = `https://twitter.com/intent/tweet?text=${title}&url=${url}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${title}%20${url}`;
+          break;
+      }
+      
+      if (shareUrl) window.open(shareUrl, '_blank');
+    };
+
+    // ========== FIXED CART FUNCTIONS ==========
+    window.addToCart = function() {
+      const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
+      const product = currentProduct;
+      
+      if (!product) {
+        console.error('Product not found');
+        showNotification('Error: Product not found');
+        return;
+      }
+
+      if (product.stock <= 0) {
+        showNotification('Sorry, this product is out of stock!');
+        return;
+      }
+
+      if (quantity > product.stock) {
+        showNotification(`Only ${product.stock} items available!`);
+        return;
+      }
+
+      // Add the product to cart using the global addToCart function from common.js
+      if (typeof window.addToCart === 'function' && window.addToCart !== window.addToCart) {
+        // Use the global function
+        for (let i = 0; i < quantity; i++) {
+          window.addToCart(product.id);
+        }
+      } else {
+        // If we're in a context where the global function is shadowed,
+        // we need to use the cart array directly
+        if (window.cart && Array.isArray(window.cart)) {
+          const existingItem = window.cart.find(item => item.id === product.id);
+          
+          if (existingItem) {
+            existingItem.quantity += quantity;
+          } else {
+            window.cart.push({
+              id: product.id,
+              title: product.title,
+              category: product.category || 'accessory',
+              price: product.price,
+              primaryImg: product.primaryImg || (product.images && product.images[0]) || (product.media?.images && product.media.images[0]?.url),
+              quantity: quantity
+            });
+          }
+          
+          // Save to localStorage
+          localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
+          
+          // Update cart count
+          if (typeof window.updateCartCount === 'function') {
+            window.updateCartCount();
+          }
+        }
+      }
+      
+      showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
+      
+      // Open cart after a short delay
+      setTimeout(() => {
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+      }, 500);
+    };
+
+    window.buyNow = function() { 
+      // First add to cart
+      addToCart();
+      
+      // Redirect to checkout after a short delay
+      setTimeout(() => {
+        window.location.href = 'checkout.html';
+      }, 500);
+    };
+
+    function showNotification(m) { 
+      const n = document.createElement('div'); 
+      n.className = 'notification'; 
+      n.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${m}`; 
+      document.body.appendChild(n); 
+      setTimeout(() => n.remove(), 2000); 
+    }
+
+    window.switchTab = function(t) { 
+      document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active')); 
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); 
+      document.querySelector(`.tab-header[onclick="switchTab('${t}')"]`).classList.add('active'); 
+      document.getElementById(`tab-${t}`).classList.add('active'); 
+    };
+
+    function loadComponents() { 
+      // Components are already loaded by common.js
+      // This is just a fallback if common.js hasn't loaded them yet
+      if (!document.getElementById('header').innerHTML) {
+        fetch('header.html')
+          .then(r => r.text())
+          .then(d => document.getElementById('header').innerHTML = d)
+          .catch(() => console.log('Header not loaded'));
+      }
+      
+      if (!document.getElementById('footer').innerHTML) {
+        fetch('footer.html')
+          .then(r => r.text())
+          .then(d => document.getElementById('footer').innerHTML = d)
+          .catch(() => console.log('Footer not loaded'));
+      }
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', () => { 
+      loadComponents(); 
+      loadProduct(); 
+    });
+
+    window.addEventListener('scroll', () => { 
+      document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200); 
+    });
   </script>
 </body>
 </html>
