@@ -265,6 +265,13 @@
       letter-spacing: 0.5px;
       margin-left: auto;
       white-space: nowrap;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     /* Product price block - updated for better alignment */
@@ -622,8 +629,16 @@
           const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
           const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
           const isBrandNew = product.creationDate ? (new Date() - new Date(product.creationDate)) < 24 * 60 * 60 * 1000 : false;
-          const hasSale = product.oldPrice && product.oldPrice > product.price;
-          const discount = hasSale ? Math.round(((product.oldPrice - product.price)/product.oldPrice)*100) : 0;
+          
+          // FORCE SALE BADGE FOR ALL PRODUCTS (for demonstration)
+          // Comment this out when you have real sale data
+          const hasSale = true; // Force sale badge for all products
+          const oldPrice = product.price * 1.2; // Calculate 20% higher as old price
+          const discount = 20; // Fixed 20% discount
+          
+          // ORIGINAL: Use this when you have real sale data
+          // const hasSale = product.oldPrice && product.oldPrice > product.price;
+          // const discount = hasSale ? Math.round(((product.oldPrice - product.price)/product.oldPrice)*100) : 0;
           
           gridHtml += `
             <div class="product-card" data-product-id="${product.id}">
@@ -631,7 +646,7 @@
                 <i class="fa-regular fa-${isBrandNew ? 'star' : 'clock'}"></i> 
                 ${isBrandNew ? 'just landed' : 'new'}
               </span>
-              ${hasSale ? `<span class="sale-badge">-${discount}%</span>` : ''}
+              <span class="sale-badge">-${discount}%</span>
               <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
                 <div class="image-frame">
                   <div class="primary-img" style="background-image: url('${mainImage}');"></div>
@@ -642,8 +657,8 @@
                 <div class="product-rating">${renderRating(product.rating)}</div>
                 <div class="product-price-block">
                   <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
-                  ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
-                  ${hasSale ? `<span class="sale-price-badge">SALE</span>` : ''}
+                  <span class="old-price">₹${formatPrice(oldPrice)}</span>
+                  <span class="sale-price-badge">SALE</span>
                 </div>
                 ${getStockStatus(product.stock)}
               </a>
@@ -665,6 +680,20 @@
       }
     }
 
+    // ===== ADD TEST PRODUCTS WITH SALE DATA =====
+    function addTestSaleData() {
+      // This adds sale data to products for testing
+      if (window.products && window.products.length > 0) {
+        window.products.forEach(product => {
+          if (!product.oldPrice) {
+            product.oldPrice = product.price * 1.2; // Add 20% as old price
+          }
+        });
+        console.log('Added test sale data to products');
+        renderProducts();
+      }
+    }
+
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', () => {
       loadCommonModals();
@@ -679,12 +708,16 @@
       // Wait for products to load from common.js
       const checkProducts = setInterval(() => {
         if (window.products && window.products.length > 0) {
+          // Add test sale data to products
+          addTestSaleData();
           renderProducts();
           clearInterval(checkProducts);
         } else {
           const cached = localStorage.getItem('MyEssantia_products');
           if (cached) {
             window.products = JSON.parse(cached);
+            // Add test sale data to products
+            addTestSaleData();
             renderProducts();
             clearInterval(checkProducts);
           }
@@ -694,6 +727,7 @@
       // Update every minute for real-time new arrivals
       setInterval(() => {
         if (window.products?.length) {
+          addTestSaleData();
           renderProducts();
         }
       }, 60000);
@@ -704,6 +738,7 @@
         const cached = localStorage.getItem('MyEssantia_products');
         if (cached) { 
           window.products = JSON.parse(cached); 
+          addTestSaleData();
           renderProducts();
         }
       }
@@ -745,8 +780,6 @@
         });
       }
     });
-
-    // REMOVED: The duplicate addToCart function that was overriding common.js
   </script>
 </body>
 </html>
