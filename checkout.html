@@ -787,30 +787,39 @@
     }
     window.addEventListener('scroll', handleScroll);
 
-    // ========== CHECKOUT FUNCTIONS ==========
-    function loadCartItems() {
-      cartItems = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
-      
-      const checkoutContent = document.getElementById('checkout-content');
-      
-      if (cartItems.length === 0) {
-        checkoutContent.innerHTML = `
-          <div class="empty-cart-checkout">
-            <i class="fa-regular fa-cart-shopping"></i>
-            <h3>Your cart is empty</h3>
-            <p>Looks like you haven't added any items to your cart yet.</p>
-            <a href="collection.html" class="btn">Continue Shopping</a>
-          </div>
-        `;
-        return;
-      }
+// ========== CHECKOUT FUNCTIONS ==========
+function loadCartItems() {
+  // Get cart from localStorage AND sync with global cart
+  cartItems = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
+  
+  // Also update global cart array if it exists
+  if (typeof cart !== 'undefined') {
+    // Sync cart array with cartItems (they should be the same)
+    // This ensures both references are in sync
+    cart.length = 0; // Clear global cart
+    cartItems.forEach(item => cart.push(item)); // Add all items from cartItems
+  }
+  
+  const checkoutContent = document.getElementById('checkout-content');
+  
+  if (cartItems.length === 0) {
+    checkoutContent.innerHTML = `
+      <div class="empty-cart-checkout">
+        <i class="fa-regular fa-cart-shopping"></i>
+        <h3>Your cart is empty</h3>
+        <p>Looks like you haven't added any items to your cart yet.</p>
+        <a href="collection.html" class="btn">Continue Shopping</a>
+      </div>
+    `;
+    return;
+  }
 
-      checkoutContent.innerHTML = renderCheckoutGrid();
-      
-      setTimeout(() => {
-        initializeCheckout();
-      }, 50);
-    }
+  checkoutContent.innerHTML = renderCheckoutGrid();
+  
+  setTimeout(() => {
+    initializeCheckout();
+  }, 50);
+}
 
     function renderCheckoutGrid() {
       // Generate cart items HTML with working quantity controls
@@ -1019,6 +1028,7 @@
       `;
     }
 
+// ===== QUANTITY CONTROL FUNCTIONS - UPDATED TO SYNC WITH GLOBAL CART =====
 window.updateItemQuantity = function(productId, change) {
   const itemIndex = cartItems.findIndex(item => item.id === productId);
   if (itemIndex === -1) return;
@@ -1028,8 +1038,14 @@ window.updateItemQuantity = function(productId, change) {
 
   if (newQuantity < 1) return;
   
-  // Update quantity
+  // Update quantity in local cartItems
   item.quantity = newQuantity;
+  
+  // ALSO UPDATE THE GLOBAL CART ARRAY FROM COMMON.JS
+  const globalItemIndex = cart.findIndex(item => item.id === productId);
+  if (globalItemIndex !== -1) {
+    cart[globalItemIndex].quantity = newQuantity;
+  }
   
   // Update display
   const qtySpan = document.getElementById(`qty-${productId}`);
@@ -1047,10 +1063,15 @@ window.updateItemQuantity = function(productId, change) {
     minusBtn.disabled = newQuantity <= 1;
   }
   
-  // Save to localStorage
-  localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
+  // Save to localStorage using common.js function
+  saveCartToLocalStorage();
   
-  // Update cart count
+  // Save to Firebase if user is logged in
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    saveCartToFirebase();
+  }
+  
+  // Update cart count in header
   if (typeof updateCartCount === 'function') {
     updateCartCount();
   }
@@ -1060,11 +1081,22 @@ window.updateItemQuantity = function(productId, change) {
 };
 
 window.removeItem = function(productId) {
-  // Remove item from cart
+  // Remove from local cartItems
   cartItems = cartItems.filter(item => item.id !== productId);
   
-  // Save to localStorage
-  localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
+  // ALSO REMOVE FROM GLOBAL CART ARRAY
+  const globalItemIndex = cart.findIndex(item => item.id === productId);
+  if (globalItemIndex !== -1) {
+    cart.splice(globalItemIndex, 1);
+  }
+  
+  // Save to localStorage using common.js function
+  saveCartToLocalStorage();
+  
+  // Save to Firebase if user is logged in
+  if (typeof currentUser !== 'undefined' && currentUser) {
+    saveCartToFirebase();
+  }
   
   // If cart is empty, reload page to show empty state
   if (cartItems.length === 0) {
@@ -1072,21 +1104,32 @@ window.removeItem = function(productId) {
     return;
   }
   
-  // Instead of manually re-rendering, reload the entire checkout content
-  // This ensures all event handlers are properly attached
+  // Update cart count in header
+  if (typeof updateCartCount === 'function') {
+    updateCartCount();
+  }
+  
+  // Re-render the checkout grid
   const checkoutContent = document.getElementById('checkout-content');
   checkoutContent.innerHTML = renderCheckoutGrid();
   
   // Re-initialize checkout to attach event listeners
   setTimeout(() => {
     initializeCheckout();
-    
-    // Also update cart count in header
-    if (typeof updateCartCount === 'function') {
-      updateCartCount();
-    }
+    updateAll();
   }, 50);
 };
+
+// Fallback save function if common.js functions aren't available
+if (typeof saveCartToLocalStorage !== 'function') {
+  window.saveCartToLocalStorage = function() {
+    try {
+      localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
+    } catch (error) {
+      console.error('Error saving cart:', error);
+    }
+  };
+}
 
     function initializeCheckout() {
       subtotalSpan = document.getElementById('subtotal-value');
