@@ -316,6 +316,54 @@
       word-break: break-word;
       font-family: 'Montserrat', sans-serif;
     }
+    
+    /* Add to the style section in accessories.html */
+.product-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0.2rem 0;
+}
+
+.product-title {
+  margin: 0;
+  flex: 1;
+}
+
+.stock-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 40px;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid currentColor;
+}
+
+.stock-badge.in-stock {
+  color: #2e7d32;
+  background: #e8f5e9;
+  border-color: #2e7d32;
+}
+
+.stock-badge.low-stock {
+  color: #f57c00;
+  background: #fff3e0;
+  border-color: #f57c00;
+}
+
+.stock-badge.out-of-stock {
+  color: #c62828;
+  background: #ffebee;
+  border-color: #c62828;
+}
+
+.stock-badge i {
+  font-size: 0.6rem;
+}
     .product-rating { 
       display: flex;
       align-items: center;
@@ -594,36 +642,41 @@
           const isNew = isNewProduct(product);
           
           gridHtml += `
-            <div class="product-card" data-product-id="${product.id}">
-              ${isHighDemand ? `
-                <span class="high-demand-badge">
-                  <i class="fa-solid fa-fire"></i> HIGH DEMAND
-                </span>
-              ` : ''}
-              ${isNew ? `
-                <span class="new-badge">
-                  <i class="fa-regular fa-star"></i> NEW
-                </span>
-              ` : ''}
-              <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
-                <div class="image-frame">
-                  <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                  <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
-                </div>
-                <p class="product-category">${product.category || 'accessory'}</p>
-                <h3 class="product-title">${product.title}</h3>
-                <div class="product-rating">${window.renderRating ? window.renderRating(product.rating) : '<span>★ 0.0</span>'}</div>
-                <div class="product-price-block">
-                  <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
-                  ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
-                  ${hasSale ? `<span class="sale-price-badge">SALE</span>` : ''}
-                </div>
-                ${window.getStockStatus ? window.getStockStatus(product.stock) : ''}
-              </a>
-              <button class="card-add-btn" onclick="handleAccessoryAdd('${product.id}', this); event.stopPropagation();">
-                <i class="fa-solid fa-cart-plus"></i> add
-              </button>
-            </div>
+         <div class="product-card" data-product-id="${product.id}">
+  ${isHighDemand ? `
+    <span class="high-demand-badge">
+      <i class="fa-solid fa-fire"></i> HIGH DEMAND
+    </span>
+  ` : ''}
+  ${isNew ? `
+    <span class="new-badge">
+      <i class="fa-regular fa-star"></i> NEW
+    </span>
+  ` : ''}
+  <a href="product.html?id=${product.id}" style="text-decoration:none; color:inherit; display:block;">
+    <div class="image-frame">
+      <div class="primary-img" style="background-image: url('${mainImage}');"></div>
+      <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+    </div>
+    <p class="product-category">${product.category || 'accessory'}</p>
+    
+    <!-- Product title row with stock badge aligned right -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0.2rem 0;">
+      <h3 class="product-title" style="margin: 0; flex: 1;">${product.title}</h3>
+      ${window.getStockStatus ? window.getStockStatus(product.stock) : ''}
+    </div>
+    
+    <div class="product-rating">${window.renderRating ? window.renderRating(product.rating) : '<span>★ 0.0</span>'}</div>
+    <div class="product-price-block">
+      <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
+      ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
+      ${hasSale ? `<span class="sale-price-badge">SALE</span>` : ''}
+    </div>
+  </a>
+  <button class="card-add-btn" onclick="handleAccessoryAdd('${product.id}', this); event.stopPropagation();">
+    <i class="fa-solid fa-cart-plus"></i> add
+  </button>
+</div>
           `;
         });
         
