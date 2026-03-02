@@ -136,18 +136,18 @@
       display: grid;
       grid-template-columns: 1.2fr 0.9fr;
       gap: 1.5rem;
-      align-items: stretch;
+      align-items: start;
       margin-bottom: 2.5rem;
     }
 
-    /* ===== LEFT COLUMN - more compact ===== */
+    /* ===== LEFT COLUMN ===== */
     .left-column {
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
     }
 
-    /* ===== SECTION CARDS - compact ===== */
+    /* ===== SECTION CARDS ===== */
     .section-card {
       background: #ffffff;
       border-radius: 24px;
@@ -185,7 +185,7 @@
       border: 2px solid #d4af37;
     }
 
-    /* ===== FORM STYLES - compact ===== */
+    /* ===== FORM STYLES ===== */
     .form-row {
       display: flex;
       gap: 1rem;
@@ -224,6 +224,14 @@
       border-color: #d4af37;
       box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
     }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
 
     /* ===== CHECKBOX ROW ===== */
     .checkbox-row {
@@ -245,7 +253,7 @@
       font-weight: 400;
     }
 
-    /* ===== SHIPPING METHOD CARDS - compact ===== */
+    /* ===== SHIPPING METHOD CARDS ===== */
     .radio-card {
       border: 2px solid #000;
       border-radius: 50px;
@@ -295,11 +303,11 @@
       border: 1px solid #000;
     }
 
-    /* ===== RIGHT PANEL - order summary, equal height ===== */
+    /* ===== RIGHT PANEL ===== */
     .right-column {
       display: flex;
       flex-direction: column;
-      height: fit-content;
+      gap: 1.2rem;
       position: sticky;
       top: 20px;
     }
@@ -309,7 +317,6 @@
       padding: 1.5rem;
       border: 2px solid #000;
       box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
-      width: 100%;
     }
     .summary-title {
       font-size: 1.3rem;
@@ -326,7 +333,7 @@
       font-weight: 900;
     }
 
-    /* ===== CART ITEMS - compact with working quantity controls ===== */
+    /* ===== CART ITEMS ===== */
     .cart-items-container {
       max-height: 300px;
       overflow-y: auto;
@@ -344,12 +351,13 @@
     .cart-item {
       display: flex;
       gap: 0.8rem;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
       align-items: center;
       padding: 0.5rem;
       border: 1px solid #eee;
       border-radius: 16px;
       transition: all 0.2s;
+      position: relative;
     }
     .cart-item:hover {
       border-color: #d4af37;
@@ -408,139 +416,143 @@
     .qty-btn {
       background: #f5f2ee;
       border: 2px solid #000;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 1rem;
       transition: 0.1s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       color: #000;
     }
-    .qty-btn:hover {
+    .qty-btn:hover:not(:disabled) {
       background: #d4af37;
       color: #000;
+    }
+    .qty-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
     .qty-btn.remove-btn {
       background: #fee;
       color: #c00;
       margin-left: 0.3rem;
-      width: 24px;
-      height: 24px;
-      font-size: 0.8rem;
     }
-    .qty-btn.remove-btn:hover {
+    .qty-btn.remove-btn:hover:not(:disabled) {
       background: #c00;
       color: white;
     }
     .qty-value {
       font-weight: 700;
-      font-size: 0.8rem;
-      min-width: 20px;
+      font-size: 0.85rem;
+      min-width: 24px;
       text-align: center;
     }
 
-    /* ===== TRUST BADGE SECTION - NEW DYNAMIC SECTION ===== */
-    .trust-section {
-      margin-top: 1rem;
+    /* ===== RETURN POLICY CARD - UPDATED ===== */
+    .return-policy-card {
       background: #ffffff;
       border-radius: 24px;
-      padding: 1rem 1.2rem;
+      padding: 1.2rem 1.5rem;
       border: 2px solid #000;
       box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
     }
-    .trust-title {
+    .policy-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .policy-header i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+    .policy-header h3 {
       font-size: 1rem;
       font-weight: 800;
-      margin-bottom: 0.8rem;
-      font-family: 'Montserrat', sans-serif;
       text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      font-family: 'Montserrat', sans-serif;
     }
-    .trust-title i {
-      color: #d4af37;
-      font-size: 1.1rem;
-    }
-    .trust-grid {
+    .policy-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 0.8rem;
+      margin-bottom: 1rem;
     }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.4rem 0.6rem;
+    .policy-section {
       background: #f8f5f1;
-      border-radius: 40px;
+      border-radius: 16px;
+      padding: 0.8rem;
       border: 1px solid #000;
     }
-    .trust-item i {
-      color: #d4af37;
+    .policy-section h4 {
       font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      text-transform: uppercase;
     }
-    .trust-item.success i {
-      color: #2e7d32;
-    }
-    .trust-item.warning i {
-      color: #ed6c02;
-    }
-    .return-policy {
-      margin-top: 0.8rem;
-      padding: 0.8rem;
-      background: #fcf9f4;
-      border-radius: 16px;
-      border: 2px dashed #d4af37;
-    }
-    .return-policy p {
-      font-size: 0.75rem;
-      font-weight: 500;
-      color: #000;
-      margin-bottom: 0.3rem;
-    }
-    .return-policy p i {
+    .policy-section h4 i {
       color: #d4af37;
-      margin-right: 0.3rem;
-    }
-    .return-policy ul {
-      list-style: none;
-      padding-left: 1.2rem;
-    }
-    .return-policy ul li {
       font-size: 0.7rem;
-      color: #666;
-      margin-bottom: 0.2rem;
-      position: relative;
     }
-    .return-policy ul li::before {
-      content: "•";
+    .policy-section ul {
+      list-style: none;
+    }
+    .policy-section li {
+      font-size: 0.7rem;
+      color: #444;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+    .policy-section li i {
       color: #d4af37;
-      font-weight: bold;
-      position: absolute;
-      left: -1rem;
+      font-size: 0.6rem;
+      margin-top: 0.2rem;
     }
-    .razorpay-badge {
+    .policy-section.highlight {
+      background: #000;
+      color: white;
+    }
+    .policy-section.highlight h4 {
+      color: #d4af37;
+    }
+    .policy-section.highlight li {
+      color: #ddd;
+    }
+    .policy-section.highlight li i {
+      color: #d4af37;
+    }
+    .refund-badge {
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      background: #000;
-      color: white;
-      padding: 0.2rem 0.8rem;
+      background: #d4af37;
+      color: #000;
+      padding: 0.3rem 0.8rem;
       border-radius: 40px;
       font-size: 0.7rem;
-      font-weight: 600;
-      margin-top: 0.3rem;
-      border: 1px solid #d4af37;
+      font-weight: 700;
+      border: 1px solid #000;
+      margin-top: 0.5rem;
     }
-    .razorpay-badge i {
+    .refund-note {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px dashed #000;
+    }
+    .refund-note i {
       color: #d4af37;
+      margin-right: 0.2rem;
     }
 
     /* ===== PROMO SECTION ===== */
@@ -591,6 +603,15 @@
       background: #d4af37;
       color: #000;
       border-color: #d4af37;
+    }
+    .promo-message {
+      font-size: 0.7rem;
+      margin-top: 0.4rem;
+      color: #2e7d32;
+      display: none;
+    }
+    .promo-message.error {
+      color: #c00;
     }
 
     /* ===== PRICE BREAKDOWN ===== */
@@ -652,11 +673,8 @@
       font-size: 1.4rem;
       flex-wrap: wrap;
     }
-    .payment-icons-sm i:hover {
-      color: #d4af37;
-    }
 
-    /* ===== RESPONSIVE BREAKPOINTS ===== */
+    /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
       .checkout-grid {
         grid-template-columns: 1fr;
@@ -665,24 +683,18 @@
       .right-column {
         position: static;
       }
-      .cart-items-container {
-        max-height: 250px;
-      }
     }
 
     @media (max-width: 768px) {
       .form-group {
         flex: 1 1 100%;
       }
+      .policy-grid {
+        grid-template-columns: 1fr;
+      }
       .radio-content {
         flex-direction: column;
         align-items: flex-start;
-      }
-      .cart-item {
-        flex-wrap: wrap;
-      }
-      .trust-grid {
-        grid-template-columns: 1fr;
       }
     }
 
@@ -697,68 +709,41 @@
       .item-details h4 {
         max-width: 100px;
       }
-      .total-line {
-        font-size: 1.2rem;
-      }
     }
-
-    /* ===== SCROLL TOP BUTTON ===== */
-    .scroll-top {
-      position: fixed; bottom: 20px; right: 20px; 
-      background: #000; color: #d4af37; width: 44px; height: 44px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; 
-      border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
-      font-size: 1.2rem; cursor: pointer;
-    }
-    .scroll-top.visible { opacity: 1; transform: translateY(0); }
-    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
   </style>
 </head>
 <body>
   
-  <!-- Header loaded dynamically -->
   <div id="header"></div>
   
-  <!-- Scroll to top button -->
-  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
-
   <main>
     <div class="container">
-      <!-- checkout header -->
       <div class="checkout-header">
         <h1>checkout <span>· essence</span></h1>
         <div class="secure-badge"><i class="fa-solid fa-lock"></i> 100% secure</div>
       </div>
 
-      <!-- Cart items will be loaded dynamically -->
       <div id="checkout-content"></div>
     </div>
   </main>
 
-  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
-
-  <!-- Common Modals -->
   <div id="common-modals"></div>
 
-  <!-- Common JavaScript -->
   <script src="common.js"></script>
 
   <script>
     // ========== CHECKOUT PAGE VARIABLES ==========
-    let subtotalSpan, shippingSpan, discountSpan, totalSpan;
-    let standardRadio, expressRadio, freeBadge, standardPriceSpan, radioStandard, radioExpress;
     let cartItems = [];
+    let currentUser = null;
+    let appliedPromo = null;
+    const validPromoCodes = {
+      'WELCOME10': 10,
+      'SAVE20': 20,
+      'ESSENCE15': 15
+    };
 
-    // ========== SCROLL HANDLER ==========
-    function handleScroll() {
-      const btn = document.getElementById('scrollTop');
-      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
-    }
-    window.addEventListener('scroll', handleScroll);
-
-    // ========== CHECKOUT FUNCTIONS ==========
+    // ========== LOAD CART ITEMS ==========
     function loadCartItems() {
       cartItems = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
       
@@ -784,8 +769,7 @@
     }
 
     function renderCheckoutGrid() {
-      // Generate cart items HTML with working quantity controls
-      const cartItemsHtml = cartItems.map((item, index) => {
+      const cartItemsHtml = cartItems.map((item) => {
         const itemTotal = item.price * item.quantity;
         const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
         
@@ -799,9 +783,9 @@
               </div>
               <div class="item-meta">${item.category || 'Accessory'}</div>
               <div class="qty-control">
-                <button class="qty-btn" onclick="updateItemQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
                 <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
                 <button class="qty-btn remove-btn" onclick="removeItem(${item.id})" title="Remove item">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
@@ -813,9 +797,8 @@
 
       return `
         <div class="checkout-grid">
-          <!-- LEFT COLUMN -->
           <div class="left-column">
-            <!-- contact information -->
+            <!-- Contact Section -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">1</span> Contact</div>
               <div class="form-group full-width">
@@ -824,11 +807,11 @@
               </div>
               <div class="checkbox-row">
                 <input type="checkbox" id="offers" checked>
-                <label for="offers">keep me updated on new arrivals & offers</label>
+                <label for="offers">Keep me updated on offers</label>
               </div>
             </div>
 
-            <!-- shipping address -->
+            <!-- Shipping Address -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">2</span> Shipping address</div>
               <div class="form-row">
@@ -855,14 +838,14 @@
               </div>
             </div>
 
-            <!-- shipping method -->
+            <!-- Shipping Method -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">3</span> Shipping method</div>
               
               <label class="radio-card selected" id="radio-standard">
                 <input type="radio" name="shipping" value="standard" id="ship-standard" checked>
                 <div class="radio-content">
-                  <span>Standard shipping (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
+                  <span>Standard (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
                   <span class="radio-price" id="standard-price">₹40</span>
                 </div>
               </label>
@@ -870,49 +853,80 @@
               <label class="radio-card" id="radio-express">
                 <input type="radio" name="shipping" value="express">
                 <div class="radio-content">
-                  <span>Express shipping (1–2 days)</span>
+                  <span>Express (1–2 days)</span>
                   <span class="radio-price">₹149</span>
                 </div>
               </label>
-              <p style="font-size:0.7rem; margin-top:0.5rem; color:#666;"><i class="fa-solid fa-circle-info" style="color:#d4af37;"></i> Free standard shipping on orders above ₹499</p>
+              <p style="font-size:0.7rem; margin-top:0.5rem; color:#666;">
+                <i class="fa-solid fa-circle-info" style="color:#d4af37;"></i> Free standard on orders above ₹499
+              </p>
             </div>
 
-            <!-- NEW TRUST & RETURN SECTION -->
-            <div class="trust-section">
-              <div class="trust-title">
-                <i class="fa-solid fa-shield-halved"></i> 7-Day Easy Return
-              </div>
-              <div class="trust-grid">
-                <div class="trust-item"><i class="fa-solid fa-circle-check success"></i> 7 days return window</div>
-                <div class="trust-item"><i class="fa-solid fa-truck"></i> Free pick-up</div>
-                <div class="trust-item"><i class="fa-solid fa-video"></i> Unboxing video required</div>
-                <div class="trust-item"><i class="fa-solid fa-box-open"></i> Damaged goods only</div>
+            <!-- Return Policy Card - UPDATED -->
+            <div class="return-policy-card">
+              <div class="policy-header">
+                <i class="fa-solid fa-shield-halved"></i>
+                <h3>Return & Refund Policy</h3>
               </div>
               
-              <div class="return-policy">
-                <p><i class="fa-solid fa-circle-exclamation"></i> <strong>Return Policy:</strong></p>
-                <ul>
-                  <li>For damaged items only (shipping defects)</li>
-                  <li>Must submit unboxing video as proof</li>
-                  <li>Video must show damaged product clearly</li>
-                  <li>Claim within 7 days of delivery</li>
-                </ul>
-                <div class="razorpay-badge">
-                  <i class="fa-solid fa-bolt"></i> Razorpay 100% refund guarantee
+              <div class="policy-grid">
+                <!-- Eligibility -->
+                <div class="policy-section">
+                  <h4><i class="fa-solid fa-check-circle"></i> Eligibility</h4>
+                  <ul>
+                    <li><i class="fa-regular fa-circle-check"></i> Damaged during shipping only</li>
+                    <li><i class="fa-regular fa-circle-check"></i> Unboxing video mandatory</li>
+                    <li><i class="fa-regular fa-circle-check"></i> Claim within 7 days</li>
+                  </ul>
                 </div>
-                <p style="font-size:0.65rem; margin-top:0.5rem; color:#666;">
-                  <i class="fa-regular fa-clock"></i> Refund processed within 3-5 business days after approval
-                </p>
+
+                <!-- Video Requirements -->
+                <div class="policy-section highlight">
+                  <h4><i class="fa-solid fa-video"></i> Video must show</h4>
+                  <ul>
+                    <li><i class="fa-regular fa-circle-check"></i> Sealed package before opening</li>
+                    <li><i class="fa-regular fa-circle-check"></i> Complete unboxing process</li>
+                    <li><i class="fa-regular fa-circle-check"></i> Clear damage visibility</li>
+                  </ul>
+                </div>
+
+                <!-- Not Eligible -->
+                <div class="policy-section">
+                  <h4><i class="fa-solid fa-ban"></i> Not eligible</h4>
+                  <ul>
+                    <li><i class="fa-regular fa-circle-xmark"></i> Change of mind</li>
+                    <li><i class="fa-regular fa-circle-xmark"></i> Outer box damage only</li>
+                    <li><i class="fa-regular fa-circle-xmark"></i> No video proof</li>
+                    <li><i class="fa-regular fa-circle-xmark"></i> After 7 days</li>
+                  </ul>
+                </div>
+
+                <!-- Refund Process -->
+                <div class="policy-section">
+                  <h4><i class="fa-solid fa-rotate-left"></i> Refund</h4>
+                  <ul>
+                    <li><i class="fa-regular fa-clock"></i> 3–5 business days</li>
+                    <li><i class="fa-regular fa-credit-card"></i> Original payment method</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="refund-badge">
+                <i class="fa-solid fa-bolt"></i> Razorpay 100% refund guarantee
+              </div>
+
+              <div class="refund-note">
+                <i class="fa-regular fa-circle-exclamation"></i> 
+                <strong>Note:</strong> Shipping charges non-refundable. Only product amount refunded.
               </div>
             </div>
           </div>
 
-          <!-- RIGHT COLUMN - order summary -->
+          <!-- RIGHT COLUMN - Order Summary -->
           <div class="right-column">
             <div class="order-summary">
               <div class="summary-title">your <span>cart</span></div>
               
-              <!-- Scrollable cart items -->
               <div class="cart-items-container" id="cart-items-container">
                 ${cartItemsHtml}
               </div>
@@ -921,19 +935,21 @@
               <div class="promo-inside">
                 <p>Apply promo code</p>
                 <div class="promo-flex">
-                  <input type="text" placeholder="Enter code" id="promo-code">
+                  <input type="text" placeholder="Enter code" id="promo-code" onkeyup="this.value = this.value.toUpperCase()">
                   <button class="promo-btn" onclick="applyPromo()">Apply</button>
                 </div>
+                <div id="promo-message" class="promo-message"></div>
               </div>
 
               <div style="margin: 0.3rem 0 0.8rem; border-top: 2px dashed #000;"></div>
 
-              <!-- price breakdown -->
+              <!-- Price Breakdown -->
               <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹0</span></div>
               <div class="price-line"><span>Shipping</span> <span id="shipping-value">₹0</span></div>
-              <div class="price-line" style="color:#2e7d32;" id="discount-line"><span>Discount</span> <span id="discount-value">-₹0</span></div>
+              <div class="price-line" style="color:#2e7d32;" id="discount-line">
+                <span>Discount</span> <span id="discount-value">-₹0</span>
+              </div>
 
-              <!-- total -->
               <div class="total-line">
                 <span>Total</span> <span id="total-value">₹0</span>
               </div>
@@ -955,8 +971,8 @@
       `;
     }
 
-    // ===== QUANTITY CONTROL FUNCTIONS - FIXED =====
-    window.updateItemQuantity = function(productId, change) {
+    // ========== QUANTITY CONTROL FUNCTIONS ==========
+    window.updateQuantity = function(productId, change) {
       const itemIndex = cartItems.findIndex(item => item.id === productId);
       if (itemIndex === -1) return;
 
@@ -968,40 +984,24 @@
       // Update quantity
       item.quantity = newQuantity;
       
-      // Update display
-      const qtySpan = document.getElementById(`qty-${productId}`);
-      if (qtySpan) qtySpan.innerText = newQuantity;
+      // Update displays
+      document.getElementById(`qty-${productId}`).innerText = newQuantity;
+      document.getElementById(`price-${productId}`).innerText = '₹' + formatPrice(item.price * newQuantity);
       
-      // Update price
-      const priceSpan = document.getElementById(`price-${productId}`);
-      if (priceSpan) {
-        priceSpan.innerText = '₹' + formatPrice(item.price * newQuantity);
-      }
-      
-      // Enable/disable minus button
+      // Update minus button state
       const minusBtn = document.querySelector(`#product-${productId} .qty-btn:first-child`);
-      if (minusBtn) {
-        minusBtn.disabled = newQuantity <= 1;
-      }
+      if (minusBtn) minusBtn.disabled = newQuantity <= 1;
       
-      // Save to localStorage
+      // Save and update
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
-      
-      // Update cart count
       updateCartCount();
-      
-      // Update totals
       updateAll();
     };
 
     window.removeItem = function(productId) {
-      // Remove item from cart
       cartItems = cartItems.filter(item => item.id !== productId);
-      
-      // Save to localStorage
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
       
-      // If cart is empty, reload page to show empty state
       if (cartItems.length === 0) {
         window.location.reload();
         return;
@@ -1010,7 +1010,7 @@
       // Re-render cart items
       const container = document.getElementById('cart-items-container');
       if (container) {
-        const newHtml = cartItems.map((item) => {
+        container.innerHTML = cartItems.map((item) => {
           const itemTotal = item.price * item.quantity;
           const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
           
@@ -1024,9 +1024,9 @@
                 </div>
                 <div class="item-meta">${item.category || 'Accessory'}</div>
                 <div class="qty-control">
-                  <button class="qty-btn" onclick="updateItemQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                  <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
                   <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
-                  <button class="qty-btn" onclick="updateItemQuantity(${item.id}, 1)">+</button>
+                  <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
                   <button class="qty-btn remove-btn" onclick="removeItem(${item.id})">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
@@ -1035,31 +1035,56 @@
             </div>
           `;
         }).join('');
-        
-        container.innerHTML = newHtml;
       }
       
-      // Update cart count and totals
       updateCartCount();
       updateAll();
     };
 
-    function initializeCheckout() {
-      subtotalSpan = document.getElementById('subtotal-value');
-      shippingSpan = document.getElementById('shipping-value');
-      discountSpan = document.getElementById('discount-value');
-      totalSpan = document.getElementById('total-value');
+    // ========== PROMO CODE FUNCTION ==========
+    window.applyPromo = function() {
+      const promoInput = document.getElementById('promo-code');
+      const promoMessage = document.getElementById('promo-message');
+      const code = promoInput.value.trim().toUpperCase();
       
-      standardRadio = document.getElementById('ship-standard');
-      expressRadio = document.querySelector('input[name="shipping"][value="express"]');
-      freeBadge = document.getElementById('freeBadge');
-      standardPriceSpan = document.getElementById('standard-price');
-      radioStandard = document.getElementById('radio-standard');
-      radioExpress = document.getElementById('radio-express');
+      if (!code) {
+        promoMessage.style.display = 'block';
+        promoMessage.className = 'promo-message error';
+        promoMessage.innerText = 'Please enter a promo code';
+        return;
+      }
+      
+      if (validPromoCodes[code]) {
+        appliedPromo = {
+          code: code,
+          discount: validPromoCodes[code]
+        };
+        promoMessage.style.display = 'block';
+        promoMessage.className = 'promo-message';
+        promoMessage.innerText = `✓ Promo applied! ${code} - ${validPromoCodes[code]}% off`;
+        updateAll();
+      } else {
+        appliedPromo = null;
+        promoMessage.style.display = 'block';
+        promoMessage.className = 'promo-message error';
+        promoMessage.innerText = '✗ Invalid promo code';
+        updateAll();
+      }
+    };
 
+    // ========== INITIALIZE CHECKOUT ==========
+    function initializeCheckout() {
       // Radio change listeners
       document.querySelectorAll('input[name="shipping"]').forEach(radio => {
-        radio.addEventListener('change', updateAll);
+        radio.addEventListener('change', function() {
+          document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+          if (this.value === 'standard') {
+            document.getElementById('radio-standard').classList.add('selected');
+          } else {
+            document.getElementById('radio-express').classList.add('selected');
+          }
+          updateAll();
+        });
       });
 
       updateAll();
@@ -1070,72 +1095,41 @@
     }
 
     function calculateSubtotal() {
-      return cartItems.reduce((total, item) => {
-        return total + (item.price * item.quantity);
-      }, 0);
+      return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     }
 
     function updateAll() {
       const subtotal = calculateSubtotal();
       
-      let shippingCost = 40;
-      let shippingText = '₹40';
-      const isExpress = expressRadio ? expressRadio.checked : false;
+      // Calculate discount
+      let discount = 0;
+      if (appliedPromo) {
+        discount = (subtotal * appliedPromo.discount) / 100;
+      }
       
-      if (subtotal > 499) {
-        if (standardRadio && standardRadio.checked) {
-          shippingCost = 0;
-          shippingText = 'FREE';
-        } else if (isExpress) {
-          shippingCost = 149;
-          shippingText = '₹149';
-        }
-        if (standardPriceSpan) standardPriceSpan.innerText = 'FREE';
-        if (freeBadge) freeBadge.style.display = 'inline-block';
+      // Calculate shipping
+      let shippingCost = 40;
+      const isExpress = document.querySelector('input[name="shipping"][value="express"]')?.checked || false;
+      
+      if (subtotal > 499 && !isExpress) {
+        shippingCost = 0;
+        document.getElementById('standard-price').innerText = 'FREE';
+        document.getElementById('freeBadge').style.display = 'inline-block';
       } else {
-        if (standardPriceSpan) standardPriceSpan.innerText = '₹40';
-        if (freeBadge) freeBadge.style.display = 'none';
-        if (standardRadio && standardRadio.checked) {
-          shippingCost = 40;
-          shippingText = '₹40';
-        } else if (isExpress) {
-          shippingCost = 149;
-          shippingText = '₹149';
-        }
+        document.getElementById('standard-price').innerText = '₹40';
+        document.getElementById('freeBadge').style.display = 'none';
       }
-
-      if (isExpress) {
-        shippingCost = 149;
-        shippingText = '₹149';
-      }
-
-      if (shippingSpan) shippingSpan.innerText = shippingText;
-
-      const discount = 0;
-      if (discountSpan) discountSpan.innerText = '-₹' + discount;
-
-      const total = subtotal - discount + shippingCost;
-      if (subtotalSpan) subtotalSpan.innerText = '₹' + formatPrice(subtotal);
-      if (totalSpan) totalSpan.innerText = '₹' + formatPrice(total);
-
-      // Highlight selected radio card
-      document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
-      if (standardRadio && standardRadio.checked) {
-        if (radioStandard) radioStandard.classList.add('selected');
-      } else if (expressRadio && expressRadio.checked) {
-        if (radioExpress) radioExpress.classList.add('selected');
-      }
+      
+      if (isExpress) shippingCost = 149;
+      
+      // Update displays
+      document.getElementById('shipping-value').innerText = shippingCost === 0 ? 'FREE' : '₹' + shippingCost;
+      document.getElementById('subtotal-value').innerText = '₹' + formatPrice(subtotal);
+      document.getElementById('discount-value').innerText = '-₹' + formatPrice(discount);
+      document.getElementById('total-value').innerText = '₹' + formatPrice(subtotal - discount + shippingCost);
     }
 
-    window.applyPromo = function() {
-      const promoInput = document.getElementById('promo-code');
-      if (promoInput && promoInput.value) {
-        alert(`Promo code "${promoInput.value}" applied (demo)`);
-      } else {
-        alert('Please enter a promo code');
-      }
-    };
-
+    // ========== PLACE ORDER ==========
     window.placeOrder = function() {
       if (!currentUser) {
         alert('Please login to place your order');
@@ -1161,82 +1155,24 @@
         return;
       }
       
-      // Create order object
-      const order = {
-        orderId: 'ORD' + Date.now().toString().slice(-8),
-        userId: currentUser.uid,
-        email: currentUser.email,
-        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-        status: 'processing',
-        items: cartItems.map(item => ({
-          id: item.id,
-          name: item.title,
-          qty: item.quantity,
-          price: item.price,
-          image: item.primaryImg || item.image
-        })),
-        subtotal: calculateSubtotal(),
-        shipping: shippingSpan?.innerText === 'FREE' ? 0 : 40,
-        total: parseFloat(totalSpan?.innerText.replace('₹', '').replace(/,/g, '')),
-        shippingAddress: {
-          firstName, lastName, address, city, pin, phone
-        },
-        timestamp: Date.now()
-      };
-      
-      // Save to Firestore
-      if (typeof db !== 'undefined') {
-        db.collection('orders').add(order).then(() => {
-          localStorage.removeItem('MyEssantia_cart');
-          alert(`Order placed successfully! Order ID: ${order.orderId}\n\nThank you for shopping with MyEssantia!`);
-          window.location.href = 'order-tracking.html';
-        }).catch(error => {
-          console.error('Error placing order:', error);
-          alert('Failed to place order. Please try again.');
-        });
-      } else {
-        // Demo mode
-        alert(`DEMO: Order placed successfully!\nOrder ID: ${order.orderId}\n\nThank you for shopping!`);
-        localStorage.removeItem('MyEssantia_cart');
-        window.location.href = 'collection.html';
-      }
+      alert('Order placed successfully! Thank you for shopping with MyEssantia.');
+      localStorage.removeItem('MyEssantia_cart');
+      window.location.href = 'collection.html';
     };
-
-    function prefillUserData() {
-      if (!currentUser) return;
-      const emailInput = document.getElementById('contact-email');
-      if (emailInput && currentUser.email) {
-        emailInput.value = currentUser.email;
-      }
-    }
 
     // ========== INITIALIZATION ==========
     function initializeApp() {
-      updateCartCount();
-      updateProfileIcon();
-      loadCartItems();
-      
       const savedUser = localStorage.getItem('MyEssantia_user');
       if (savedUser) {
         currentUser = JSON.parse(savedUser);
-        updateProfileIcon();
-        setTimeout(() => prefillUserData(), 100);
       }
-    }
-
-    async function loadCommonModals() {
-      try {
-        const response = await fetch('common.html');
-        const data = await response.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (error) {
-        console.error('Error loading common modals:', error);
-      }
+      updateCartCount();
+      updateProfileIcon();
+      loadCartItems();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      loadCommonModals();
-      if (typeof loadComponents === 'function') loadComponents();
+      initializeApp();
     });
   </script>
 </body>
