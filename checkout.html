@@ -136,7 +136,7 @@
       display: grid;
       grid-template-columns: 1.2fr 0.9fr;
       gap: 1.5rem;
-      align-items: start;
+      align-items: stretch;
       margin-bottom: 2.5rem;
     }
 
@@ -224,14 +224,6 @@
       border-color: #d4af37;
       box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
     }
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-    input[type="number"] {
-      -moz-appearance: textfield;
-    }
 
     /* ===== CHECKBOX ROW ===== */
     .checkbox-row {
@@ -307,7 +299,7 @@
     .right-column {
       display: flex;
       flex-direction: column;
-      gap: 1.2rem;
+      height: fit-content;
       position: sticky;
       top: 20px;
     }
@@ -317,6 +309,7 @@
       padding: 1.5rem;
       border: 2px solid #000;
       box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
+      width: 100%;
     }
     .summary-title {
       font-size: 1.3rem;
@@ -335,7 +328,7 @@
 
     /* ===== CART ITEMS ===== */
     .cart-items-container {
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
       padding-right: 4px;
       margin-bottom: 0.8rem;
@@ -353,19 +346,19 @@
       gap: 0.8rem;
       margin-bottom: 1rem;
       align-items: center;
-      padding: 0.5rem;
-      border: 1px solid #eee;
+      padding: 0.6rem;
+      border: 2px solid #eee;
       border-radius: 16px;
       transition: all 0.2s;
-      position: relative;
+      background: #fff;
     }
     .cart-item:hover {
       border-color: #d4af37;
       background: #fcf9f4;
     }
     .item-image {
-      width: 60px;
-      height: 60px;
+      width: 65px;
+      height: 65px;
       background: #ece5dc;
       border-radius: 16px;
       background-size: cover;
@@ -387,18 +380,18 @@
     .item-details h4 {
       font-family: 'Montserrat', sans-serif;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       color: #000;
       text-transform: uppercase;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: 120px;
+      max-width: 130px;
     }
     .item-price {
       font-weight: 800;
       color: #d4af37;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       white-space: nowrap;
     }
     .item-meta {
@@ -406,12 +399,12 @@
       color: #666;
       text-transform: uppercase;
       font-weight: 600;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
     }
     .qty-control {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.5rem;
     }
     .qty-btn {
       background: #f5f2ee;
@@ -422,7 +415,7 @@
       cursor: pointer;
       font-weight: 700;
       font-size: 1rem;
-      transition: 0.1s;
+      transition: 0.15s;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -439,135 +432,158 @@
     .qty-btn.remove-btn {
       background: #fee;
       color: #c00;
-      margin-left: 0.3rem;
+      margin-left: 0.2rem;
     }
-    .qty-btn.remove-btn:hover:not(:disabled) {
+    .qty-btn.remove-btn:hover {
       background: #c00;
       color: white;
     }
     .qty-value {
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       min-width: 24px;
       text-align: center;
     }
 
-    /* ===== RETURN POLICY CARD - UPDATED ===== */
-    .return-policy-card {
+    /* ===== UPDATED RETURN POLICY SECTION - CLEAN & ACCURATE ===== */
+    .return-section {
+      margin-top: 1rem;
       background: #ffffff;
       border-radius: 24px;
-      padding: 1.2rem 1.5rem;
+      padding: 1.2rem;
       border: 2px solid #000;
       box-shadow: 6px 6px 0 rgba(0,0,0,0.15);
     }
-    .policy-header {
+    .return-header {
       display: flex;
       align-items: center;
       gap: 0.5rem;
       margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #d4af37;
     }
-    .policy-header i {
+    .return-header i {
       color: #d4af37;
       font-size: 1.2rem;
     }
-    .policy-header h3 {
+    .return-header h3 {
       font-size: 1rem;
       font-weight: 800;
-      text-transform: uppercase;
       font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+    }
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .badge {
+      background: #000;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      border: 1px solid #d4af37;
+    }
+    .badge i {
+      color: #d4af37;
+      margin-right: 0.3rem;
     }
     .policy-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.8rem;
-      margin-bottom: 1rem;
+      margin: 1rem 0;
     }
-    .policy-section {
+    .policy-card {
       background: #f8f5f1;
-      border-radius: 16px;
       padding: 0.8rem;
-      border: 1px solid #000;
+      border-radius: 16px;
+      border: 2px solid #000;
     }
-    .policy-section h4 {
-      font-size: 0.8rem;
+    .policy-card-title {
       font-weight: 800;
+      font-size: 0.8rem;
       margin-bottom: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
       text-transform: uppercase;
+      color: #000;
     }
-    .policy-section h4 i {
-      color: #d4af37;
-      font-size: 0.7rem;
-    }
-    .policy-section ul {
+    .policy-list {
       list-style: none;
     }
-    .policy-section li {
+    .policy-list li {
       font-size: 0.7rem;
       color: #444;
       margin-bottom: 0.3rem;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 0.3rem;
     }
-    .policy-section li i {
+    .policy-list li i {
       color: #d4af37;
       font-size: 0.6rem;
-      margin-top: 0.2rem;
     }
-    .policy-section.highlight {
-      background: #000;
-      color: white;
+    .policy-list li.note i {
+      color: #c00;
     }
-    .policy-section.highlight h4 {
-      color: #d4af37;
+    .refund-note {
+      background: #fcf9f4;
+      padding: 0.8rem;
+      border-radius: 16px;
+      border: 2px dashed #d4af37;
+      margin-top: 0.8rem;
     }
-    .policy-section.highlight li {
-      color: #ddd;
+    .refund-note p {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
     }
-    .policy-section.highlight li i {
-      color: #d4af37;
+    .refund-note .small {
+      font-size: 0.65rem;
+      color: #666;
     }
-    .refund-badge {
+    .razorpay-tag {
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      background: #d4af37;
-      color: #000;
-      padding: 0.3rem 0.8rem;
+      background: #000;
+      color: white;
+      padding: 0.2rem 0.8rem;
       border-radius: 40px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      border: 1px solid #000;
-      margin-top: 0.5rem;
-    }
-    .refund-note {
       font-size: 0.65rem;
-      color: #666;
-      margin-top: 0.5rem;
-      padding-top: 0.5rem;
-      border-top: 1px dashed #000;
-    }
-    .refund-note i {
-      color: #d4af37;
-      margin-right: 0.2rem;
+      font-weight: 600;
+      border: 1px solid #d4af37;
     }
 
-    /* ===== PROMO SECTION ===== */
+    /* ===== PROMO SECTION WITH VALIDATION ===== */
     .promo-inside {
       background: #f8f5f1;
       border-radius: 20px;
       padding: 1rem 1.2rem;
-      margin: 0.8rem 0 1rem;
+      margin: 1rem 0;
       border: 2px solid #000;
     }
-    .promo-inside p {
-      font-weight: 700;
+    .promo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 0.5rem;
+    }
+    .promo-header p {
+      font-weight: 700;
       font-size: 0.8rem;
       text-transform: uppercase;
+    }
+    .promo-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #2e7d32;
+      display: none;
+    }
+    .promo-status.error {
+      color: #c00;
     }
     .promo-flex {
       display: flex;
@@ -580,7 +596,7 @@
       min-width: 140px;
       background: white;
       border: 2px solid #000;
-      padding: 0.6rem 1rem;
+      padding: 0.7rem 1rem;
       border-radius: 50px;
       font-size: 0.8rem;
     }
@@ -588,7 +604,7 @@
       background: #000;
       border: 2px solid #000;
       color: white;
-      padding: 0.6rem 1.2rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 50px;
       font-weight: 600;
       cursor: pointer;
@@ -604,27 +620,18 @@
       color: #000;
       border-color: #d4af37;
     }
-    .promo-message {
-      font-size: 0.7rem;
-      margin-top: 0.4rem;
-      color: #2e7d32;
-      display: none;
-    }
-    .promo-message.error {
-      color: #c00;
-    }
 
     /* ===== PRICE BREAKDOWN ===== */
     .price-line {
       display: flex;
       justify-content: space-between;
-      margin: 0.4rem 0;
-      font-size: 0.85rem;
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
       font-weight: 500;
     }
     .total-line {
       font-weight: 800;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       border-top: 3px solid #000;
       padding-top: 0.8rem;
       margin: 0.8rem 0 1rem;
@@ -673,6 +680,9 @@
       font-size: 1.4rem;
       flex-wrap: wrap;
     }
+    .payment-icons-sm i:hover {
+      color: #d4af37;
+    }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width: 992px) {
@@ -683,18 +693,21 @@
       .right-column {
         position: static;
       }
+      .policy-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
       .form-group {
         flex: 1 1 100%;
       }
-      .policy-grid {
-        grid-template-columns: 1fr;
-      }
       .radio-content {
         flex-direction: column;
         align-items: flex-start;
+      }
+      .badge-container {
+        flex-direction: column;
       }
     }
 
@@ -703,47 +716,78 @@
         flex-direction: column;
         align-items: flex-start;
       }
-      .section-card {
-        padding: 1rem;
-      }
       .item-details h4 {
         max-width: 100px;
       }
+      .total-line {
+        font-size: 1.3rem;
+      }
     }
+
+    /* ===== SCROLL TOP BUTTON ===== */
+    .scroll-top {
+      position: fixed; bottom: 20px; right: 20px; 
+      background: #000; color: #d4af37; width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; 
+      border: 2px solid #d4af37; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      opacity: 0; transform: translateY(15px); transition: 0.2s; z-index: 100;
+      font-size: 1.2rem; cursor: pointer;
+    }
+    .scroll-top.visible { opacity: 1; transform: translateY(0); }
+    .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
   </style>
 </head>
 <body>
   
+  <!-- Header loaded dynamically -->
   <div id="header"></div>
   
+  <!-- Scroll to top button -->
+  <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-arrow-up"></i></button>
+
   <main>
     <div class="container">
+      <!-- checkout header -->
       <div class="checkout-header">
         <h1>checkout <span>· essence</span></h1>
         <div class="secure-badge"><i class="fa-solid fa-lock"></i> 100% secure</div>
       </div>
 
+      <!-- Cart items will be loaded dynamically -->
       <div id="checkout-content"></div>
     </div>
   </main>
 
+  <!-- Footer loaded dynamically -->
   <div id="footer"></div>
+
+  <!-- Common Modals -->
   <div id="common-modals"></div>
 
+  <!-- Common JavaScript -->
   <script src="common.js"></script>
 
   <script>
     // ========== CHECKOUT PAGE VARIABLES ==========
+    let subtotalSpan, shippingSpan, discountSpan, totalSpan;
+    let standardRadio, expressRadio, freeBadge, standardPriceSpan, radioStandard, radioExpress;
     let cartItems = [];
-    let currentUser = null;
-    let appliedPromo = null;
-    const validPromoCodes = {
+    
+    // Valid promo codes (can be expanded)
+    const VALID_PROMOS = {
       'WELCOME10': 10,
       'SAVE20': 20,
-      'ESSENCE15': 15
+      'ESSENCE5': 5
     };
 
-    // ========== LOAD CART ITEMS ==========
+    // ========== SCROLL HANDLER ==========
+    function handleScroll() {
+      const btn = document.getElementById('scrollTop');
+      if (btn) btn.classList.toggle('visible', window.scrollY > 200);
+    }
+    window.addEventListener('scroll', handleScroll);
+
+    // ========== CHECKOUT FUNCTIONS ==========
     function loadCartItems() {
       cartItems = JSON.parse(localStorage.getItem('MyEssantia_cart')) || [];
       
@@ -769,7 +813,8 @@
     }
 
     function renderCheckoutGrid() {
-      const cartItemsHtml = cartItems.map((item) => {
+      // Generate cart items HTML with working quantity controls
+      const cartItemsHtml = cartItems.map((item, index) => {
         const itemTotal = item.price * item.quantity;
         const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
         
@@ -783,9 +828,9 @@
               </div>
               <div class="item-meta">${item.category || 'Accessory'}</div>
               <div class="qty-control">
-                <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                <button class="qty-btn" onclick="updateItemQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
                 <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
-                <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                <button class="qty-btn" onclick="updateItemQuantity(${item.id}, 1)">+</button>
                 <button class="qty-btn remove-btn" onclick="removeItem(${item.id})" title="Remove item">
                   <i class="fa-solid fa-trash-can"></i>
                 </button>
@@ -797,8 +842,9 @@
 
       return `
         <div class="checkout-grid">
+          <!-- LEFT COLUMN -->
           <div class="left-column">
-            <!-- Contact Section -->
+            <!-- contact information -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">1</span> Contact</div>
               <div class="form-group full-width">
@@ -807,11 +853,11 @@
               </div>
               <div class="checkbox-row">
                 <input type="checkbox" id="offers" checked>
-                <label for="offers">Keep me updated on offers</label>
+                <label for="offers">keep me updated on new arrivals & offers</label>
               </div>
             </div>
 
-            <!-- Shipping Address -->
+            <!-- shipping address -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">2</span> Shipping address</div>
               <div class="form-row">
@@ -838,14 +884,14 @@
               </div>
             </div>
 
-            <!-- Shipping Method -->
+            <!-- shipping method -->
             <div class="section-card">
               <div class="section-title"><span class="step-number">3</span> Shipping method</div>
               
               <label class="radio-card selected" id="radio-standard">
                 <input type="radio" name="shipping" value="standard" id="ship-standard" checked>
                 <div class="radio-content">
-                  <span>Standard (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
+                  <span>Standard shipping (3–5 days) <span class="free-badge" id="freeBadge" style="display: none;">FREE</span></span>
                   <span class="radio-price" id="standard-price">₹40</span>
                 </div>
               </label>
@@ -853,103 +899,105 @@
               <label class="radio-card" id="radio-express">
                 <input type="radio" name="shipping" value="express">
                 <div class="radio-content">
-                  <span>Express (1–2 days)</span>
+                  <span>Express shipping (1–2 days)</span>
                   <span class="radio-price">₹149</span>
                 </div>
               </label>
-              <p style="font-size:0.7rem; margin-top:0.5rem; color:#666;">
-                <i class="fa-solid fa-circle-info" style="color:#d4af37;"></i> Free standard on orders above ₹499
-              </p>
+              <p style="font-size:0.7rem; margin-top:0.5rem; color:#666;"><i class="fa-solid fa-circle-info" style="color:#d4af37;"></i> Free standard shipping on orders above ₹499</p>
             </div>
 
-            <!-- Return Policy Card - UPDATED -->
-            <div class="return-policy-card">
-              <div class="policy-header">
-                <i class="fa-solid fa-shield-halved"></i>
+            <!-- UPDATED RETURN & REFUND POLICY SECTION -->
+            <div class="return-section">
+              <div class="return-header">
+                <i class="fa-solid fa-rotate-left"></i>
                 <h3>Return & Refund Policy</h3>
               </div>
               
+              <div class="badge-container">
+                <span class="badge"><i class="fa-regular fa-clock"></i> 7 Days Return</span>
+                <span class="badge"><i class="fa-solid fa-video"></i> Unboxing Video Mandatory</span>
+                <span class="badge"><i class="fa-solid fa-box-open"></i> Damaged Only</span>
+              </div>
+
               <div class="policy-grid">
-                <!-- Eligibility -->
-                <div class="policy-section">
-                  <h4><i class="fa-solid fa-check-circle"></i> Eligibility</h4>
-                  <ul>
-                    <li><i class="fa-regular fa-circle-check"></i> Damaged during shipping only</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Unboxing video mandatory</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Claim within 7 days</li>
+                <!-- Eligibility Card -->
+                <div class="policy-card">
+                  <div class="policy-card-title">✓ Eligible</div>
+                  <ul class="policy-list">
+                    <li><i class="fa-solid fa-check"></i> Damaged during shipping</li>
+                    <li><i class="fa-solid fa-check"></i> Claim within 7 days</li>
+                    <li><i class="fa-solid fa-check"></i> With unboxing video proof</li>
                   </ul>
                 </div>
 
-                <!-- Video Requirements -->
-                <div class="policy-section highlight">
-                  <h4><i class="fa-solid fa-video"></i> Video must show</h4>
-                  <ul>
-                    <li><i class="fa-regular fa-circle-check"></i> Sealed package before opening</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Complete unboxing process</li>
-                    <li><i class="fa-regular fa-circle-check"></i> Clear damage visibility</li>
-                  </ul>
-                </div>
-
-                <!-- Not Eligible -->
-                <div class="policy-section">
-                  <h4><i class="fa-solid fa-ban"></i> Not eligible</h4>
-                  <ul>
-                    <li><i class="fa-regular fa-circle-xmark"></i> Change of mind</li>
-                    <li><i class="fa-regular fa-circle-xmark"></i> Outer box damage only</li>
-                    <li><i class="fa-regular fa-circle-xmark"></i> No video proof</li>
-                    <li><i class="fa-regular fa-circle-xmark"></i> After 7 days</li>
-                  </ul>
-                </div>
-
-                <!-- Refund Process -->
-                <div class="policy-section">
-                  <h4><i class="fa-solid fa-rotate-left"></i> Refund</h4>
-                  <ul>
-                    <li><i class="fa-regular fa-clock"></i> 3–5 business days</li>
-                    <li><i class="fa-regular fa-credit-card"></i> Original payment method</li>
+                <!-- Not Eligible Card -->
+                <div class="policy-card">
+                  <div class="policy-card-title">✗ Not Eligible</div>
+                  <ul class="policy-list">
+                    <li><i class="fa-solid fa-xmark"></i> Change of mind</li>
+                    <li><i class="fa-solid fa-xmark"></i> Minor box damage</li>
+                    <li><i class="fa-solid fa-xmark"></i> No video proof</li>
+                    <li><i class="fa-solid fa-xmark"></i> After 7 days</li>
                   </ul>
                 </div>
               </div>
 
-              <div class="refund-badge">
-                <i class="fa-solid fa-bolt"></i> Razorpay 100% refund guarantee
+              <!-- Video Requirements -->
+              <div class="policy-card" style="margin-bottom: 0.8rem;">
+                <div class="policy-card-title">🎥 Unboxing Video Must Show:</div>
+                <ul class="policy-list">
+                  <li><i class="fa-solid fa-circle"></i> Sealed package before opening</li>
+                  <li><i class="fa-solid fa-circle"></i> Complete unboxing process</li>
+                  <li><i class="fa-solid fa-circle"></i> Clear visibility of damage</li>
+                </ul>
               </div>
 
+              <!-- Refund Details -->
               <div class="refund-note">
-                <i class="fa-regular fa-circle-exclamation"></i> 
-                <strong>Note:</strong> Shipping charges non-refundable. Only product amount refunded.
+                <p><i class="fa-solid fa-indian-rupee-sign"></i> Refund Process</p>
+                <div class="small">• Approved refunds: 3-5 business days</div>
+                <div class="small">• Credited to original payment method</div>
+                <div class="small">• Shipping charges non-refundable</div>
+                <div class="small">• Only product amount refunded</div>
+                <div style="margin-top: 0.5rem;">
+                  <span class="razorpay-tag">
+                    <i class="fa-solid fa-bolt"></i> Razorpay 100% refund guarantee
+                  </span>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- RIGHT COLUMN - Order Summary -->
+          <!-- RIGHT COLUMN - order summary -->
           <div class="right-column">
             <div class="order-summary">
               <div class="summary-title">your <span>cart</span></div>
               
+              <!-- Scrollable cart items -->
               <div class="cart-items-container" id="cart-items-container">
                 ${cartItemsHtml}
               </div>
 
-              <!-- PROMO CODE SECTION -->
+              <!-- PROMO CODE SECTION WITH VALIDATION -->
               <div class="promo-inside">
-                <p>Apply promo code</p>
+                <div class="promo-header">
+                  <p>Apply promo code</p>
+                  <span class="promo-status" id="promo-status"></span>
+                </div>
                 <div class="promo-flex">
-                  <input type="text" placeholder="Enter code" id="promo-code" onkeyup="this.value = this.value.toUpperCase()">
+                  <input type="text" placeholder="Enter code" id="promo-code">
                   <button class="promo-btn" onclick="applyPromo()">Apply</button>
                 </div>
-                <div id="promo-message" class="promo-message"></div>
               </div>
 
               <div style="margin: 0.3rem 0 0.8rem; border-top: 2px dashed #000;"></div>
 
-              <!-- Price Breakdown -->
+              <!-- price breakdown -->
               <div class="price-line"><span>Subtotal</span> <span id="subtotal-value">₹0</span></div>
               <div class="price-line"><span>Shipping</span> <span id="shipping-value">₹0</span></div>
-              <div class="price-line" style="color:#2e7d32;" id="discount-line">
-                <span>Discount</span> <span id="discount-value">-₹0</span>
-              </div>
+              <div class="price-line" style="color:#2e7d32;" id="discount-line"><span>Discount</span> <span id="discount-value">-₹0</span></div>
 
+              <!-- total -->
               <div class="total-line">
                 <span>Total</span> <span id="total-value">₹0</span>
               </div>
@@ -971,8 +1019,8 @@
       `;
     }
 
-    // ========== QUANTITY CONTROL FUNCTIONS ==========
-    window.updateQuantity = function(productId, change) {
+    // ===== QUANTITY CONTROL FUNCTIONS =====
+    window.updateItemQuantity = function(productId, change) {
       const itemIndex = cartItems.findIndex(item => item.id === productId);
       if (itemIndex === -1) return;
 
@@ -984,24 +1032,40 @@
       // Update quantity
       item.quantity = newQuantity;
       
-      // Update displays
-      document.getElementById(`qty-${productId}`).innerText = newQuantity;
-      document.getElementById(`price-${productId}`).innerText = '₹' + formatPrice(item.price * newQuantity);
+      // Update display
+      const qtySpan = document.getElementById(`qty-${productId}`);
+      if (qtySpan) qtySpan.innerText = newQuantity;
       
-      // Update minus button state
+      // Update price
+      const priceSpan = document.getElementById(`price-${productId}`);
+      if (priceSpan) {
+        priceSpan.innerText = '₹' + formatPrice(item.price * newQuantity);
+      }
+      
+      // Enable/disable minus button
       const minusBtn = document.querySelector(`#product-${productId} .qty-btn:first-child`);
-      if (minusBtn) minusBtn.disabled = newQuantity <= 1;
+      if (minusBtn) {
+        minusBtn.disabled = newQuantity <= 1;
+      }
       
-      // Save and update
+      // Save to localStorage
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
+      
+      // Update cart count
       updateCartCount();
+      
+      // Update totals
       updateAll();
     };
 
     window.removeItem = function(productId) {
+      // Remove item from cart
       cartItems = cartItems.filter(item => item.id !== productId);
+      
+      // Save to localStorage
       localStorage.setItem('MyEssantia_cart', JSON.stringify(cartItems));
       
+      // If cart is empty, reload page to show empty state
       if (cartItems.length === 0) {
         window.location.reload();
         return;
@@ -1010,7 +1074,7 @@
       // Re-render cart items
       const container = document.getElementById('cart-items-container');
       if (container) {
-        container.innerHTML = cartItems.map((item) => {
+        const newHtml = cartItems.map((item) => {
           const itemTotal = item.price * item.quantity;
           const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
           
@@ -1024,9 +1088,9 @@
                 </div>
                 <div class="item-meta">${item.category || 'Accessory'}</div>
                 <div class="qty-control">
-                  <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+                  <button class="qty-btn" onclick="updateItemQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
                   <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
-                  <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
+                  <button class="qty-btn" onclick="updateItemQuantity(${item.id}, 1)">+</button>
                   <button class="qty-btn remove-btn" onclick="removeItem(${item.id})">
                     <i class="fa-solid fa-trash-can"></i>
                   </button>
@@ -1035,56 +1099,31 @@
             </div>
           `;
         }).join('');
+        
+        container.innerHTML = newHtml;
       }
       
+      // Update cart count and totals
       updateCartCount();
       updateAll();
     };
 
-    // ========== PROMO CODE FUNCTION ==========
-    window.applyPromo = function() {
-      const promoInput = document.getElementById('promo-code');
-      const promoMessage = document.getElementById('promo-message');
-      const code = promoInput.value.trim().toUpperCase();
-      
-      if (!code) {
-        promoMessage.style.display = 'block';
-        promoMessage.className = 'promo-message error';
-        promoMessage.innerText = 'Please enter a promo code';
-        return;
-      }
-      
-      if (validPromoCodes[code]) {
-        appliedPromo = {
-          code: code,
-          discount: validPromoCodes[code]
-        };
-        promoMessage.style.display = 'block';
-        promoMessage.className = 'promo-message';
-        promoMessage.innerText = `✓ Promo applied! ${code} - ${validPromoCodes[code]}% off`;
-        updateAll();
-      } else {
-        appliedPromo = null;
-        promoMessage.style.display = 'block';
-        promoMessage.className = 'promo-message error';
-        promoMessage.innerText = '✗ Invalid promo code';
-        updateAll();
-      }
-    };
-
-    // ========== INITIALIZE CHECKOUT ==========
     function initializeCheckout() {
+      subtotalSpan = document.getElementById('subtotal-value');
+      shippingSpan = document.getElementById('shipping-value');
+      discountSpan = document.getElementById('discount-value');
+      totalSpan = document.getElementById('total-value');
+      
+      standardRadio = document.getElementById('ship-standard');
+      expressRadio = document.querySelector('input[name="shipping"][value="express"]');
+      freeBadge = document.getElementById('freeBadge');
+      standardPriceSpan = document.getElementById('standard-price');
+      radioStandard = document.getElementById('radio-standard');
+      radioExpress = document.getElementById('radio-express');
+
       // Radio change listeners
       document.querySelectorAll('input[name="shipping"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-          document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
-          if (this.value === 'standard') {
-            document.getElementById('radio-standard').classList.add('selected');
-          } else {
-            document.getElementById('radio-express').classList.add('selected');
-          }
-          updateAll();
-        });
+        radio.addEventListener('change', updateAll);
       });
 
       updateAll();
@@ -1095,41 +1134,109 @@
     }
 
     function calculateSubtotal() {
-      return cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+      return cartItems.reduce((total, item) => {
+        return total + (item.price * item.quantity);
+      }, 0);
     }
 
     function updateAll() {
       const subtotal = calculateSubtotal();
       
-      // Calculate discount
-      let discount = 0;
-      if (appliedPromo) {
-        discount = (subtotal * appliedPromo.discount) / 100;
-      }
-      
-      // Calculate shipping
       let shippingCost = 40;
-      const isExpress = document.querySelector('input[name="shipping"][value="express"]')?.checked || false;
+      let shippingText = '₹40';
+      const isExpress = expressRadio ? expressRadio.checked : false;
       
-      if (subtotal > 499 && !isExpress) {
-        shippingCost = 0;
-        document.getElementById('standard-price').innerText = 'FREE';
-        document.getElementById('freeBadge').style.display = 'inline-block';
+      if (subtotal > 499) {
+        if (standardRadio && standardRadio.checked) {
+          shippingCost = 0;
+          shippingText = 'FREE';
+        } else if (isExpress) {
+          shippingCost = 149;
+          shippingText = '₹149';
+        }
+        if (standardPriceSpan) standardPriceSpan.innerText = 'FREE';
+        if (freeBadge) freeBadge.style.display = 'inline-block';
       } else {
-        document.getElementById('standard-price').innerText = '₹40';
-        document.getElementById('freeBadge').style.display = 'none';
+        if (standardPriceSpan) standardPriceSpan.innerText = '₹40';
+        if (freeBadge) freeBadge.style.display = 'none';
+        if (standardRadio && standardRadio.checked) {
+          shippingCost = 40;
+          shippingText = '₹40';
+        } else if (isExpress) {
+          shippingCost = 149;
+          shippingText = '₹149';
+        }
       }
-      
-      if (isExpress) shippingCost = 149;
-      
-      // Update displays
-      document.getElementById('shipping-value').innerText = shippingCost === 0 ? 'FREE' : '₹' + shippingCost;
-      document.getElementById('subtotal-value').innerText = '₹' + formatPrice(subtotal);
-      document.getElementById('discount-value').innerText = '-₹' + formatPrice(discount);
-      document.getElementById('total-value').innerText = '₹' + formatPrice(subtotal - discount + shippingCost);
+
+      if (isExpress) {
+        shippingCost = 149;
+        shippingText = '₹149';
+      }
+
+      if (shippingSpan) shippingSpan.innerText = shippingText;
+
+      // Check if discount is applied
+      const discountText = discountSpan?.innerText || '-₹0';
+      const discount = parseFloat(discountText.replace('-₹', '').replace(/,/g, '')) || 0;
+
+      const total = subtotal - discount + shippingCost;
+      if (subtotalSpan) subtotalSpan.innerText = '₹' + formatPrice(subtotal);
+      if (totalSpan) totalSpan.innerText = '₹' + formatPrice(total);
+
+      // Highlight selected radio card
+      document.querySelectorAll('.radio-card').forEach(c => c.classList.remove('selected'));
+      if (standardRadio && standardRadio.checked) {
+        if (radioStandard) radioStandard.classList.add('selected');
+      } else if (expressRadio && expressRadio.checked) {
+        if (radioExpress) radioExpress.classList.add('selected');
+      }
     }
 
-    // ========== PLACE ORDER ==========
+    // ===== PROMO CODE FUNCTION WITH VALIDATION =====
+    window.applyPromo = function() {
+      const promoInput = document.getElementById('promo-code');
+      const promoStatus = document.getElementById('promo-status');
+      const discountSpan = document.getElementById('discount-value');
+      
+      if (!promoInput || !promoInput.value) {
+        promoStatus.style.display = 'inline';
+        promoStatus.className = 'promo-status error';
+        promoStatus.innerText = 'Enter a code';
+        return;
+      }
+      
+      const code = promoInput.value.trim().toUpperCase();
+      
+      if (VALID_PROMOS[code]) {
+        const discountPercent = VALID_PROMOS[code];
+        const subtotal = calculateSubtotal();
+        const discountAmount = (subtotal * discountPercent) / 100;
+        
+        // Update discount display
+        if (discountSpan) {
+          discountSpan.innerText = '-₹' + formatPrice(discountAmount);
+        }
+        
+        // Show success message
+        promoStatus.style.display = 'inline';
+        promoStatus.className = 'promo-status';
+        promoStatus.innerText = `✓ ${discountPercent}% off applied!`;
+        
+        // Update total
+        updateAll();
+      } else {
+        promoStatus.style.display = 'inline';
+        promoStatus.className = 'promo-status error';
+        promoStatus.innerText = 'Invalid promo code';
+        
+        // Reset discount
+        if (discountSpan) {
+          discountSpan.innerText = '-₹0';
+        }
+        updateAll();
+      }
+    };
+
     window.placeOrder = function() {
       if (!currentUser) {
         alert('Please login to place your order');
@@ -1155,24 +1262,87 @@
         return;
       }
       
-      alert('Order placed successfully! Thank you for shopping with MyEssantia.');
-      localStorage.removeItem('MyEssantia_cart');
-      window.location.href = 'collection.html';
+      // Get discount amount
+      const discountText = discountSpan?.innerText || '-₹0';
+      const discount = parseFloat(discountText.replace('-₹', '').replace(/,/g, '')) || 0;
+      
+      // Create order object
+      const order = {
+        orderId: 'ORD' + Date.now().toString().slice(-8),
+        userId: currentUser.uid,
+        email: currentUser.email,
+        date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+        status: 'processing',
+        items: cartItems.map(item => ({
+          id: item.id,
+          name: item.title,
+          qty: item.quantity,
+          price: item.price,
+          image: item.primaryImg || item.image
+        })),
+        subtotal: calculateSubtotal(),
+        discount: discount,
+        shipping: shippingSpan?.innerText === 'FREE' ? 0 : 40,
+        total: parseFloat(totalSpan?.innerText.replace('₹', '').replace(/,/g, '')),
+        shippingAddress: {
+          firstName, lastName, address, city, pin, phone
+        },
+        timestamp: Date.now()
+      };
+      
+      // Save to Firestore
+      if (typeof db !== 'undefined') {
+        db.collection('orders').add(order).then(() => {
+          localStorage.removeItem('MyEssantia_cart');
+          alert(`Order placed successfully! Order ID: ${order.orderId}\n\nThank you for shopping with MyEssantia!`);
+          window.location.href = 'order-tracking.html';
+        }).catch(error => {
+          console.error('Error placing order:', error);
+          alert('Failed to place order. Please try again.');
+        });
+      } else {
+        // Demo mode
+        alert(`DEMO: Order placed successfully!\nOrder ID: ${order.orderId}\n\nThank you for shopping!`);
+        localStorage.removeItem('MyEssantia_cart');
+        window.location.href = 'collection.html';
+      }
     };
+
+    function prefillUserData() {
+      if (!currentUser) return;
+      const emailInput = document.getElementById('contact-email');
+      if (emailInput && currentUser.email) {
+        emailInput.value = currentUser.email;
+      }
+    }
 
     // ========== INITIALIZATION ==========
     function initializeApp() {
-      const savedUser = localStorage.getItem('MyEssantia_user');
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-      }
       updateCartCount();
       updateProfileIcon();
       loadCartItems();
+      
+      const savedUser = localStorage.getItem('MyEssantia_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        updateProfileIcon();
+        setTimeout(() => prefillUserData(), 100);
+      }
+    }
+
+    async function loadCommonModals() {
+      try {
+        const response = await fetch('common.html');
+        const data = await response.text();
+        document.getElementById('common-modals').innerHTML = data;
+      } catch (error) {
+        console.error('Error loading common modals:', error);
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      initializeApp();
+      loadCommonModals();
+      if (typeof loadComponents === 'function') loadComponents();
     });
   </script>
 </body>
