@@ -724,10 +724,16 @@
         }
       }
 
-      // Set active nav link after components are loaded
-      setTimeout(() => {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+   // Set active nav - highlight New-in menu
+setTimeout(() => {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+  
+  // Also handle mobile menu
+  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.mobile-menu-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+}, 200);
+
         // Also try matching by text content or any other selector
         if (document.querySelectorAll('.nav-link.active').length === 0) {
           document.querySelectorAll('.nav-link').forEach(l => {
