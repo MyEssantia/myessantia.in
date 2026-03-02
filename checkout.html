@@ -888,33 +888,33 @@ console.log('Functions attached:', {
   removeItem: typeof window.removeItem
 });
 
-    function renderCheckoutGrid() {
-      // Generate cart items HTML with working quantity controls
-      const cartItemsHtml = cartItems.map((item) => {
-        const itemTotal = item.price * item.quantity;
-        const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
-        
-        return `
-          <div class="cart-item" id="product-${item.id}" data-product-id="${item.id}">
-            <div class="item-image" style="background-image: url('${imageUrl}');"></div>
-            <div class="item-details">
-              <div class="item-header">
-                <h4 title="${item.title}">${item.title}</h4>
-                <span class="item-price" id="price-${item.id}">₹${formatPrice(itemTotal)}</span>
-              </div>
-              <div class="item-meta">${item.category || 'Accessory'}</div>
-              <div class="qty-control">
-                <button class="qty-btn" onclick="window.updateItemQuantity(${item.id}, -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
-                <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
-                <button class="qty-btn" onclick="window.updateItemQuantity(${item.id}, 1)">+</button>
-                <button class="qty-btn remove-btn" onclick="window.removeItem(${item.id})" title="Remove item">
-                  <i class="fa-solid fa-trash-can"></i>
-                </button>
-              </div>
-            </div>
+function renderCheckoutGrid() {
+  // Generate cart items HTML with working quantity controls
+  const cartItemsHtml = cartItems.map((item) => {
+    const itemTotal = item.price * item.quantity;
+    const imageUrl = item.primaryImg || item.image || 'https://via.placeholder.com/60';
+    
+    return `
+      <div class="cart-item" id="product-${item.id}" data-product-id="${item.id}">
+        <div class="item-image" style="background-image: url('${imageUrl}');"></div>
+        <div class="item-details">
+          <div class="item-header">
+            <h4 title="${item.title}">${item.title}</h4>
+            <span class="item-price" id="price-${item.id}">₹${formatPrice(itemTotal)}</span>
           </div>
-        `;
-      }).join('');
+          <div class="item-meta">${item.category || 'Accessory'}</div>
+          <div class="qty-control">
+            <button class="qty-btn" onclick="window.updateItemQuantity('${item.id}', -1)" ${item.quantity <= 1 ? 'disabled' : ''}>−</button>
+            <span class="qty-value" id="qty-${item.id}">${item.quantity}</span>
+            <button class="qty-btn" onclick="window.updateItemQuantity('${item.id}', 1)">+</button>
+            <button class="qty-btn remove-btn" onclick="window.removeItem('${item.id}')" title="Remove item">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 
       return `
         <div class="checkout-grid">
