@@ -1,9 +1,9 @@
-/* ---------- FOOTER STYLES ---------- */
+/* ---------- FOOTER STYLES - COMPACT VERSION ---------- */
 footer {
   background: #0a0a0a;
   color: #e0e0e0;
-  padding: 4rem 0 2rem;
-  margin-top: 5rem;
+  padding: 2.5rem 0 1.5rem;
+  margin-top: 3rem;
   position: relative;
   border-top: 1px solid rgba(212, 175, 55, 0.1);
 }
@@ -23,21 +23,21 @@ footer::before {
 .footer-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
+  gap: 1.5rem;
   position: relative;
   z-index: 1;
 }
 
 /* Brand Column */
 .footer-col:first-child {
-  max-width: 350px;
+  max-width: 300px;
 }
 
 .footer-col .logo {
   color: #ffffff;
-  font-size: 2rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.8rem;
   display: inline-block;
   background: linear-gradient(135deg, #ffffff, #d4af37);
   -webkit-background-clip: text;
@@ -53,35 +53,35 @@ footer::before {
 
 .footer-col p {
   color: #aaa;
-  line-height: 1.6;
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
 }
 
 .footer-col h5 {
   color: #fff;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   font-weight: 500;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   letter-spacing: 0.5px;
   position: relative;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
 }
 
-/* Underline effect for headings - Left aligned by default */
+/* Underline effect for headings */
 .footer-col h5::after {
   content: '';
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 40px;
+  width: 30px;
   height: 2px;
   background: #d4af37;
   transition: width 0.3s ease;
 }
 
 .footer-col:hover h5::after {
-  width: 60px;
+  width: 45px;
 }
 
 .footer-col ul {
@@ -91,7 +91,7 @@ footer::before {
 }
 
 .footer-col li {
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 
 .footer-col a {
@@ -101,6 +101,7 @@ footer::before {
   display: inline-block;
   position: relative;
   padding-left: 0;
+  font-size: 0.85rem;
 }
 
 .footer-col a:hover {
@@ -110,21 +111,21 @@ footer::before {
 
 /* Social Links */
 .social-links {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   display: flex;
-  gap: 1rem;
+  gap: 0.8rem;
 }
 
 .social-links a {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 50%;
   color: #fff;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   padding: 0;
   transform: none;
@@ -133,7 +134,7 @@ footer::before {
 .social-links a:hover {
   background: #d4af37;
   color: #0a0a0a;
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 /* Newsletter */
@@ -141,10 +142,11 @@ footer::before {
   display: flex;
   border: 1px solid #333;
   border-radius: 50px;
-  padding: 0.2rem 0.2rem 0.2rem 1rem;
-  margin: 1.5rem 0 0.5rem;
+  padding: 0.1rem 0.1rem 0.1rem 1rem;
+  margin: 1rem 0 0.3rem;
   background: rgba(255, 255, 255, 0.02);
   transition: all 0.3s ease;
+  max-width: 280px;
 }
 
 .footer-newsletter:focus-within {
@@ -158,13 +160,14 @@ footer::before {
   color: #fff;
   width: 100%;
   outline: none;
-  padding: 0.7rem 0;
-  font-size: 0.9rem;
+  padding: 0.5rem 0;
+  font-size: 0.8rem;
 }
 
 .footer-newsletter input::placeholder {
   color: #666;
   font-style: italic;
+  font-size: 0.75rem;
 }
 
 .footer-newsletter button {
@@ -172,10 +175,10 @@ footer::before {
   border: none;
   color: #0a0a0a;
   cursor: pointer;
-  padding: 0.7rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 50px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   transition: all 0.3s ease;
   white-space: nowrap;
 }
@@ -188,13 +191,13 @@ footer::before {
 /* Payment Methods & Trust Badges */
 .footer-badges {
   display: flex;
-  gap: 0.8rem;
-  margin-top: 1.5rem;
+  gap: 0.6rem;
+  margin-top: 1rem;
   flex-wrap: wrap;
 }
 
 .footer-badges i {
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: #666;
   transition: color 0.3s ease;
 }
@@ -206,27 +209,27 @@ footer::before {
 /* Copyright Section */
 .copyright {
   text-align: center;
-  margin-top: 3.5rem;
-  padding-top: 2rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
   border-top: 1px solid #2a2a2a;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   color: #888;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
 }
 
 .copyright-links {
   display: flex;
   justify-content: center;
-  gap: 1.5rem;
+  gap: 1.2rem;
   flex-wrap: wrap;
 }
 
 .copyright-links a {
   color: #888;
   text-decoration: none;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   transition: color 0.3s ease;
 }
 
@@ -237,12 +240,12 @@ footer::before {
 /* Back to Top Button */
 .back-to-top {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 1.5rem;
+  right: 1.5rem;
   background: #d4af37;
   color: #0a0a0a;
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -253,6 +256,7 @@ footer::before {
   visibility: hidden;
   transition: all 0.3s ease;
   z-index: 100;
+  font-size: 1rem;
 }
 
 .back-to-top.show {
@@ -262,21 +266,21 @@ footer::before {
 
 .back-to-top:hover {
   background: #c4a030;
-  transform: translateY(-3px);
+  transform: translateY(-2px);
 }
 
 /* Footer Responsive */
 @media (min-width: 640px) {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
+    gap: 2rem;
   }
 }
 
 @media (min-width: 1100px) {
   .footer-grid {
-    grid-template-columns: 2fr 1fr 1fr 1.8fr;
-    gap: 4rem;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+    gap: 2.5rem;
   }
   
   .copyright {
@@ -287,22 +291,16 @@ footer::before {
 
 /* Mobile Optimizations */
 @media (max-width: 768px) {
-  .footer-col {
-    text-align: left; /* Keep text left-aligned */
+  footer {
+    padding: 2rem 0 1rem;
   }
   
   .footer-col:first-child {
-    text-align: left; /* Brand column also left-aligned */
     max-width: 100%;
   }
   
-  /* Keep the yellow dash left-aligned on mobile */
-  .footer-col h5::after {
-    left: 0;
-    transform: none; /* Remove any transform that might center it */
-  }
-  
   .footer-newsletter {
+    max-width: 100%;
     flex-direction: column;
     border: none;
     padding: 0;
@@ -313,45 +311,71 @@ footer::before {
   .footer-newsletter input {
     border: 1px solid #333;
     border-radius: 50px;
-    padding: 0.7rem 1rem;
+    padding: 0.6rem 1rem;
     background: rgba(255, 255, 255, 0.02);
+    font-size: 0.85rem;
   }
   
   .footer-newsletter button {
     width: 100%;
+    padding: 0.6rem 1rem;
   }
   
   .social-links {
-    justify-content: flex-start; /* Left align social links */
+    justify-content: flex-start;
   }
 }
 
 /* Small Mobile Optimizations */
 @media (max-width: 480px) {
   footer {
-    padding: 3rem 0 1.5rem;
+    padding: 1.8rem 0 0.8rem;
+    margin-top: 2rem;
   }
   
-  .footer-col {
-    text-align: left; /* Ensure left alignment */
-  }
-  
-  .footer-col:first-child {
-    text-align: left;
-  }
-  
-  /* Explicitly keep dash left-aligned */
-  .footer-col h5::after {
-    left: 0;
-    transform: none;
-    margin-left: 0; /* Remove any margin that might center it */
-  }
-  
-  .social-links {
-    justify-content: flex-start;
+  .footer-grid {
+    gap: 1.2rem;
   }
   
   .footer-col h5 {
-    text-align: left; /* Ensure headings are left-aligned */
+    margin-bottom: 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .footer-col p {
+    font-size: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+  
+  .footer-col li {
+    margin-bottom: 0.4rem;
+  }
+  
+  .footer-col a {
+    font-size: 0.8rem;
+  }
+  
+  .social-links a {
+    width: 30px;
+    height: 30px;
+    font-size: 0.85rem;
+  }
+  
+  .footer-badges i {
+    font-size: 1.2rem;
+  }
+  
+  .copyright {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    font-size: 0.7rem;
+  }
+  
+  .copyright-links {
+    gap: 1rem;
+  }
+  
+  .copyright-links a {
+    font-size: 0.65rem;
   }
 }
