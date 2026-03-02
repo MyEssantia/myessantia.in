@@ -696,11 +696,15 @@
         }
       }
 
-      // Set active nav link after components are loaded
-      setTimeout(() => {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        document.querySelectorAll('.nav-link[href="accessories.html"]').forEach(l => l.classList.add('active'));
-      }, 300);
+    // Set active nav - highlight New-in menu
+setTimeout(() => {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.nav-link[href="accessories.html"]').forEach(l => l.classList.add('active'));
+  
+  // Also handle mobile menu
+  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.mobile-menu-link[href="accessories.html"]').forEach(l => l.classList.add('active'));
+}, 200);
 
       // Wait for products to be available
       const checkProducts = setInterval(() => {
