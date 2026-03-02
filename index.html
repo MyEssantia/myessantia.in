@@ -871,6 +871,34 @@
         }
       }
       
+         document.addEventListener('DOMContentLoaded', function() {
+      // Load header
+      fetch('header.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('header').innerHTML = data;
+          // Re-initialize any header-specific functionality
+          if (typeof setupEventListeners === 'function') {
+            setupEventListeners();
+          }
+        })
+        .catch(error => {
+          console.error('Error loading header:', error);
+          document.getElementById('header').innerHTML = getFallbackHeader();
+        });
+
+      // Load footer
+      fetch('footer.html')
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('footer').innerHTML = data;
+        })
+        .catch(error => {
+          console.error('Error loading footer:', error);
+          document.getElementById('footer').innerHTML = getFallbackFooter();
+        });
+    });
+      
       // Initialize
       createDots();
       updateSlide();
@@ -922,21 +950,8 @@
       window.addEventListener('resize', handleResize);
     }
     
-    // Load modals
-    async function loadCommonModals() {
-      try {
-        const res = await fetch('common.html');
-        const data = await res.text();
-        document.getElementById('common-modals').innerHTML = data;
-      } catch (e) { 
-        console.warn('Modals not loaded'); 
-      }
-    }
-    
     // ========== INITIALIZATION ==========
     document.addEventListener('DOMContentLoaded', async () => {
-      await loadCommonModals();
-      
       // Load components (header/footer) from common.js
       if (typeof window.loadComponents === 'function') {
         window.loadComponents();
