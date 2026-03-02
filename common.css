@@ -26,36 +26,9 @@
   display: flex;
   flex-direction: column;
   max-height: 85vh;
-  animation: modalFade 0.25s ease;
 }
 
-@keyframes modalFade {
-  from { transform: translateY(-15px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-/* ==================== MODAL HEADER ==================== */
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #000;
-  padding-bottom: 1rem;
-}
-
-.modal-header h3 {
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 800;
-  font-size: 1.3rem;
-  text-transform: uppercase;
-}
-
-.modal-header span {
-  color: #d4af37;
-}
-
-/* ==================== CART ==================== */
+/* ================= CART ================= */
 
 .cart-items {
   flex: 1;
@@ -98,7 +71,7 @@
   margin-bottom: 1rem;
 }
 
-/* ==================== BUTTONS ==================== */
+/* ================= BUTTONS ================= */
 
 .checkout-btn {
   width: 100%;
@@ -106,7 +79,6 @@
   border-radius: 60px;
   border: none;
   font-weight: 800;
-  letter-spacing: 1px;
   background: linear-gradient(135deg, #d4af37, #f3d77a);
   color: #000;
   cursor: pointer;
@@ -160,7 +132,7 @@
   margin-left: 8px;
 }
 
-/* ==================== PROFILE ==================== */
+/* ================= PROFILE ================= */
 
 .profile-content {
   overflow-y: auto;
