@@ -1,4 +1,3 @@
-// ========== COMMON JAVASCRIPT FOR MYESSANTIA ==========
 
 // ========== FIREBASE CONFIGURATION ==========
 const firebaseConfig = {
