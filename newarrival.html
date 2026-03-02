@@ -551,70 +551,6 @@
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
     }
 
-    // ===== ADD TO CART FUNCTION =====
-    window.addToCart = async function(productId) {
-      const product = products.find(p => p.id === productId);
-      if (!product) return;
-
-      if (product.stock <= 0) {
-        alert('Sorry, this product is out of stock!');
-        return;
-      }
-
-      const existingItem = cart.find(item => item.id === productId);
-
-      if (existingItem) {
-        if (existingItem.quantity >= product.stock) {
-          alert('Sorry, not enough stock available!');
-          return;
-        }
-        existingItem.quantity += 1;
-      } else {
-        cart.push({
-          id: productId,
-          title: product.title,
-          category: product.category,
-          price: product.price,
-          primaryImg: product.primaryImg || (product.images && product.images[0]),
-          quantity: 1
-        });
-      }
-
-      // Save to Firebase if user is logged in
-      if (currentUser) {
-        await saveCartToFirebase();
-      }
-      
-      updateCartCount();
-      
-      // Show animation on the button and open cart
-      const btn = event?.target?.closest('button');
-      if (btn) {
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        btn.style.background = '#4CAF50';
-        btn.style.color = 'white';
-        
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = '';
-          btn.style.color = '';
-          openCart();
-        }, 500);
-      } else {
-        openCart();
-      }
-    };
-
-    // ===== MAKE CART FUNCTIONS AVAILABLE GLOBALLY =====
-    window.openCart = openCart;
-    window.updateQuantity = updateQuantity;
-    window.removeFromCart = removeFromCart;
-    window.buyNow = function(productId) {
-      addToCart(productId);
-      openCart();
-    };
-
     // ===== NEW ARRIVALS FUNCTIONS =====
     function getNewArrivals() {
       const now = new Date();
@@ -740,16 +676,20 @@
         document.querySelectorAll('.nav-link[href="new-arrivals.html"]').forEach(l => l.classList.add('active'));
       }, 200);
 
-      // Render products
-      if (window.products?.length) {
-        renderProducts();
-      } else {
-        const cached = localStorage.getItem('MyEssantia_products');
-        if (cached) {
-          window.products = JSON.parse(cached);
+      // Wait for products to load from common.js
+      const checkProducts = setInterval(() => {
+        if (window.products && window.products.length > 0) {
           renderProducts();
+          clearInterval(checkProducts);
+        } else {
+          const cached = localStorage.getItem('MyEssantia_products');
+          if (cached) {
+            window.products = JSON.parse(cached);
+            renderProducts();
+            clearInterval(checkProducts);
+          }
         }
-      }
+      }, 100);
 
       // Update every minute for real-time new arrivals
       setInterval(() => {
@@ -805,6 +745,8 @@
         });
       }
     });
+
+    // REMOVED: The duplicate addToCart function that was overriding common.js
   </script>
 </body>
 </html>
