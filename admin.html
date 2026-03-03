@@ -510,16 +510,15 @@
     .high-demand-toggle {
       display: flex;
       align-items: center;
-      padding: 12px 0;
-      margin: 12px 0;
+      padding: 8px 0;
     }
 
     .toggle-switch {
       position: relative;
       display: inline-block;
-      width: 70px;
-      height: 36px;
-      margin-right: 16px;
+      width: 50px;
+      height: 26px;
+      margin-right: 12px;
     }
 
     .toggle-switch input {
@@ -537,16 +536,16 @@
       bottom: 0;
       background-color: #ccc;
       transition: .3s;
-      border-radius: 36px;
+      border-radius: 26px;
       border: 2px solid #000;
     }
 
     .toggle-slider:before {
       position: absolute;
       content: "";
-      height: 28px;
-      width: 28px;
-      left: 3px;
+      height: 18px;
+      width: 18px;
+      left: 2px;
       bottom: 2px;
       background-color: white;
       transition: .3s;
@@ -559,293 +558,322 @@
     }
 
     input:checked + .toggle-slider:before {
-      transform: translateX(34px);
+      transform: translateX(24px);
       background-color: #000;
     }
 
     .toggle-label {
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.9rem;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       text-transform: uppercase;
     }
 
     .toggle-label i {
       color: #d4af37;
-      font-size: 1.2rem;
+      font-size: 1rem;
     }
 
-    /* ===== MEDIA SECTION ===== */
-    .media-upload-section {
+    /* ===== COMPACT MEDIA SECTION ===== */
+    .media-section-compact {
       background: #fff;
-      border-radius: 30px;
-      padding: 24px;
-      border: 2px solid #000;
-    }
-
-    .media-tabs {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-
-    .media-tab {
-      padding: 10px 24px;
-      cursor: pointer;
-      border-radius: 60px;
-      font-weight: 700;
-      transition: all 0.2s;
-      background: #fcfaf7;
-      border: 2px solid #000;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-    }
-
-    .media-tab.active {
-      background: #000;
-      color: #d4af37;
-      border-color: #d4af37;
-    }
-
-    .media-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-    }
-
-    .upload-box {
-      aspect-ratio: 1;
-      border: 3px dashed #d4af37;
       border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      background: #fcfaf7;
-      transition: all 0.2s;
       padding: 16px;
+      border: 2px solid #000;
     }
 
-    .upload-box:hover {
-      background: #fff;
-      transform: scale(1.02);
-      border-color: #000;
+    .media-grid-compact {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .upload-box i {
-      font-size: 2rem;
-      color: #d4af37;
-    }
-
-    .url-input-box {
+    .media-item-compact {
       aspect-ratio: 1;
-      border: 2px solid #000;
-      border-radius: 20px;
-      display: flex;
-      flex-direction: column;
-      padding: 12px;
-      background: #fcfaf7;
-    }
-
-    .url-input-box input {
-      width: 100%;
-      padding: 8px;
-      border: 2px solid #000;
       border-radius: 12px;
-      margin-bottom: 8px;
-      font-size: 0.8rem;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .url-input-box button {
-      background: #000;
-      color: #d4af37;
-      border: none;
-      padding: 8px;
-      border-radius: 12px;
+      border: 2px solid #000;
+      overflow: hidden;
+      position: relative;
       cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
       transition: all 0.2s;
     }
 
-    .url-input-box button:hover {
-      background: #d4af37;
-      color: #000;
+    .media-item-compact:hover {
+      transform: scale(1.02);
+      border-color: #d4af37;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
     }
 
-    .media-preview {
-      aspect-ratio: 1;
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
-      border: 3px solid #000;
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    .media-item-compact.selected {
+      border-color: #d4af37;
+      border-width: 3px;
+      box-shadow: 0 0 0 2px #d4af37;
     }
 
-    .media-preview img,
-    .media-preview video {
+    .media-item-compact img,
+    .media-item-compact video {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    .media-position {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      background: #d4af37;
-      color: #000;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 800;
-      border: 2px solid #000;
-    }
-
-    .position-controls {
-      position: absolute;
-      bottom: 8px;
-      left: 50%;
-      transform: translateX(-50%);
+    .media-add-btn {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 2px dashed #d4af37;
+      background: #fcfaf7;
       display: flex;
-      gap: 6px;
-      background: #000;
-      padding: 6px;
-      border-radius: 40px;
-      border: 2px solid #d4af37;
-    }
-
-    .position-controls button {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid #000;
-      background: #fff;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       transition: all 0.2s;
+      color: #d4af37;
+      font-size: 0.7rem;
+      text-align: center;
+      padding: 4px;
+    }
+
+    .media-add-btn i {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
+    }
+
+    .media-add-btn:hover {
+      background: #fff;
+      border-color: #000;
       color: #000;
     }
 
-    .position-controls button:hover:not(:disabled) {
-      background: #d4af37;
-      color: #000;
-    }
-
-    .remove-media {
+    .media-type-badge {
       position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 32px;
-      height: 32px;
+      bottom: 2px;
+      right: 2px;
+      background: #000;
+      color: #d4af37;
+      padding: 2px 4px;
+      border-radius: 8px;
+      font-size: 0.5rem;
+      border: 1px solid #d4af37;
+    }
+
+    .media-remove-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      width: 18px;
+      height: 18px;
       background: #d4af37;
       color: #000;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 0.6rem;
       cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.2s;
+      border: 1px solid #000;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .media-item-compact:hover .media-remove-btn {
+      opacity: 1;
+    }
+
+    .media-upload-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .media-url-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .media-url-input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+
+    .media-upload-btn {
+      padding: 8px 16px;
+      background: #000;
+      color: #d4af37;
+      border: 2px solid #000;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .media-upload-btn:hover {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .media-hint {
+      font-size: 0.65rem;
+      color: #666;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ===== COMPACT PAGE VISIBILITY SECTION ===== */
+    .visibility-section-compact {
+      background: #fff;
+      border-radius: 20px;
+      padding: 16px;
       border: 2px solid #000;
     }
 
-    .remove-media:hover {
+    .flags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #000;
+    }
+
+    .flag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #fcfaf7;
+      border: 2px solid #000;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .flag-chip input[type="checkbox"] {
+      display: none;
+    }
+
+    .flag-chip input[type="checkbox"]:checked + label {
       background: #000;
       color: #d4af37;
     }
 
-    /* ===== PAGE SELECTOR ===== */
-    .page-selector {
+    .flag-chip label {
+      cursor: pointer;
       display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin: 20px 0;
+      align-items: center;
+      gap: 4px;
     }
 
-    .page-chip {
+    .flag-chip i {
+      color: #d4af37;
+      font-size: 0.8rem;
+    }
+
+    .flag-chip.active {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    .flag-chip.active i {
+      color: #d4af37;
+    }
+
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .page-chip-compact {
       position: relative;
-      flex: 1 1 120px;
     }
 
-    .page-chip input[type="checkbox"] {
+    .page-chip-compact input[type="checkbox"] {
       position: absolute;
       opacity: 0;
     }
 
-    .page-chip label {
+    .page-chip-compact label {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
+      gap: 6px;
+      padding: 8px 4px;
       background: #fcfaf7;
-      border-radius: 60px;
+      border-radius: 40px;
       cursor: pointer;
       transition: all 0.2s;
       border: 2px solid #000;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.7rem;
       text-transform: uppercase;
     }
 
-    .page-chip input[type="checkbox"]:checked + label {
+    .page-chip-compact input[type="checkbox"]:checked + label {
       background: #000;
       border-color: #d4af37;
       color: #d4af37;
     }
 
-    .page-chip label i {
+    .page-chip-compact label i {
       color: #d4af37;
-      font-size: 1rem;
+      font-size: 0.8rem;
     }
 
-    .page-chip input[type="checkbox"]:checked + label i {
-      color: #d4af37;
-    }
-
-    .newin-status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      background: #fcfaf7;
-      padding: 12px 24px;
-      border-radius: 60px;
-      color: #000;
-      font-weight: 700;
-      border: 2px solid #d4af37;
-      text-transform: uppercase;
-    }
-
-    .newin-timer {
-      background: #000;
-      color: #d4af37;
-      padding: 4px 12px;
-      border-radius: 40px;
-      font-size: 0.9rem;
-      border: 2px solid #d4af37;
-    }
-
-    .auto-assign-note {
+    .newin-compact-badge {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 16px 20px;
+      justify-content: space-between;
       background: #fcfaf7;
-      border-radius: 30px;
-      margin-top: 20px;
-      font-size: 0.9rem;
-      color: #000;
-      border: 2px solid #000;
+      padding: 8px 12px;
+      border-radius: 40px;
+      border: 2px solid #d4af37;
+      margin: 12px 0 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
     }
 
-    .auto-assign-note i {
+    .newin-compact-timer {
+      background: #000;
       color: #d4af37;
-      font-size: 1.2rem;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-size: 0.65rem;
+      border: 1px solid #d4af37;
+    }
+
+    .info-note-compact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #fcfaf7;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      color: #000;
+      border: 1px solid #000;
+      margin-top: 12px;
+    }
+
+    .info-note-compact i {
+      color: #d4af37;
+      font-size: 0.8rem;
     }
 
     /* ===== PRODUCTS TABLE - COMPACT MOBILE CARDS ===== */
@@ -1241,6 +1269,10 @@
       .product-item-actions button i {
         display: none;
       }
+      
+      .pages-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ===== EMPTY STATE ===== */
@@ -1464,23 +1496,26 @@
             </div>
           </div>
 
-          <!-- Section 3: Media -->
+          <!-- Section 3: Media - Unified Upload -->
           <div class="form-section">
             <div class="form-section-title">
               <i class="fa-solid fa-images"></i>
               <span>product media</span>
             </div>
-            <div class="media-upload-section">
-              <div class="media-tabs">
-                <div class="media-tab active" onclick="switchMediaTab('images')" id="images-tab">
-                  <i class="fa-solid fa-image"></i> images
-                </div>
-                <div class="media-tab" onclick="switchMediaTab('videos')" id="videos-tab">
-                  <i class="fa-solid fa-video"></i> videos
-                </div>
+            <div class="media-section-compact">
+              <div class="media-grid-compact" id="media-grid-compact"></div>
+              
+              <div class="media-upload-row">
+                <input type="text" class="media-url-input" id="media-url-input" placeholder="enter image/video URL...">
+                <button type="button" class="media-upload-btn" onclick="addMediaFromUrl()">
+                  <i class="fa-solid fa-plus"></i> add
+                </button>
               </div>
-              <div id="images-grid" class="media-grid"></div>
-              <div id="videos-grid" class="media-grid" style="display:none;"></div>
+              
+              <div class="media-hint">
+                <i class="fa-solid fa-info-circle"></i>
+                <span>click on any media to set as primary. max 8 files. supports images & videos.</span>
+              </div>
             </div>
           </div>
 
@@ -1516,64 +1551,59 @@
             </div>
           </div>
 
-          <!-- Section 5: Page Visibility & Special Flags -->
+          <!-- Section 5: Page Visibility & Special Flags - COMPACT -->
           <div class="form-section">
             <div class="form-section-title">
               <i class="fa-solid fa-eye"></i>
-              <span>page visibility & special flags</span>
+              <span>visibility & flags</span>
             </div>
             
-            <!-- High Demand Toggle -->
-            <div class="high-demand-toggle">
-              <label class="toggle-switch">
-                <input type="checkbox" id="product-high-demand">
-                <span class="toggle-slider"></span>
-              </label>
-              <span class="toggle-label">
-                <i class="fa-solid fa-fire"></i>
-                mark as high demand product
-              </span>
-            </div>
-            <div class="field-hint">
-              <i class="fa-solid fa-info-circle"></i>
-              when enabled, users will see a priority access popup when clicking "buy now"
-            </div>
+            <div class="visibility-section-compact">
+              <!-- Special Flags Row -->
+              <div class="flags-row">
+                <div class="flag-chip" onclick="toggleHighDemand()" id="high-demand-chip">
+                  <input type="checkbox" id="product-high-demand" style="display:none;">
+                  <label>
+                    <i class="fa-solid fa-fire"></i> high demand
+                  </label>
+                </div>
+              </div>
 
-            <div class="page-selector">
-              <div class="page-chip">
-                <input type="checkbox" id="show-on-home">
-                <label for="show-on-home"><i class="fa-solid fa-house"></i> home page</label>
+              <!-- Pages Grid -->
+              <div class="pages-grid">
+                <div class="page-chip-compact">
+                  <input type="checkbox" id="show-on-home">
+                  <label for="show-on-home"><i class="fa-solid fa-house"></i> home</label>
+                </div>
+                <div class="page-chip-compact">
+                  <input type="checkbox" id="show-on-accessories">
+                  <label for="show-on-accessories"><i class="fa-solid fa-bag-shopping"></i> accessories</label>
+                </div>
+                <div class="page-chip-compact">
+                  <input type="checkbox" id="show-on-essentials">
+                  <label for="show-on-essentials"><i class="fa-solid fa-bolt"></i> essentials</label>
+                </div>
+                <div class="page-chip-compact">
+                  <input type="checkbox" id="show-on-new">
+                  <label for="show-on-new"><i class="fa-solid fa-star"></i> new in</label>
+                </div>
               </div>
-              <div class="page-chip">
-                <input type="checkbox" id="show-on-accessories">
-                <label for="show-on-accessories"><i class="fa-solid fa-bag-shopping"></i> accessories</label>
-              </div>
-              <div class="page-chip">
-                <input type="checkbox" id="show-on-essentials">
-                <label for="show-on-essentials"><i class="fa-solid fa-bolt"></i> essentials</label>
-              </div>
-              <div class="page-chip">
-                <input type="checkbox" id="show-on-new">
-                <label for="show-on-new"><i class="fa-solid fa-star"></i> new in</label>
-              </div>
-            </div>
 
-            <!-- New In Status Display -->
-            <div id="newin-status-container" style="margin-top: 16px; display: none;">
-              <div class="newin-status-badge">
-                <i class="fa-regular fa-clock"></i>
-                <span>new in: auto-removes after 24 hours</span>
-                <span id="newin-timer" class="newin-timer"></span>
+              <!-- New In Status -->
+              <div id="newin-status-container" style="display: none;">
+                <div class="newin-compact-badge">
+                  <span><i class="fa-regular fa-clock"></i> new in</span>
+                  <span id="newin-timer" class="newin-compact-timer"></span>
+                </div>
               </div>
-            </div>
 
-            <div class="auto-assign-note">
-              <i class="fa-solid fa-info-circle"></i>
-              <span id="auto-assign-message">
-                new products are automatically added to "new in" for 24 hours. 
-                category pages auto-sync with product category. home page requires manual selection.
-                high demand products show priority access popup on buy now.
-              </span>
+              <!-- Info Note -->
+              <div class="info-note-compact">
+                <i class="fa-solid fa-info-circle"></i>
+                <span id="auto-assign-message">
+                  new: 24h auto · category auto-sync · home manual
+                </span>
+              </div>
             </div>
           </div>
 
@@ -1624,7 +1654,8 @@
 
     // ========== GLOBAL VARIABLES ==========
     let products = [];
-    let productMedia = { images: [], videos: [] };
+    let productMedia = []; // Array of {url, type} - unified media array
+    let selectedMediaIndex = 0; // Primary media index
     let currentMediaTab = 'images';
     let newInCheckInterval = null;
 
@@ -1658,21 +1689,21 @@
     const formTitle = document.getElementById('form-title');
     const cancelEdit = document.getElementById('cancel-edit');
     const searchInput = document.getElementById('search-products');
-    const imagesGrid = document.getElementById('images-grid');
-    const videosGrid = document.getElementById('videos-grid');
     const autoAssignMessage = document.getElementById('auto-assign-message');
+    const highDemandChip = document.getElementById('high-demand-chip');
+    const mediaGridCompact = document.getElementById('media-grid-compact');
 
     // ========== INITIALIZE ==========
     document.addEventListener('DOMContentLoaded', () => {
-      initializeMediaArrays();
+      initializeMediaArray();
       loadProducts();
       setupEventListeners();
     });
 
-    function initializeMediaArrays() {
-      productMedia.images = new Array(4).fill(null);
-      productMedia.videos = new Array(4).fill(null);
-      renderMediaGrid();
+    function initializeMediaArray() {
+      productMedia = [];
+      selectedMediaIndex = 0;
+      renderMediaGridCompact();
     }
 
     function setupEventListeners() {
@@ -1680,7 +1711,120 @@
       productForm.addEventListener('submit', handleProductSubmit);
       cancelEdit.addEventListener('click', resetForm);
       searchInput.addEventListener('input', filterProducts);
+      productHighDemand.addEventListener('change', updateHighDemandChip);
     }
+
+    function updateHighDemandChip() {
+      if (productHighDemand.checked) {
+        highDemandChip.classList.add('active');
+      } else {
+        highDemandChip.classList.remove('active');
+      }
+    }
+
+    window.toggleHighDemand = function() {
+      productHighDemand.checked = !productHighDemand.checked;
+      updateHighDemandChip();
+    };
+
+    // ========== COMPACT MEDIA FUNCTIONS ==========
+    function renderMediaGridCompact() {
+      let html = '';
+      
+      // Show existing media (max 8)
+      for (let i = 0; i < Math.min(productMedia.length, 8); i++) {
+        const media = productMedia[i];
+        const isVideo = media.type === 'video';
+        const isSelected = (i === selectedMediaIndex);
+        
+        html += `
+          <div class="media-item-compact ${isSelected ? 'selected' : ''}" onclick="selectMedia(${i})">
+            ${isVideo ? 
+              `<video src="${media.url}"></video>` : 
+              `<img src="${media.url}" alt="media">`
+            }
+            <span class="media-type-badge">${isVideo ? 'VID' : 'IMG'}</span>
+            <span class="media-remove-btn" onclick="removeMedia(${i}); event.stopPropagation();">
+              <i class="fa-solid fa-times"></i>
+            </span>
+          </div>
+        `;
+      }
+      
+      // Show add buttons for remaining slots (up to 8 total)
+      for (let i = productMedia.length; i < 8; i++) {
+        html += `
+          <div class="media-add-btn" onclick="document.getElementById('media-url-input').focus()">
+            <i class="fa-solid fa-plus"></i>
+            <span>add media</span>
+          </div>
+        `;
+      }
+      
+      mediaGridCompact.innerHTML = html;
+    }
+
+    window.selectMedia = function(index) {
+      selectedMediaIndex = index;
+      renderMediaGridCompact();
+    };
+
+    window.addMediaFromUrl = function() {
+      const urlInput = document.getElementById('media-url-input');
+      const url = urlInput.value.trim();
+      
+      if (!url) {
+        showNotification('please enter a url', 'error');
+        return;
+      }
+
+      // Basic URL validation
+      try {
+        new URL(url);
+      } catch {
+        showNotification('please enter a valid url', 'error');
+        return;
+      }
+
+      // Detect if it's a video (common video extensions/patterns)
+      const isVideo = url.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) || 
+                     url.includes('youtube.com') || 
+                     url.includes('youtu.be') || 
+                     url.includes('vimeo.com') ||
+                     url.includes('player.vimeo');
+      
+      const mediaItem = {
+        url: url,
+        type: isVideo ? 'video' : 'image'
+      };
+
+      if (productMedia.length >= 8) {
+        showNotification('maximum 8 media files allowed', 'error');
+        return;
+      }
+
+      productMedia.push(mediaItem);
+      
+      // Auto-select first media as primary if this is the first one
+      if (productMedia.length === 1) {
+        selectedMediaIndex = 0;
+      }
+      
+      urlInput.value = '';
+      renderMediaGridCompact();
+      showNotification('media added successfully!', 'success');
+    };
+
+    window.removeMedia = function(index) {
+      productMedia.splice(index, 1);
+      
+      // Adjust selected index if needed
+      if (selectedMediaIndex >= productMedia.length) {
+        selectedMediaIndex = Math.max(0, productMedia.length - 1);
+      }
+      
+      renderMediaGridCompact();
+    };
 
     // ========== FIREBASE FUNCTIONS ==========
     async function loadProducts() {
@@ -1736,103 +1880,6 @@
         showNotification('failed to delete product', 'error');
       }
     }
-
-    // ========== MEDIA FUNCTIONS ==========
-    window.switchMediaTab = function(tab) {
-      currentMediaTab = tab;
-      document.getElementById('images-tab').classList.toggle('active', tab === 'images');
-      document.getElementById('videos-tab').classList.toggle('active', tab === 'videos');
-      imagesGrid.style.display = tab === 'images' ? 'grid' : 'none';
-      videosGrid.style.display = tab === 'videos' ? 'grid' : 'none';
-      renderMediaGrid();
-    };
-
-    function renderMediaGrid() {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      const grid = currentMediaTab === 'images' ? imagesGrid : videosGrid;
-      
-      let html = '';
-      for (let i = 0; i < 4; i++) {
-        if (media[i]) {
-          const isVideo = media[i].type === 'video';
-          html += `<div class="media-preview">
-            ${isVideo ? 
-              `<video src="${media[i].url}" controls></video>` : 
-              `<img src="${media[i].url}" alt="Media">`
-            }
-            <div class="media-position">pos ${i+1}</div>
-            <div class="position-controls">
-              <button onclick="moveMedia(${i}, 'up')" ${i === 0 ? 'disabled' : ''}>
-                <i class="fa-solid fa-arrow-up"></i>
-              </button>
-              <button onclick="moveMedia(${i}, 'down')" ${i === 3 ? 'disabled' : ''}>
-                <i class="fa-solid fa-arrow-down"></i>
-              </button>
-            </div>
-            <div class="remove-media" onclick="removeMedia(${i})">
-              <i class="fa-solid fa-times"></i>
-            </div>
-          </div>`;
-        } else {
-          html += `<div class="url-input-box">
-            <input type="text" id="${currentMediaTab}-url-${i}" placeholder="enter ${currentMediaTab === 'images' ? 'image' : 'video'} url" value="${media[i]?.url || ''}">
-            <button onclick="addMediaUrl(${i})">add ${currentMediaTab === 'images' ? 'image' : 'video'}</button>
-          </div>`;
-        }
-      }
-      grid.innerHTML = html;
-    }
-
-    window.addMediaUrl = function(index) {
-      const urlInput = document.getElementById(`${currentMediaTab}-url-${index}`);
-      const url = urlInput.value.trim();
-      
-      if (!url) {
-        showNotification('please enter a url', 'error');
-        return;
-      }
-
-      // Basic URL validation
-      try {
-        new URL(url);
-      } catch {
-        showNotification('please enter a valid url', 'error');
-        return;
-      }
-
-      const mediaItem = {
-        url: url,
-        type: currentMediaTab === 'images' ? 'image' : 'video'
-      };
-
-      if (currentMediaTab === 'images') {
-        productMedia.images[index] = mediaItem;
-      } else {
-        productMedia.videos[index] = mediaItem;
-      }
-
-      renderMediaGrid();
-      showNotification(`${currentMediaTab === 'images' ? 'image' : 'video'} url added successfully!`, 'success');
-    };
-
-    window.moveMedia = function(index, direction) {
-      const media = currentMediaTab === 'images' ? productMedia.images : productMedia.videos;
-      if (direction === 'up' && index > 0) {
-        [media[index], media[index - 1]] = [media[index - 1], media[index]];
-      } else if (direction === 'down' && index < 3) {
-        [media[index], media[index + 1]] = [media[index + 1], media[index]];
-      }
-      renderMediaGrid();
-    };
-
-    window.removeMedia = function(index) {
-      if (currentMediaTab === 'images') {
-        productMedia.images[index] = null;
-      } else {
-        productMedia.videos[index] = null;
-      }
-      renderMediaGrid();
-    };
 
     // ========== NEW IN MANAGEMENT ==========
     function updateNewInStatus() {
@@ -1934,8 +1981,7 @@
                         (new Date() - (product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt))) < (24 * 60 * 60 * 1000);
         
         let mainMedia = product.primaryImg || 
-                       (product.media?.images?.[0]?.url) || 
-                       (product.media?.videos?.[0]?.url) || 
+                       (product.media?.[0]?.url) || 
                        'https://via.placeholder.com/300/f0f0f0/999999?text=no+image';
         
         // Determine stock level class
@@ -2079,19 +2125,18 @@
       const category = productCategory.value;
       showOnAccessories.checked = (category === 'accessories');
       showOnEssentials.checked = (category === 'essentials');
-      let message = 'new products are automatically added to "new in" for 24 hours. ';
+      
+      let message = 'new: 24h auto · ';
       if (category) {
-        message += `products in "${category}" category are auto-assigned to the ${category} page. `;
+        message += `${category} auto-sync · `;
       }
-      message += 'home page requires manual selection. high demand products show priority access popup on buy now.';
+      message += 'home manual';
       autoAssignMessage.textContent = message;
     }
 
     async function handleProductSubmit(e) {
       e.preventDefault();
 
-      const filteredImages = productMedia.images.filter(i => i !== null);
-      const filteredVideos = productMedia.videos.filter(v => v !== null);
       const price = parseFloat(productPrice.value);
       const rating = parseFloat(productRating.value);
       
@@ -2102,11 +2147,8 @@
         rating: rating,
         stock: parseInt(productStock.value) || 10,
         brand: productBrand.value || 'MyEssantia',
-        media: {
-          images: filteredImages,
-          videos: filteredVideos
-        },
-        primaryImg: filteredImages[0]?.url || filteredVideos[0]?.url || '',
+        media: productMedia, // Unified media array
+        primaryImg: productMedia[selectedMediaIndex]?.url || '',
         shortDesc: productShortDesc.value,
         description: productDescription.value,
         specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
@@ -2142,20 +2184,24 @@
       productSpecs.value = product.specs ? product.specs.join('\n') : '';
 
       // Load media
-      productMedia.images = product.media?.images ? [...product.media.images] : new Array(4).fill(null);
-      productMedia.videos = product.media?.videos ? [...product.media.videos] : new Array(4).fill(null);
+      productMedia = product.media ? [...product.media] : [];
       
-      // Ensure arrays have 4 elements
-      while (productMedia.images.length < 4) productMedia.images.push(null);
-      while (productMedia.videos.length < 4) productMedia.videos.push(null);
+      // Find primary image index
+      if (product.primaryImg && productMedia.length > 0) {
+        selectedMediaIndex = productMedia.findIndex(m => m.url === product.primaryImg);
+        if (selectedMediaIndex === -1) selectedMediaIndex = 0;
+      } else {
+        selectedMediaIndex = 0;
+      }
       
-      renderMediaGrid();
+      renderMediaGridCompact();
 
       showOnHome.checked = product.showOnHome || false;
       showOnAccessories.checked = product.showOnAccessories || false;
       showOnEssentials.checked = product.showOnEssentials || false;
       showOnNew.checked = product.showOnNew || false;
       productHighDemand.checked = product.highDemand || false;
+      updateHighDemandChip();
 
       formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
       
@@ -2181,13 +2227,15 @@
       productForm.reset();
       productId.value = '';
       productCreationDate.value = '';
-      productMedia = { images: new Array(4).fill(null), videos: new Array(4).fill(null) };
-      renderMediaGrid();
+      productMedia = [];
+      selectedMediaIndex = 0;
+      renderMediaGridCompact();
       showOnHome.checked = false;
       showOnAccessories.checked = false;
       showOnEssentials.checked = false;
       showOnNew.checked = false;
       productHighDemand.checked = false;
+      updateHighDemandChip();
       newinStatusContainer.style.display = 'none';
       formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new product';
       updateCategorySync();
