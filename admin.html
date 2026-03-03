@@ -2413,9 +2413,16 @@ function renderProducts(productsToRender = products) {
 }
 
 function updateCategorySync() {
-  const category = productCategory.value;
-  showOnAccessories.checked = (category === 'accessories');
-  showOnEssentials.checked = (category === 'essentials');
+  const category = document.getElementById('product-category').value;
+  
+  // Auto-check the corresponding page based on category
+  if (category === 'accessories') {
+    document.getElementById('show-on-accessories').checked = true;
+    document.getElementById('show-on-essentials').checked = false;
+  } else if (category === 'essentials') {
+    document.getElementById('show-on-essentials').checked = true;
+    document.getElementById('show-on-accessories').checked = false;
+  }
   
   let message = 'new products auto-added to "new in" for 24h · ';
   if (category) {
@@ -2431,6 +2438,12 @@ async function handleProductSubmit(e) {
   const price = parseFloat(productPrice.value);
   const rating = parseFloat(productRating.value);
   
+  // Get checkbox values directly from DOM
+  const showOnHomeChecked = document.getElementById('show-on-home') ? document.getElementById('show-on-home').checked : false;
+  const showOnAccessoriesChecked = document.getElementById('show-on-accessories') ? document.getElementById('show-on-accessories').checked : false;
+  const showOnEssentialsChecked = document.getElementById('show-on-essentials') ? document.getElementById('show-on-essentials').checked : false;
+  const highDemandChecked = document.getElementById('product-high-demand') ? document.getElementById('product-high-demand').checked : false;
+
   const productData = {
     title: productTitle.value,
     category: productCategory.value,
@@ -2438,16 +2451,16 @@ async function handleProductSubmit(e) {
     rating: rating,
     stock: parseInt(productStock.value) || 10,
     brand: productBrand.value || 'MyEssantia',
-    media: productMedia.map(m => ({ url: m.url, type: m.type })), // Store only url and type
+    media: productMedia.map(m => ({ url: m.url, type: m.type })),
     primaryImg: productMedia[selectedMediaIndex]?.url || '',
     shortDesc: productShortDesc.value,
     description: productDescription.value,
     specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
-    showOnHome: document.getElementById('show-on-home').checked,
-showOnAccessories: document.getElementById('show-on-accessories').checked,
-showOnEssentials: document.getElementById('show-on-essentials').checked,
-showOnNew: true, // Always true for new products
-highDemand: document.getElementById('product-high-demand').checked
+    showOnHome: showOnHomeChecked,
+    showOnAccessories: showOnAccessoriesChecked,
+    showOnEssentials: showOnEssentialsChecked,
+    showOnNew: true, // Always true for new products
+    highDemand: highDemandChecked
   };
 
   // Add ID if editing
@@ -2498,21 +2511,13 @@ window.editProduct = async function(id) {
   
   renderMediaGrid();
 
-  showOnHome.checked = product.showOnHome || false;
-  showOnAccessories.checked = product.showOnAccessories || false;
-  showOnEssentials.checked = product.showOnEssentials || false;
-  showOnNew.checked = product.showOnNew || false;
-  productHighDemand.checked = product.highDemand || false;
-  updateHighDemandChip();
+  // Set checkboxes using DOM directly
+  document.getElementById('show-on-home').checked = product.showOnHome || false;
+  document.getElementById('show-on-accessories').checked = product.showOnAccessories || false;
+  document.getElementById('show-on-essentials').checked = product.showOnEssentials || false;
+  document.getElementById('product-high-demand').checked = product.highDemand || false;
   
-  // Update timer if needed
-  if (product.createdAt && newinStatusContainer && newinTimer) {
-    const timeLeft = getTimeRemaining(product.createdAt);
-    if (timeLeft) {
-      newinStatusContainer.style.display = 'block';
-      newinTimer.textContent = timeLeft;
-    }
-  }
+  updateHighDemandChip();
   
   // Change form title to indicate editing
   formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
@@ -2520,7 +2525,6 @@ window.editProduct = async function(id) {
   // Scroll to form
   scrollToForm();
 };
-
 window.deleteProduct = function(id) {
   if (confirm('are you sure you want to delete this product?')) {
     deleteProductFromFirebase(id);
