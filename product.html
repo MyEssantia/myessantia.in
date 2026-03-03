@@ -251,6 +251,51 @@
       0% { transform: translateX(-100%) rotate(30deg); }
       100% { transform: translateX(100%) rotate(30deg); }
     }
+    
+    /* Add this to your existing styles - sale badge with shimmer */
+.sale-badge {
+  background: #000;
+  color: #d4af37;
+  padding: 6px 14px;
+  border-radius: 60px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  border: 2px solid #d4af37;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sale-badge::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.3),
+    rgba(212, 175, 55, 0.6),
+    rgba(212, 175, 55, 0.3),
+    transparent
+  );
+  transform: rotate(30deg);
+  animation: shimmerSale 2.5s infinite;
+}
+
+@keyframes shimmerSale {
+  0% { transform: translateX(-100%) rotate(30deg); }
+  100% { transform: translateX(100%) rotate(30deg); }
+}
+
+.sale-badge i {
+  font-size: 0.8rem;
+  animation: pulse 1.5s infinite;
+}
 
   /* ========== PREPAID & COD BUTTONS WITH FILL ========== */
 .price-options {
@@ -759,51 +804,6 @@
     .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-/* Add this to your existing styles - sale badge with shimmer */
-.sale-badge {
-  background: #000;
-  color: #d4af37;
-  padding: 6px 14px;
-  border-radius: 60px;
-  font-weight: 800;
-  font-size: 0.9rem;
-  border: 2px solid #d4af37;
-  position: relative;
-  overflow: hidden;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sale-badge::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -60%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(212, 175, 55, 0.3),
-    rgba(212, 175, 55, 0.6),
-    rgba(212, 175, 55, 0.3),
-    transparent
-  );
-  transform: rotate(30deg);
-  animation: shimmerSale 2.5s infinite;
-}
-
-@keyframes shimmerSale {
-  0% { transform: translateX(-100%) rotate(30deg); }
-  100% { transform: translateX(100%) rotate(30deg); }
-}
-
-.sale-badge i {
-  font-size: 0.8rem;
-  animation: pulse 1.5s infinite;
-}
-
     /* tabs (description, specs, videos) */
     .tabs {
       background: #ffffff; border-radius: 20px; padding: 16px; margin-bottom: 16px;
@@ -1200,36 +1200,24 @@
       return stars;
     }
 
-function selectPaymentMethod(method, event) {
-  selectedPaymentMethod = method;
-  document.querySelectorAll('.price-option').forEach(opt => {
-    opt.classList.remove('selected');
-  });
-  event.currentTarget.classList.add('selected');
-  
-  // Add click effect animation
-  event.currentTarget.style.transform = 'scale(0.95)';
-  setTimeout(() => {
-    event.currentTarget.style.transform = '';
-  }, 200);
-  
-  // Scroll to action buttons with highlight effect
-  setTimeout(() => {
-    const actionButtons = document.querySelector('.action-buttons');
-    actionButtons.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    actionButtons.classList.add('scroll-highlight');
-    setTimeout(() => {
-      actionButtons.classList.remove('scroll-highlight');
-    }, 1000);
-  }, 300);
-}
-
-function formatTitle(title) {
-  return title.split(' ').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-  ).join(' ');
-}
-
+    // Function to select payment method
+    function selectPaymentMethod(method) {
+      selectedPaymentMethod = method;
+      document.querySelectorAll('.price-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      event.target.closest('.price-option').classList.add('selected');
+      
+      // Scroll to action buttons with highlight effect
+      setTimeout(() => {
+        const actionButtons = document.querySelector('.action-buttons');
+        actionButtons.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        actionButtons.classList.add('scroll-highlight');
+        setTimeout(() => {
+          actionButtons.classList.remove('scroll-highlight');
+        }, 1000);
+      }, 300);
+    }
 
     // Function to toggle review section
     function toggleReviews() {
@@ -1391,7 +1379,7 @@ function formatTitle(title) {
               <span class="live-badge"><i class="fa-solid fa-circle"></i> ${liveViewers} viewing now</span>
             </div>
             <div class="product-category">${product.category || 'Accessories'}</div>
-<h1 class="product-title">${formatTitle(product.title)}</h1>
+            <h1 class="product-title">${product.title}</h1>
             <div class="rating-row">
               <div class="stars">${getStars(product.rating)}</div>
               <span>${(product.rating || 4.5).toFixed(1)}</span>
@@ -1412,22 +1400,24 @@ function formatTitle(title) {
               </div>
             </div>
 
-          <div class="price-header">
-  <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
-  <span class="original-price">₹${originalPrice.toFixed(2)}</span>
+            <!-- PRICE CARD with redesigned quantity changer -->
+            <div class="price-card">
+              <div class="price-header">
+                <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
+                <span class="original-price">₹${originalPrice.toFixed(2)}</span>
   <span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE ${discount}%</span>
-</div>
+              </div>
               <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
-             <div class="price-options">
+         <div class="price-options">
   <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
     <div class="option-label">Prepaid</div>
     <div class="option-price">₹${prepaidPrice}</div>
-  </div>
-  <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
+                </div>
+             <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
     <div class="option-label">Cash on Delivery</div>
     <div class="option-price">₹${codPrice}</div>
-  </div>
-</div>
+                </div>
+              </div>
               
               <div class="quantity-stock-row">
                 <div class="quantity-controls">
@@ -1735,4 +1725,4 @@ function formatTitle(title) {
     });
   </script>
 </body>
-</html>
+</html> 
