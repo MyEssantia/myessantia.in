@@ -18,6 +18,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
+  <!-- Common CSS (loaded dynamically via JS but we also link for reliability) -->
   <link rel="stylesheet" href="common.css">
   <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="footer.css">
@@ -252,7 +253,7 @@
       z-index: 30;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      pointer-events: none; /* Prevents badge from interfering with hover */
+      pointer-events: none;
     }
     .sale-badge-image::after {
       content: '';
@@ -293,7 +294,7 @@
       align-items: center;
       gap: 4px;
       text-transform: uppercase;
-      pointer-events: none; /* Prevents badge from interfering with hover */
+      pointer-events: none;
     }
 
     .product-category {
@@ -408,6 +409,26 @@
       font-size: 1.1rem;
     }
 
+    /* ===== LOADING STATE ===== */
+    .loading-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #d4af37;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
@@ -487,7 +508,11 @@
     <!-- PRODUCT GRID -->
     <div class="container">
       <div id="product-grid-container" class="product-grid">
-        <!-- products injected via JS -->
+        <!-- Loading state -->
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Loading essentials...</p>
+        </div>
       </div>
     </div>
   </main>
@@ -502,22 +527,101 @@
   <script src="common.js"></script>
   
   <script>
-    // ===== LOCAL FUNCTIONS THAT DEPEND ON common.js =====
-    
-    // Add test data to enrich demo products
-    function addTestData() {
-      if (window.products && window.products.length > 0) {
-        window.products.forEach(product => {
-          if (!product.oldPrice) {
-            product.oldPrice = product.price * 1.2;
-          }
-          // Ensure category is set for filtering
-          if (!product.category) product.category = 'essentials';
+    // ===== FIREBASE CONFIGURATION (if not in common.js) =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
+
+    // Initialize Firebase if not already initialized
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    // ===== GLOBAL VARIABLES =====
+    let allProducts = [];
+    let essentialsProducts = [];
+
+    // ===== LOAD PRODUCTS FROM FIREBASE =====
+    async function loadEssentialsProducts() {
+      const gridContainer = document.getElementById('product-grid-container');
+      
+      try {
+        // Show loading state
+        gridContainer.innerHTML = `
+          <div class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Loading essentials...</p>
+          </div>
+        `;
+
+        // Fetch products from Firestore where showOnEssentials is true
+        const snapshot = await db.collection('products')
+          .where('showOnEssentials', '==', true)
+          .get();
+
+        if (snapshot.empty) {
+          gridContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-box-open"></i>
+              <h3>no essentials found</h3>
+              <p>Check back later for new arrivals!</p>
+            </div>
+          `;
+          return;
+        }
+
+        // Convert to array with proper data
+        allProducts = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            // Ensure we have the necessary fields
+            title: data.title || 'Untitled Product',
+            price: data.price || 0,
+            rating: data.rating || 0,
+            category: data.category || 'essentials',
+            images: data.media ? data.media.map(m => m.url) : [data.primaryImg || 'https://via.placeholder.com/300'],
+            primaryImg: data.primaryImg || (data.media?.[0]?.url) || 'https://via.placeholder.com/300',
+            secondaryImg: data.media?.[1]?.url || data.primaryImg || 'https://via.placeholder.com/300',
+            oldPrice: data.oldPrice || (data.price * 1.2), // For demo purposes
+            stock: data.stock || 0,
+            brand: data.brand || 'MyEssantia',
+            shortDesc: data.shortDesc || '',
+            description: data.description || '',
+            specs: data.specs || [],
+            showOnHome: data.showOnHome || false,
+            showOnAccessories: data.showOnAccessories || false,
+            showOnEssentials: data.showOnEssentials || false,
+            showOnNew: data.showOnNew || false,
+            highDemand: data.highDemand || false,
+            createdAt: data.createdAt
+          };
         });
+
+        essentialsProducts = [...allProducts];
+        renderProducts();
+        
+      } catch (error) {
+        console.error('Error loading essentials products:', error);
+        gridContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fa-solid fa-exclamation-triangle"></i>
+            <h3>error loading products</h3>
+            <p>Please try again later.</p>
+          </div>
+        `;
       }
     }
 
-    // Check if product is new (within 24h)
+    // ===== CHECK IF PRODUCT IS NEW (WITHIN 24H) =====
     function isNewProduct(product) {
       if (!product.createdAt) return false;
       const now = new Date();
@@ -526,37 +630,47 @@
       return hoursDiff < 24;
     }
 
-    // Render products in grid
+    // ===== FORMAT PRICE =====
+    function formatPrice(price) {
+      if (price === undefined || price === null) return '0';
+      return price.toFixed(0);
+    }
+
+    // ===== RENDER RATING STARS =====
+    function renderRating(rating) {
+      const stars = [];
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      
+      for (let i = 0; i < fullStars; i++) {
+        stars.push('<i class="fa-solid fa-star"></i>');
+      }
+      if (hasHalfStar) {
+        stars.push('<i class="fa-solid fa-star-half-alt"></i>');
+      }
+      const emptyStars = 5 - Math.ceil(rating);
+      for (let i = 0; i < emptyStars; i++) {
+        stars.push('<i class="fa-regular fa-star"></i>');
+      }
+      
+      return stars.join('') + `<span>${rating.toFixed(1)}</span>`;
+    }
+
+    // ===== RENDER PRODUCTS IN GRID =====
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
       
-      if (!gridContainer) return;
-
-      // Ensure products exist
-      if (!window.products) window.products = [];
-      addTestData();
-
-const essentialsProducts = (window.products || []).filter(p => {
-  // Show if category is 'essentials' (case-insensitive)
-  const categoryMatch = p.category && 
-    p.category.toLowerCase() === 'essentials';
-  
-  // OR if explicitly marked to show on essentials page
-  const pageMatch = p.showOnEssentials === true;
-  
-  // Show if either condition is true
-  return categoryMatch || pageMatch;
-});
-      
-      if (essentialsProducts.length === 0) {
-        gridContainer.innerHTML = `
-          <div class="empty-state">
-            <i class="fa-solid fa-box-open"></i>
-            <h3>no essentials found</h3>
-            <p>Check back later for new arrivals!</p>
-          </div>
-        `;
+      if (!gridContainer || essentialsProducts.length === 0) {
+        if (essentialsProducts.length === 0) {
+          gridContainer.innerHTML = `
+            <div class="empty-state">
+              <i class="fa-solid fa-box-open"></i>
+              <h3>no essentials found</h3>
+              <p>Check back later for new arrivals!</p>
+            </div>
+          `;
+        }
         return;
       }
 
@@ -572,7 +686,9 @@ const essentialsProducts = (window.products || []).filter(p => {
           case 'rating':
             sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             break;
-          default: break;
+          default: // 'popular' - sort by rating or keep as is
+            sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
         }
         return sorted;
       }
@@ -605,10 +721,10 @@ const essentialsProducts = (window.products || []).filter(p => {
                 </div>
                 <p class="product-category">${product.category || 'essential'}</p>
                 <h3 class="product-title">${product.title}</h3>
-                <div class="product-rating">${window.renderRating ? window.renderRating(product.rating) : '<span>★ 0.0</span>'}</div>
+                <div class="product-rating">${renderRating(product.rating || 0)}</div>
                 <div class="product-price-block">
-                  ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
-                  <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
+                  ${hasSale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
+                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
                 </div>
               </a>
               <button class="card-add-btn" onclick="handleEssentialAdd('${product.id}', this); event.stopPropagation();">
@@ -629,138 +745,121 @@ const essentialsProducts = (window.products || []).filter(p => {
       }
     }
 
-    // Handle add to cart with button feedback and cart opening
+    // ===== HANDLE ADD TO CART =====
     window.handleEssentialAdd = function(productId, btn) {
-      // Use the master function from common.js
-      if (typeof window.masterAddToCart === 'function') {
-        // Show added effect
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+      // Show added effect
+      btn.classList.add('added');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+      
+      // Find the product
+      const product = allProducts.find(p => p.id === productId);
+      
+      if (product) {
+        // Get existing cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         
-        // Call master function (it will add to cart, sync, etc.)
-        window.masterAddToCart(productId, false);
+        // Check if product already in cart
+        const existingItem = cart.find(item => item.id === productId);
         
-        // Open cart modal after a short delay
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          // Reset button after cart opens (optional, but keeps UI consistent)
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
-      } else {
-        // Fallback if master function not ready
-        console.warn('masterAddToCart not available yet');
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Try to use standard addToCart
-        if (typeof window.addToCart === 'function') {
-          window.addToCart(productId);
+        if (existingItem) {
+          existingItem.quantity = (existingItem.quantity || 1) + 1;
+        } else {
+          cart.push({
+            id: productId,
+            title: product.title,
+            price: product.price,
+            image: product.primaryImg || product.images?.[0],
+            quantity: 1
+          });
         }
         
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+        // Save to localStorage
+        localStorage.setItem('cart', JSON.stringify(cart));
+        
+        // Trigger cart update event
+        window.dispatchEvent(new CustomEvent('cartUpdated'));
       }
+      
+      // Open cart modal if function exists
+      setTimeout(() => {
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+        // Reset button after cart opens
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+        }, 500);
+      }, 200);
     };
+
+    // ===== LOAD COMPONENTS =====
+    async function loadComponents() {
+      try {
+        // Load header
+        const headerRes = await fetch('header.html').catch(() => null);
+        if (headerRes && headerRes.ok) {
+          const headerData = await headerRes.text();
+          document.getElementById('header').innerHTML = headerData;
+        } else {
+          // Fallback header
+          document.getElementById('header').innerHTML = `
+            <header style="background:#000; color:#fff; padding:1rem 0; border-bottom:3px solid #d4af37;">
+              <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
+                <a href="index.html" style="color:#d4af37; font-weight:800; font-size:1.8rem; text-decoration:none;">MYESSANTIA</a>
+                <nav>
+                  <a href="index.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">HOME</a>
+                  <a href="accessories.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">ACCESSORIES</a>
+                  <a href="essentials.html" class="nav-link active" style="color:#d4af37; margin:0 1rem; text-decoration:none;">ESSENTIALS</a>
+                </nav>
+              </div>
+            </header>
+          `;
+        }
+        
+        // Load footer
+        const footerRes = await fetch('footer.html').catch(() => null);
+        if (footerRes && footerRes.ok) {
+          const footerData = await footerRes.text();
+          document.getElementById('footer').innerHTML = footerData;
+        } else {
+          // Fallback footer
+          document.getElementById('footer').innerHTML = `
+            <footer style="background:#000; color:#fff; padding:2rem 0; margin-top:4rem; border-top:3px solid #d4af37;">
+              <div class="container" style="text-align:center;">
+                <p style="color:#d4af37;">&copy; 2025 MyEssantia — premium essentials</p>
+              </div>
+            </footer>
+          `;
+        }
+        
+        // Load modals
+        const modalsRes = await fetch('common.html').catch(() => null);
+        if (modalsRes && modalsRes.ok) {
+          const modalsData = await modalsRes.text();
+          document.getElementById('common-modals').innerHTML = modalsData;
+        }
+      } catch (e) {
+        console.warn('Error loading components:', e);
+      }
+    }
 
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
-      // Load components (header, footer, modals) using common.js function
-      if (typeof window.loadComponents === 'function') {
-        await window.loadComponents();
-      } else {
-        // Fallback manual loading with error handling
-        try {
-          // Try to load header
-          const headerRes = await fetch('header.html').catch(() => null);
-          if (headerRes && headerRes.ok) {
-            const headerData = await headerRes.text();
-            document.getElementById('header').innerHTML = headerData;
-          } else {
-            // Insert a simple fallback header
-            document.getElementById('header').innerHTML = `
-              <header style="background:#000; color:#fff; padding:1rem 0; border-bottom:3px solid #d4af37;">
-                <div class="container" style="display:flex; justify-content:space-between; align-items:center;">
-                  <a href="index.html" style="color:#d4af37; font-weight:800; font-size:1.8rem; text-decoration:none;">MYESSANTIA</a>
-                  <nav>
-                    <a href="index.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">HOME</a>
-                    <a href="accessories.html" class="nav-link" style="color:#fff; margin:0 1rem; text-decoration:none;">ACCESSORIES</a>
-                    <a href="essentials.html" class="nav-link active" style="color:#d4af37; margin:0 1rem; text-decoration:none;">ESSENTIALS</a>
-                  </nav>
-                </div>
-              </header>
-            `;
-          }
-          
-          // Try to load footer
-          const footerRes = await fetch('footer.html').catch(() => null);
-          if (footerRes && footerRes.ok) {
-            const footerData = await footerRes.text();
-            document.getElementById('footer').innerHTML = footerData;
-          } else {
-            // Insert a simple fallback footer
-            document.getElementById('footer').innerHTML = `
-              <footer style="background:#000; color:#fff; padding:2rem 0; margin-top:4rem; border-top:3px solid #d4af37;">
-                <div class="container" style="text-align:center;">
-                  <p style="color:#d4af37;">&copy; 2025 MyEssantia — premium essentials</p>
-                </div>
-              </footer>
-            `;
-          }
-          
-          // Try to load modals
-          const modalsRes = await fetch('common.html').catch(() => null);
-          if (modalsRes && modalsRes.ok) {
-            const modalsData = await modalsRes.text();
-            document.getElementById('common-modals').innerHTML = modalsData;
-          }
-        } catch (e) {
-          console.warn('Error loading components manually:', e);
-        }
-      }
+      // Load components first
+      await loadComponents();
+      
+      // Set active nav link
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="essentials.html"], .nav-link[href*="essentials"]').forEach(l => l.classList.add('active'));
+      }, 300);
 
-// Set active nav link after components are loaded
-setTimeout(() => {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also handle mobile menu
-  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.mobile-menu-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also try matching by text content or any other selector
-  if (document.querySelectorAll('.nav-link.active').length === 0) {
-    document.querySelectorAll('.nav-link').forEach(l => {
-      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
-        l.classList.add('active');
-      }
-    });
-    
-    // Also handle mobile menu for fallback
-    document.querySelectorAll('.mobile-menu-link').forEach(l => {
-      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
-        l.classList.add('active');
-      }
-    });
-  }
-}, 300);
-
-// Render products
-renderProducts();
+      // Load products from Firebase
+      await loadEssentialsProducts();
     });
 
-    // Scroll top button visibility
+    // ===== SCROLL TOP BUTTON =====
     window.addEventListener('scroll', () => {
       const btn = document.getElementById('scrollTop');
       if (btn) btn.classList.toggle('visible', window.scrollY > 200);
