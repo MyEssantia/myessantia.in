@@ -253,7 +253,7 @@
       z-index: 30;
       overflow: hidden;
       box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      pointer-events: none; /* Prevents badge from interfering with hover */
+      pointer-events: none;
     }
     .sale-badge-image::after {
       content: '';
@@ -294,7 +294,7 @@
       align-items: center;
       gap: 4px;
       text-transform: uppercase;
-      pointer-events: none; /* Prevents badge from interfering with hover */
+      pointer-events: none;
     }
 
     .product-category {
@@ -409,6 +409,26 @@
       font-size: 1.1rem;
     }
 
+    /* ===== LOADING STATE ===== */
+    .loading-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #d4af37;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     /* ===== SCROLL TOP ===== */
     .scroll-top {
       position: fixed; bottom: 20px; right: 20px; 
@@ -488,7 +508,10 @@
     <!-- PRODUCT GRID -->
     <div class="container">
       <div id="product-grid-container" class="product-grid">
-        <!-- products injected via JS -->
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Loading essentials...</p>
+        </div>
       </div>
     </div>
   </main>
@@ -499,52 +522,158 @@
   <!-- Common modals container -->
   <div id="common-modals"></div>
 
-  <!-- Load common.js first (contains Firebase, cart logic, component loading) -->
+  <!-- Firebase Configuration -->
+  <script>
+    // ========== FIREBASE CONFIGURATION ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    // ===== GLOBAL VARIABLES =====
+    let allProducts = [];
+    let essentialsProducts = [];
+    let isLoading = true;
+  </script>
+
+  <!-- Load common.js first (contains cart logic, component loading) -->
   <script src="common.js"></script>
   
   <script>
-    // ===== LOCAL FUNCTIONS THAT DEPEND ON common.js =====
-    
-    // Add test data to enrich demo products
-    function addTestData() {
-      if (window.products && window.products.length > 0) {
-        window.products.forEach(product => {
-          if (!product.oldPrice) {
-            product.oldPrice = product.price * 1.2;
-          }
-          // Ensure category is set for filtering
-          if (!product.category) product.category = 'essentials';
-        });
+    // ===== FETCH PRODUCTS FROM FIRESTORE =====
+    async function loadProductsFromFirestore() {
+      try {
+        const gridContainer = document.getElementById('product-grid-container');
+        
+        // Fetch products from Firestore
+        const snapshot = await db.collection('products')
+          .orderBy('createdAt', 'desc')
+          .get();
+        
+        allProducts = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        // Filter products that should show on essentials page
+        essentialsProducts = allProducts.filter(product => 
+          product.showOnEssentials === true || 
+          product.category?.toLowerCase() === 'essentials'
+        );
+        
+        isLoading = false;
+        
+        // Render products
+        renderProducts();
+        
+        // Set up sort listener
+        setupSortListener();
+        
+      } catch (error) {
+        console.error('Error loading products from Firestore:', error);
+        showErrorState('Failed to load products. Please refresh the page.');
       }
     }
 
-    // Check if product is new (within 24h)
+    // ===== SHOW ERROR STATE =====
+    function showErrorState(message) {
+      const gridContainer = document.getElementById('product-grid-container');
+      gridContainer.innerHTML = `
+        <div class="empty-state">
+          <i class="fa-solid fa-exclamation-triangle"></i>
+          <h3>something went wrong</h3>
+          <p>${message}</p>
+          <button onclick="location.reload()" style="margin-top:20px; padding:10px 30px; background:#000; color:#d4af37; border:2px solid #d4af37; border-radius:60px; cursor:pointer;">
+            <i class="fa-solid fa-rotate-right"></i> refresh
+          </button>
+        </div>
+      `;
+    }
+
+    // ===== CHECK IF PRODUCT IS NEW (WITHIN 24H) =====
     function isNewProduct(product) {
       if (!product.createdAt) return false;
       const now = new Date();
-      const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
+      let creationDate;
+      
+      if (product.createdAt.toDate) {
+        creationDate = product.createdAt.toDate();
+      } else if (product.createdAt.seconds) {
+        creationDate = new Date(product.createdAt.seconds * 1000);
+      } else {
+        creationDate = new Date(product.createdAt);
+      }
+      
       const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
       return hoursDiff < 24;
     }
 
-    // Render products in grid
+    // ===== CHECK IF PRODUCT IS ON SALE =====
+    function hasSale(product) {
+      return product.oldPrice && product.oldPrice > product.price;
+    }
+
+    // ===== FORMAT PRICE =====
+    function formatPrice(price) {
+      if (!price && price !== 0) return '0';
+      return price.toFixed(2);
+    }
+
+    // ===== RENDER RATING STARS =====
+    function renderRating(rating) {
+      if (!rating) return '<span>★ 0.0</span>';
+      const fullStars = Math.floor(rating);
+      let stars = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < fullStars) {
+          stars += '<i class="fa-solid fa-star"></i>';
+        } else if (i === fullStars && rating % 1 >= 0.5) {
+          stars += '<i class="fa-solid fa-star-half-alt"></i>';
+        } else {
+          stars += '<i class="fa-regular fa-star"></i>';
+        }
+      }
+      return `${stars} <span>${rating.toFixed(1)}</span>`;
+    }
+
+    // ===== GET PRIMARY AND SECONDARY IMAGES =====
+    function getProductImages(product) {
+      let primaryImg = '';
+      let secondaryImg = '';
+      
+      if (product.primaryImg) {
+        primaryImg = product.primaryImg;
+      } else if (product.media && product.media.length > 0) {
+        primaryImg = product.media[0].url;
+      }
+      
+      if (product.media && product.media.length > 1) {
+        secondaryImg = product.media[1].url;
+      } else {
+        secondaryImg = primaryImg;
+      }
+      
+      return { primaryImg, secondaryImg };
+    }
+
+    // ===== RENDER PRODUCTS =====
     function renderProducts() {
       const gridContainer = document.getElementById('product-grid-container');
       const sortSelect = document.getElementById('sort-select');
       
-      if (!gridContainer) return;
-
-      // Ensure products exist
-      if (!window.products) window.products = [];
-      addTestData();
-
-      // Filter essentials products
-   const essentialsProducts = (window.products || []).filter(p => 
-  p.category === 'essentials' || 
-  p.category?.toLowerCase() === 'essentials' ||
-  p.showOnEssentials === true
-);
-
+      if (isLoading) {
+        return; // Keep loading state
+      }
+      
       if (essentialsProducts.length === 0) {
         gridContainer.innerHTML = `
           <div class="empty-state">
@@ -558,7 +687,7 @@
 
       function getSortedProducts() {
         let sorted = [...essentialsProducts];
-        switch (sortSelect.value) {
+        switch (sortSelect?.value || 'popular') {
           case 'price-low':
             sorted.sort((a, b) => (a.price || 0) - (b.price || 0));
             break;
@@ -568,21 +697,30 @@
           case 'rating':
             sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0));
             break;
-          default: break;
+          default: // popular - sort by rating then newness
+            sorted.sort((a, b) => {
+              const ratingDiff = (b.rating || 0) - (a.rating || 0);
+              if (ratingDiff !== 0) return ratingDiff;
+              
+              // Sort by creation date if available
+              const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+              const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+              return dateB - dateA;
+            });
+            break;
         }
         return sorted;
       }
 
-      function renderAllProducts() {
+      function renderCurrentProducts() {
         const sortedProducts = getSortedProducts();
         
         let gridHtml = '';
         sortedProducts.forEach(product => {
-          const mainImage = product.images?.[0] || product.primaryImg || 'https://via.placeholder.com/300';
-          const secondImage = product.images?.[1] || product.secondaryImg || mainImage;
-          
-          const hasSale = product.oldPrice && product.oldPrice > product.price;
+          const { primaryImg, secondaryImg } = getProductImages(product);
+          const sale = hasSale(product);
           const isNew = isNewProduct(product);
+          const category = product.category || 'essential';
           
           gridHtml += `
             <div class="product-card" data-product-id="${product.id}">
@@ -593,18 +731,18 @@
                       <i class="fa-regular fa-star"></i> NEW
                     </span>
                   ` : ''}
-                  ${hasSale ? `
+                  ${sale ? `
                     <span class="sale-badge-image">SALE</span>
                   ` : ''}
-                  <div class="primary-img" style="background-image: url('${mainImage}');"></div>
-                  <div class="secondary-img" style="background-image: url('${secondImage}');"></div>
+                  <div class="primary-img" style="background-image: url('${primaryImg || 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image'}');"></div>
+                  <div class="secondary-img" style="background-image: url('${secondaryImg || primaryImg || 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image'}');"></div>
                 </div>
-                <p class="product-category">${product.category || 'essential'}</p>
-                <h3 class="product-title">${product.title}</h3>
-                <div class="product-rating">${window.renderRating ? window.renderRating(product.rating) : '<span>★ 0.0</span>'}</div>
+                <p class="product-category">${category}</p>
+                <h3 class="product-title">${product.title || 'Untitled Product'}</h3>
+                <div class="product-rating">${renderRating(product.rating)}</div>
                 <div class="product-price-block">
-                  ${hasSale ? `<span class="old-price">₹${window.formatPrice ? window.formatPrice(product.oldPrice) : product.oldPrice}</span>` : ''}
-                  <span class="current-price"><span class="inr-symbol">₹</span>${window.formatPrice ? window.formatPrice(product.price) : product.price}</span>
+                  ${sale ? `<span class="old-price">₹${formatPrice(product.oldPrice)}</span>` : ''}
+                  <span class="current-price"><span class="inr-symbol">₹</span>${formatPrice(product.price)}</span>
                 </div>
               </a>
               <button class="card-add-btn" onclick="handleEssentialAdd('${product.id}', this); event.stopPropagation();">
@@ -617,57 +755,43 @@
         gridContainer.innerHTML = gridHtml;
       }
 
-      renderAllProducts();
-      
+      renderCurrentProducts();
+    }
+
+    // ===== SETUP SORT LISTENER =====
+    function setupSortListener() {
+      const sortSelect = document.getElementById('sort-select');
       if (sortSelect) {
-        sortSelect.removeEventListener('change', renderAllProducts);
-        sortSelect.addEventListener('change', renderAllProducts);
+        sortSelect.addEventListener('change', renderProducts);
       }
     }
 
-    // Handle add to cart with button feedback and cart opening
+    // ===== HANDLE ADD TO CART =====
     window.handleEssentialAdd = function(productId, btn) {
-      // Use the master function from common.js
+      // Show added effect
+      btn.classList.add('added');
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
+      
+      // Try to use masterAddToCart from common.js
       if (typeof window.masterAddToCart === 'function') {
-        // Show added effect
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Call master function (it will add to cart, sync, etc.)
         window.masterAddToCart(productId, false);
-        
-        // Open cart modal after a short delay
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          // Reset button after cart opens (optional, but keeps UI consistent)
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+      } else if (typeof window.addToCart === 'function') {
+        window.addToCart(productId);
       } else {
-        // Fallback if master function not ready
-        console.warn('masterAddToCart not available yet');
-        btn.classList.add('added');
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> added';
-        
-        // Try to use standard addToCart
-        if (typeof window.addToCart === 'function') {
-          window.addToCart(productId);
-        }
-        
-        setTimeout(() => {
-          if (typeof window.openCart === 'function') {
-            window.openCart();
-          }
-          setTimeout(() => {
-            btn.classList.remove('added');
-            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
-        }, 200);
+        console.warn('Cart function not available');
       }
+      
+      // Open cart modal after a short delay
+      setTimeout(() => {
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+        // Reset button after cart opens
+        setTimeout(() => {
+          btn.classList.remove('added');
+          btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+        }, 500);
+      }, 200);
     };
 
     // ===== INITIALIZATION =====
@@ -726,34 +850,33 @@
         }
       }
 
-// Set active nav link after components are loaded
-setTimeout(() => {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also handle mobile menu
-  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.mobile-menu-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also try matching by text content or any other selector
-  if (document.querySelectorAll('.nav-link.active').length === 0) {
-    document.querySelectorAll('.nav-link').forEach(l => {
-      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
-        l.classList.add('active');
-      }
-    });
-    
-    // Also handle mobile menu for fallback
-    document.querySelectorAll('.mobile-menu-link').forEach(l => {
-      if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
-        l.classList.add('active');
-      }
-    });
-  }
-}, 300);
+      // Set active nav link after components are loaded
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+        
+        // Also handle mobile menu
+        document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.mobile-menu-link[href="essentials.html"]').forEach(l => l.classList.add('active'));
+        
+        // Fallback: try matching by text content
+        if (document.querySelectorAll('.nav-link.active').length === 0) {
+          document.querySelectorAll('.nav-link').forEach(l => {
+            if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
+              l.classList.add('active');
+            }
+          });
+          
+          document.querySelectorAll('.mobile-menu-link').forEach(l => {
+            if (l.textContent.includes('ESSENTIALS') || l.href?.includes('essentials')) {
+              l.classList.add('active');
+            }
+          });
+        }
+      }, 300);
 
-// Render products
-renderProducts();
+      // Load products from Firestore
+      await loadProductsFromFirestore();
     });
 
     // Scroll top button visibility
@@ -763,4 +886,4 @@ renderProducts();
     });
   </script>
 </body>
-</html> 
+</html>
