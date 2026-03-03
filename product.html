@@ -1373,22 +1373,27 @@
             
             <!-- DESKTOP REVIEWS (hidden on mobile) -->
             <div class="desktop-reviews">
-              <div class="review-mini-card">
-                <div class="review-mini-header">
-                  <span>Top Reviews</span>
-                  <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
-                </div>
-                ${reviews.slice(0, 3).map(r => `
-                  <div class="review-mini-item">
-                    <div class="review-mini-avatar">${r.avatar}</div>
-                    <div>
-                      <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
-                      <div style="font-size: 0.7rem; color: #666;">${r.city} ${r.verified ? '✓' : ''}</div>
-                      <div style="margin-top: 4px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
-                      <p style="margin-top: 4px; font-size: 0.75rem;">${r.comment.substring(0, 60)}${r.comment.length > 60 ? '...' : ''}</p>
+              <div class="reviews-header">
+                <span>Customer Reviews (${reviewCount})</span>
+                <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
+              </div>
+              <div id="reviews-container" class="reviews-container">
+                ${reviews.map(r => `
+                  <div class="review-card">
+                    <div style="display: flex; gap: 10px; margin-bottom: 6px;">
+                      <div class="reviewer-avatar">${r.avatar}</div>
+                      <div>
+                        <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
+                        <div style="font-size: 0.7rem;">${r.city} • ${r.time} days ago ${r.verified ? '✓ Verified' : ''}</div>
+                      </div>
                     </div>
+                    <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
+                    <p style="font-size: 0.75rem;">${r.comment}</p>
                   </div>
                 `).join('')}
+              </div>
+              <div id="view-more-btn" class="view-more-btn" onclick="toggleReviews()">
+                <i class="fa-solid fa-chevron-down"></i> View More Reviews
               </div>
             </div>
           </div>
@@ -1563,12 +1568,10 @@
               </div>
             </div>
             
-            
-            <!-- RATING CHART (mobile only – moved here via JS after render) -->
-            <div id="mobileRatingChart"></div>
 
             <!-- mobile reviews -->
             <div class="mobile-reviews">
+                      <div id="mobileRatingChart"></div>
               <div class="reviews-header">
                 <span>Customer Reviews (${reviewCount})</span>
                 <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
