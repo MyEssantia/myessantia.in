@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="footer.css">
   
   <style>
-        /* ===== GLOBAL & RESETS ===== */
+    /* ===== GLOBAL & RESETS ===== */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { 
@@ -647,6 +647,43 @@
       from { opacity: 0; transform: translateY(-8px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    /* ===== CART MODAL FIXES ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border: 3px solid #000;
+      border-radius: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.1);
+    }
+
+    /* Ensure no left-aligned carts appear */
+    .cart-sidebar, .cart-drawer, [class*="cart-left"] {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -727,7 +764,7 @@
   <!-- Footer loaded dynamically -->
   <div id="footer"></div>
 
-  <!-- Common Modals -->
+  <!-- Common Modals (only one instance) -->
   <div id="common-modals"></div>
 
   <script src="common.js"></script>
@@ -741,14 +778,82 @@
     // ===== ENQUIRY PAGE SPECIFIC VARIABLES =====
     let enquiries = [];
 
+    // ===== OVERRIDE OPEN CART FUNCTION TO PREVENT DUPLICATES =====
+    const originalOpenCart = window.openCart;
+    window.openCart = function() {
+      console.log('Opening cart modal (overridden)');
+      
+      // First, remove any stray cart modals or left-aligned carts
+      const strayCarts = document.querySelectorAll('.cart-sidebar, .cart-drawer, [class*="cart-left"], [class*="cart-right"], .cart-modal:not(#cart-modal)');
+      strayCarts.forEach(cart => {
+        console.log('Removing stray cart:', cart);
+        cart.remove();
+      });
+      
+      // Close any other open modals first
+      const profileModal = document.getElementById('profile-modal');
+      if (profileModal && profileModal.classList.contains('show')) {
+        profileModal.classList.remove('show');
+      }
+      
+      // Call original function if it exists
+      if (typeof originalOpenCart === 'function') {
+        originalOpenCart();
+      } else {
+        // Fallback if original doesn't exist
+        const cartModal = document.getElementById('cart-modal');
+        if (cartModal) {
+          if (typeof window.renderCartItems === 'function') {
+            window.renderCartItems();
+          }
+          cartModal.style.display = 'flex';
+          cartModal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+        } else {
+          // Try to load modals
+          loadCommonModals().then(() => {
+            setTimeout(() => {
+              const modal = document.getElementById('cart-modal');
+              if (modal) {
+                if (typeof window.renderCartItems === 'function') {
+                  window.renderCartItems();
+                }
+                modal.style.display = 'flex';
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+              }
+            }, 100);
+          });
+        }
+      }
+    };
+
+    // ===== OVERRIDE CLOSE MODAL FUNCTION =====
+    const originalCloseModal = window.closeModal;
+    window.closeModal = function(modalId) {
+      console.log('Closing modal:', modalId);
+      
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        modal.style.display = '';
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      
+      // Also call original if it exists
+      if (typeof originalCloseModal === 'function') {
+        originalCloseModal(modalId);
+      }
+    };
+
     // ===== ENQUIRY FUNCTIONS =====
     async function loadUserEnquiries() {
-      if (!currentUser) return;
+      if (!window.currentUser) return;
       
       try {
         // Load from Firebase first
         const enquiriesSnapshot = await db.collection('enquiries')
-          .where('userId', '==', currentUser.uid)
+          .where('userId', '==', window.currentUser.uid)
           .orderBy('timestamp', 'desc')
           .get();
         
@@ -758,20 +863,20 @@
         }));
         
         // Cache to localStorage for offline access
-        localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+        localStorage.setItem(`enquiries_${window.currentUser.uid}`, JSON.stringify(enquiries));
         
         // Migrate guest enquiries if any
         const guestEnquiries = localStorage.getItem('essence_guest_enquiries');
         if (guestEnquiries && enquiries.length === 0) {
           try {
             const guest = JSON.parse(guestEnquiries);
-            const userGuestEnquiries = guest.filter(e => e.email === currentUser.email);
+            const userGuestEnquiries = guest.filter(e => e.email === window.currentUser.email);
             
             // Save migrated enquiries to Firebase
             for (const enquiry of userGuestEnquiries) {
               await db.collection('enquiries').add({
                 ...enquiry,
-                userId: currentUser.uid,
+                userId: window.currentUser.uid,
                 migratedFromGuest: true,
                 migratedAt: firebase.firestore.FieldValue.serverTimestamp()
               });
@@ -779,7 +884,7 @@
             
             // Reload from Firebase after migration
             const newSnapshot = await db.collection('enquiries')
-              .where('userId', '==', currentUser.uid)
+              .where('userId', '==', window.currentUser.uid)
               .orderBy('timestamp', 'desc')
               .get();
             
@@ -796,7 +901,7 @@
       } catch (error) {
         console.error('Error loading enquiries from Firebase:', error);
         // Fallback to localStorage
-        const storageKey = `enquiries_${currentUser.uid}`;
+        const storageKey = `enquiries_${window.currentUser.uid}`;
         const stored = localStorage.getItem(storageKey);
         
         if (stored) {
@@ -828,15 +933,15 @@
     }
 
     async function saveEnquiries() {
-      if (currentUser) {
+      if (window.currentUser) {
         // Save to Firebase
         try {
           // For existing enquiries, we need to update them in Firebase
           for (const enquiry of enquiries) {
-            if (!enquiry.firebaseSynced) {
+            if (!enquiry.firebaseSynced && !enquiry.id.startsWith('ENQ')) {
               // Check if this enquiry already exists in Firebase
               const existingQuery = await db.collection('enquiries')
-                .where('userId', '==', currentUser.uid)
+                .where('userId', '==', window.currentUser.uid)
                 .where('timestamp', '==', enquiry.timestamp)
                 .where('message', '==', enquiry.message)
                 .get();
@@ -845,7 +950,7 @@
                 // New enquiry, add to Firebase
                 await db.collection('enquiries').add({
                   ...enquiry,
-                  userId: currentUser.uid,
+                  userId: window.currentUser.uid,
                   createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 enquiry.firebaseSynced = true;
@@ -854,11 +959,11 @@
           }
           
           // Update localStorage cache
-          localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+          localStorage.setItem(`enquiries_${window.currentUser.uid}`, JSON.stringify(enquiries));
         } catch (error) {
           console.error('Error saving enquiries to Firebase:', error);
           // Fallback to localStorage only
-          localStorage.setItem(`enquiries_${currentUser.uid}`, JSON.stringify(enquiries));
+          localStorage.setItem(`enquiries_${window.currentUser.uid}`, JSON.stringify(enquiries));
         }
       } else {
         // Guest - save to localStorage only
@@ -873,7 +978,7 @@
         // Remove from local array
         enquiries = enquiries.filter(e => e.id !== enquiryId);
         
-        if (currentUser && enquiryToDelete && !enquiryToDelete.id.startsWith('ENQ')) {
+        if (window.currentUser && enquiryToDelete && !enquiryToDelete.id.startsWith('ENQ')) {
           // If it's a Firebase document (not a temp ENQ ID), delete from Firebase
           try {
             await db.collection('enquiries').doc(enquiryId).delete();
@@ -958,7 +1063,7 @@
     function updateLoginPrompt() {
       const prompt = document.getElementById('loginPrompt');
       if (prompt) {
-        if (currentUser) {
+        if (window.currentUser) {
           prompt.style.display = 'none';
         } else {
           prompt.style.display = 'flex';
@@ -1036,7 +1141,7 @@
             images: imageDataUrls,
             status: 'received',
             timestamp: Date.now(),
-            userId: currentUser?.uid || 'guest'
+            userId: window.currentUser?.uid || 'guest'
           };
 
           enquiries.push(newEnquiry);
@@ -1063,7 +1168,7 @@
       }
 
       // Load initial enquiries
-      if (currentUser) {
+      if (window.currentUser) {
         loadUserEnquiries();
       } else {
         loadGuestEnquiries();
@@ -1079,19 +1184,36 @@
       updateLoginPrompt();
     };
 
-    // ===== INITIALIZATION =====
-    document.addEventListener('DOMContentLoaded', async () => {
-      // First, clear any existing cart modals that might be hanging around
-      const existingCartModal = document.getElementById('cart-modal');
-      if (existingCartModal) {
-        existingCartModal.remove();
+    // ===== CLEANUP FUNCTION =====
+    function cleanupDuplicateModals() {
+      // Remove any duplicate cart modals
+      const allCartModals = document.querySelectorAll('[id*="cart-modal"]');
+      if (allCartModals.length > 1) {
+        console.log('Found duplicate cart modals, cleaning up');
+        for (let i = 1; i < allCartModals.length; i++) {
+          allCartModals[i].remove();
+        }
       }
       
-      const existingProfileModal = document.getElementById('profile-modal');
-      if (existingProfileModal) {
-        existingProfileModal.remove();
+      // Remove any stray left-aligned carts
+      const strayCarts = document.querySelectorAll('.cart-sidebar, .cart-drawer, [class*="cart-left"], [class*="cart-right"]');
+      strayCarts.forEach(cart => cart.remove());
+      
+      // Ensure the main cart modal has proper styling
+      const mainCartModal = document.getElementById('cart-modal');
+      if (mainCartModal) {
+        mainCartModal.style.display = 'none';
+        mainCartModal.classList.remove('show');
       }
+    }
 
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('DOM Content Loaded - Enquire Page');
+      
+      // First, clear any existing modals that might be hanging around
+      cleanupDuplicateModals();
+      
       // Load components
       if (typeof window.loadComponents === 'function') {
         await window.loadComponents();
@@ -1101,14 +1223,15 @@
       await loadCommonModals();
       
       // Set active nav
-   setTimeout(() => {
-  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.nav-link[href="enquire.html"]').forEach(l => l.classList.add('active'));
-  
-  // Also handle mobile menu
-  document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
-  document.querySelectorAll('.mobile-menu-link[href="enquire.html"]').forEach(l => l.classList.add('active'));
-}, 200);
+      setTimeout(() => {
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link[href="enquire.html"]').forEach(l => l.classList.add('active'));
+        
+        // Also handle mobile menu
+        document.querySelectorAll('.mobile-menu-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.mobile-menu-link[href="enquire.html"]').forEach(l => l.classList.add('active'));
+      }, 200);
+      
       // Initialize enquiry page
       updateLoginPrompt();
       initializeEnquiry();
@@ -1134,6 +1257,20 @@
           const data = await res.text();
           container.innerHTML = data;
           console.log('Modals loaded successfully');
+          
+          // After loading modals, ensure they're properly hidden
+          setTimeout(() => {
+            const cartModal = document.getElementById('cart-modal');
+            if (cartModal) {
+              cartModal.style.display = 'none';
+              cartModal.classList.remove('show');
+            }
+            const profileModal = document.getElementById('profile-modal');
+            if (profileModal) {
+              profileModal.style.display = 'none';
+              profileModal.classList.remove('show');
+            }
+          }, 100);
         }
       } catch (e) { 
         console.warn('Modals not loaded', e); 
@@ -1142,30 +1279,18 @@
 
     window.addEventListener('scroll', handleScroll);
 
-    // Override the openCart function to prevent duplicates
-    const originalOpenCart = window.openCart;
-    window.openCart = function() {
-      // Close any other open modals first
-      const profileModal = document.getElementById('profile-modal');
-      if (profileModal && profileModal.classList.contains('show')) {
-        profileModal.classList.remove('show');
-      }
-      
-      // Remove any stray cart modals
-      const strayCarts = document.querySelectorAll('.cart-modal:not(#cart-modal)');
-      strayCarts.forEach(cart => cart.remove());
-      
-      // Call original function
-      if (originalOpenCart) {
-        originalOpenCart();
-      }
-    };
-
     // Listen for auth state changes to reload enquiries
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
+        window.currentUser = {
+          uid: user.uid,
+          name: user.displayName || user.email.split('@')[0],
+          email: user.email,
+          picture: user.photoURL || 'https://via.placeholder.com/80'
+        };
         loadUserEnquiries();
       } else {
+        window.currentUser = null;
         enquiries = [];
         loadGuestEnquiries();
       }
@@ -1176,6 +1301,7 @@
     window.closeModal = function(modalId) {
       const modal = document.getElementById(modalId);
       if (modal) {
+        modal.style.display = 'none';
         modal.classList.remove('show');
         document.body.style.overflow = '';
       }
@@ -1183,17 +1309,8 @@
 
     // Clean up any duplicate elements on load
     window.addEventListener('load', function() {
-      // Remove any duplicate cart modals
-      const allModals = document.querySelectorAll('[id*="cart-modal"]');
-      if (allModals.length > 1) {
-        for (let i = 1; i < allModals.length; i++) {
-          allModals[i].remove();
-        }
-      }
-      
-      // Remove any stray left-aligned carts
-      const strayCarts = document.querySelectorAll('.cart-sidebar, [class*="cart-left"], [class*="cart-drawer"]');
-      strayCarts.forEach(cart => cart.remove());
+      console.log('Window loaded - Enquire Page');
+      cleanupDuplicateModals();
     });
   </script>
 </body>
