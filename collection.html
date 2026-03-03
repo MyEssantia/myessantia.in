@@ -477,7 +477,27 @@
     .scroll-top.visible { opacity: 1; transform: translateY(0); }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== CART MODAL BUTTON STYLES ===== */
+    .cart-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .cart-buttons .btn {
+      text-decoration: none !important;
+      border-bottom: none !important;
+    }
+    
+    .cart-buttons .btn:hover,
+    .cart-buttons .btn:focus,
+    .cart-buttons .btn:active {
+      text-decoration: none !important;
+      border-bottom: none !important;
+    }
+    
+    /* Mobile-specific styles */
     @media (max-width: 768px) {
       .filter-bar { 
         flex-direction: column; 
@@ -492,12 +512,33 @@
       .results-count {
         text-align: center;
       }
+      
+      /* Align buttons on same line for mobile */
+      .cart-buttons {
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      
+      .cart-buttons .btn {
+        margin: 0 !important;
+        white-space: nowrap;
+        flex: 0 1 auto;
+        min-width: 120px;
+      }
     }
 
     @media (max-width: 480px) {
       .category-chip {
         padding: 0.4rem 1rem;
         font-size: 0.75rem;
+      }
+      
+      .cart-buttons .btn {
+        min-width: 100px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
       }
     }
   </style>
@@ -746,6 +787,11 @@
           </div>
         `;
       }).join('');
+      
+      // Update results count
+      if (resultsCount) {
+        resultsCount.textContent = `Showing ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''}`;
+      }
     }
 
     // Handle add to cart with button feedback
@@ -762,19 +808,55 @@
         setTimeout(() => {
           if (typeof window.openCart === 'function') {
             window.openCart();
+            
+            // Remove underline from cart modal buttons
+            setTimeout(() => {
+              const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
+              cartButtons.forEach(btn => {
+                btn.style.textDecoration = 'none';
+                btn.style.borderBottom = 'none';
+              });
+            }, 100);
           }
+          
+          // Reset button after 2 seconds
           setTimeout(() => {
             btn.classList.remove('added');
             btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
-          }, 500);
+          }, 2000);
         }, 200);
       } else {
         // Fallback
         if (typeof window.addToCart === 'function') {
           window.addToCart(productId);
+          
+          setTimeout(() => {
+            btn.classList.remove('added');
+            btn.innerHTML = '<i class="fa-solid fa-cart-plus"></i> add';
+          }, 2000);
         }
       }
     };
+
+    // Function to ensure cart buttons have no underline
+    function ensureCartButtonsNoUnderline() {
+      const cartButtons = document.querySelectorAll('.cart-buttons .btn, .cart-modal .btn, .cart-footer .btn');
+      cartButtons.forEach(btn => {
+        btn.style.textDecoration = 'none';
+        btn.style.borderBottom = 'none';
+        
+        // Also remove any hover underlines
+        btn.addEventListener('mouseenter', function() {
+          this.style.textDecoration = 'none';
+          this.style.borderBottom = 'none';
+        });
+        
+        btn.addEventListener('mouseleave', function() {
+          this.style.textDecoration = 'none';
+          this.style.borderBottom = 'none';
+        });
+      });
+    }
 
     // ===== INITIALIZATION =====
     document.addEventListener('DOMContentLoaded', async () => {
@@ -806,6 +888,9 @@
       // Add event listeners
       document.getElementById('sort-filter')?.addEventListener('change', renderProducts);
       document.getElementById('search-input')?.addEventListener('input', debounce(renderProducts, 300));
+      
+      // Ensure cart buttons have no underline when cart opens
+      document.addEventListener('cartOpened', ensureCartButtonsNoUnderline);
     });
 
     window.addEventListener('load', () => {
@@ -816,6 +901,9 @@
           renderProducts();
         }
       }
+      
+      // Final check for cart buttons
+      setTimeout(ensureCartButtonsNoUnderline, 1000);
     });
 
     // Watch for products to be loaded
