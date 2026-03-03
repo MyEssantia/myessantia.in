@@ -2510,8 +2510,6 @@ window.editProduct = async function(id) {
   showOnNew.checked = product.showOnNew || false;
   productHighDemand.checked = product.highDemand || false;
   updateHighDemandChip();
-
-  formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
   
   // Update timer if needed
   if (product.createdAt) {
