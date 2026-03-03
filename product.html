@@ -468,14 +468,14 @@
     }
 
     /* ========== REVIEW SECTION ========== */
-    .reviews-container {
-      max-height: 400px;
-      overflow-y: auto;
-      transition: max-height 0.5s ease;
-      scrollbar-width: thin;
-      scrollbar-color: #d4af37 #f0f0f0;
-    }
-    
+ .reviews-container {
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden; /* Add this line */
+  transition: max-height 0.5s ease;
+  scrollbar-width: thin;
+  scrollbar-color: #d4af37 #f0f0f0;
+}
     .reviews-container::-webkit-scrollbar {
       width: 6px;
     }
@@ -1432,19 +1432,19 @@
               <div class="price-header">
                 <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
                 <span class="original-price">₹${originalPrice.toFixed(2)}</span>
-                <span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE ${discount}%</span>
+<span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE</span>
               </div>
               <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
-              <div class="price-options">
-                <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
-                  <div class="option-label">Prepaid</div>
-                  <div class="option-price">₹${prepaidPrice}</div>
-                </div>
-                <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
-                  <div class="option-label">Cash on Delivery</div>
-                  <div class="option-price">₹${codPrice}</div>
-                </div>
-              </div>
+          <div class="price-options">
+  <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
+    <div class="option-label">Prepaid</div>
+    <div class="option-price">₹${prepaidPrice.toFixed(2)}</div>
+  </div>
+  <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
+    <div class="option-label">Cash on Delivery</div>
+    <div class="option-price">₹${codPrice.toFixed(2)}</div>
+  </div>
+</div>
               
               <div class="quantity-stock-row">
                 <div class="quantity-controls">
