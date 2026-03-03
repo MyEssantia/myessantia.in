@@ -1200,24 +1200,29 @@
       return stars;
     }
 
-    // Function to select payment method
-    function selectPaymentMethod(method) {
-      selectedPaymentMethod = method;
-      document.querySelectorAll('.price-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      event.target.closest('.price-option').classList.add('selected');
-      
-      // Scroll to action buttons with highlight effect
-      setTimeout(() => {
-        const actionButtons = document.querySelector('.action-buttons');
-        actionButtons.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        actionButtons.classList.add('scroll-highlight');
-        setTimeout(() => {
-          actionButtons.classList.remove('scroll-highlight');
-        }, 1000);
-      }, 300);
-    }
+ function selectPaymentMethod(method, event) {
+  selectedPaymentMethod = method;
+  document.querySelectorAll('.price-option').forEach(opt => {
+    opt.classList.remove('selected');
+  });
+  event.currentTarget.classList.add('selected');
+  
+  // Add click effect animation
+  event.currentTarget.style.transform = 'scale(0.95)';
+  setTimeout(() => {
+    event.currentTarget.style.transform = '';
+  }, 200);
+  
+  // Scroll to action buttons with highlight effect
+  setTimeout(() => {
+    const actionButtons = document.querySelector('.action-buttons');
+    actionButtons.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    actionButtons.classList.add('scroll-highlight');
+    setTimeout(() => {
+      actionButtons.classList.remove('scroll-highlight');
+    }, 1000);
+  }, 300);
+}
 
     // Function to toggle review section
     function toggleReviews() {
