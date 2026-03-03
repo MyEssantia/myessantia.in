@@ -87,7 +87,7 @@
     .thumbnail:hover { border-color: #d4af37; transform: translateY(-2px) scale(0.98); }
     .thumbnail.active { border-color: #d4af37; border-width: 3px; }
 
-    /* Rating Chart Styles – will be repositioned for mobile via JS */
+    /* Rating Chart Styles */
     .rating-chart-card {
       background: #ffffff;
       border-radius: 16px;
@@ -298,7 +298,7 @@
       animation: pulse 1.5s infinite;
     }
 
-    /* ========== PREPAID & COD BUTTONS – PERMANENT FILL ========== */
+    /* ========== PREPAID & COD BUTTONS ========== */
     .price-options {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -468,14 +468,15 @@
     }
 
     /* ========== REVIEW SECTION ========== */
- .reviews-container {
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden; /* Add this line */
-  transition: max-height 0.5s ease;
-  scrollbar-width: thin;
-  scrollbar-color: #d4af37 #f0f0f0;
-}
+    .reviews-container {
+      max-height: 400px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      transition: max-height 0.5s ease;
+      scrollbar-width: thin;
+      scrollbar-color: #d4af37 #f0f0f0;
+    }
+    
     .reviews-container::-webkit-scrollbar {
       width: 6px;
     }
@@ -753,7 +754,7 @@
     .promise-content h4 { font-size: 0.85rem; font-weight: 800; color: #d4af37; margin-bottom: 2px; }
     .promise-content p { font-size: 0.7rem; color: #eee; }
 
-    /* New Razorpay popup card – appears above the guarantee bar */
+    /* New Razorpay popup card */
     .razorpay-popup {
       display: none;
       background: #fff9e6;
@@ -832,6 +833,219 @@
       font-weight: 800;
     }
 
+    /* ========== HIGH DEMAND MODAL STYLES ========== */
+    .modal {
+      position: fixed;
+      z-index: 9999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, #ffffff, #fcfaf7);
+      margin: 10% auto;
+      padding: 0;
+      border: 4px solid #000;
+      border-radius: 30px;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 12px 12px 0 rgba(212, 175, 55, 0.3);
+      animation: slideDown 0.4s ease;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      background: #000;
+      color: #d4af37;
+      padding: 20px 25px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border-bottom: 3px solid #d4af37;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      flex: 1;
+    }
+
+    .close-modal {
+      color: #d4af37;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: #1a1a1a;
+      border: 2px solid #d4af37;
+    }
+
+    .close-modal:hover {
+      background: #d4af37;
+      color: #000;
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 25px;
+      text-align: center;
+    }
+
+    .warning-icon {
+      background: #d4af37;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border: 3px solid #000;
+      box-shadow: 5px 5px 0 rgba(0,0,0,0.2);
+    }
+
+    .warning-icon i {
+      font-size: 2.5rem;
+      color: #000;
+      animation: pulse 1.5s infinite;
+    }
+
+    .modal-message {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .modal-message strong {
+      color: #d4af37;
+      background: #000;
+      padding: 3px 10px;
+      border-radius: 40px;
+      display: inline-block;
+      margin: 0 3px;
+    }
+
+    .stock-info {
+      background: #fff3e0;
+      border: 2px solid #000;
+      border-radius: 60px;
+      padding: 12px 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .stock-info i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+
+    .notify-text {
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+      color: #333;
+    }
+
+    .email-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    #notifyEmail {
+      padding: 15px 20px;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    #notifyEmail:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+    }
+
+    .notify-btn {
+      background: #000;
+      color: #d4af37;
+      border: 2px solid #d4af37;
+      padding: 15px 20px;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .notify-btn:hover {
+      background: #d4af37;
+      color: #000;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    }
+
+    .notify-btn:active {
+      transform: scale(0.95);
+    }
+
+    .success-message {
+      background: #d4f0d4;
+      border: 2px solid #000;
+      border-radius: 60px;
+      padding: 15px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 700;
+      color: #000;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .success-message i {
+      color: #00a86b;
+      font-size: 1.2rem;
+    }
+
+    .small-note {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .small-note i {
+      color: #d4af37;
+    }
+
     /* action buttons */
     .action-buttons {
       display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;
@@ -847,7 +1061,7 @@
     .btn-primary:hover { background: #d4af37; color: #000; border-color: #000; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
     .btn-secondary:hover { background: #000; color: #d4af37; border-color: #d4af37; transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
 
-    /* tabs (description, specs, videos) */
+    /* tabs */
     .tabs {
       background: #ffffff; border-radius: 20px; padding: 16px; margin-bottom: 16px;
       border: 2px solid #000; box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
@@ -929,6 +1143,12 @@
       animation: slideInNotification 0.3s ease;
     }
     
+    .notification.error {
+      background: #ff4444;
+      color: #fff;
+      border-color: #000;
+    }
+    
     @keyframes slideInNotification {
       from { transform: translateX(-100%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
@@ -943,6 +1163,56 @@
     }
     .scroll-top.visible { opacity: 1; }
     .scroll-top:hover { background: #d4af37; color: #000; border-color: #000; transform: scale(1.1); }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Mobile responsive for modal */
+    @media (max-width: 480px) {
+      .modal-content {
+        margin: 20% auto;
+        width: 95%;
+      }
+      
+      .modal-header {
+        padding: 15px 20px;
+      }
+      
+      .modal-header h2 {
+        font-size: 1.2rem;
+      }
+      
+      .modal-body {
+        padding: 20px;
+      }
+      
+      .warning-icon {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .warning-icon i {
+        font-size: 1.8rem;
+      }
+      
+      #notifyEmail, .notify-btn {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -967,7 +1237,72 @@
   <div id="footer"></div>
   <div id="common-modals"></div>
 
+  <!-- High Demand Notification Modal -->
+  <div id="highDemandModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <i class="fa-solid fa-fire-flame-curved" style="color: #d4af37; font-size: 2rem;"></i>
+        <h2>High Demand Product!</h2>
+        <span class="close-modal" onclick="closeHighDemandModal()">&times;</span>
+      </div>
+      <div class="modal-body">
+        <div class="warning-icon">
+          <i class="fa-solid fa-circle-exclamation"></i>
+        </div>
+        <p class="modal-message">
+          This product is in <strong>high demand</strong> and only limited stocks are available.
+        </p>
+        <div class="stock-info">
+          <i class="fa-solid fa-boxes"></i>
+          <span id="modalStockCount">Only few left!</span>
+        </div>
+        <p class="notify-text">
+          We'll notify you when the product is ready to dispatch.
+        </p>
+        
+        <!-- Email Collection Form -->
+        <div class="email-form" id="emailForm">
+          <input 
+            type="email" 
+            id="notifyEmail" 
+            placeholder="Enter your email address" 
+            required
+          >
+          <button onclick="submitNotifyRequest()" class="notify-btn">
+            <i class="fa-regular fa-bell"></i> Notify Me
+          </button>
+        </div>
+        
+        <!-- Success Message (hidden by default) -->
+        <div class="success-message" id="successMessage" style="display: none;">
+          <i class="fa-regular fa-circle-check"></i>
+          <p>Thanks! We'll notify you when it's ready.</p>
+        </div>
+        
+        <p class="small-note">
+          <i class="fa-regular fa-clock"></i>
+          You won't be charged yet. We'll email you when stock is available.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ========== FIREBASE CONFIGURATION ==========
+    const firebaseConfig = {
+      apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+      authDomain: "myessantia.firebaseapp.com",
+      projectId: "myessantia",
+      storageBucket: "myessantia.firebasestorage.app",
+      messagingSenderId: "701726517205",
+      appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+      measurementId: "G-SZF11SHZBH"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
     // ========== PRODUCT PAGE SPECIFIC CODE ==========
     let currentProduct = null;
     let selectedPaymentMethod = 'prepaid';
@@ -1262,7 +1597,7 @@
       }, 300);
     }
 
-    // Toggle Razorpay popup (square card above guarantee)
+    // Toggle Razorpay popup
     window.toggleRazorpayPopup = function() {
       const popup = document.getElementById('razorpayPopup');
       if (popup) popup.classList.toggle('show');
@@ -1280,6 +1615,217 @@
       }
     }
 
+    // ========== HIGH DEMAND NOTIFICATION FUNCTIONS ==========
+
+    // Check if product is high demand and show modal
+    function checkHighDemandAndShowModal(product) {
+      if (product.highDemand) {
+        // Show the high demand modal
+        const modal = document.getElementById('highDemandModal');
+        const stockSpan = document.getElementById('modalStockCount');
+        
+        // Update stock info
+        if (product.stock <= 5) {
+          stockSpan.textContent = `Only ${product.stock} left in stock!`;
+        } else {
+          stockSpan.textContent = `Limited stock available!`;
+        }
+        
+        modal.style.display = 'block';
+        
+        // Prevent body scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+        
+        return true; // Modal shown
+      }
+      return false; // No modal needed
+    }
+
+    // Close modal
+    window.closeHighDemandModal = function() {
+      const modal = document.getElementById('highDemandModal');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+      
+      // Reset form
+      document.getElementById('emailForm').style.display = 'flex';
+      document.getElementById('successMessage').style.display = 'none';
+      document.getElementById('notifyEmail').value = '';
+    };
+
+    // Submit notification request
+    window.submitNotifyRequest = function() {
+      const email = document.getElementById('notifyEmail').value.trim();
+      
+      if (!email) {
+        showNotification('Please enter your email address', 'error');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        showNotification('Please enter a valid email address', 'error');
+        return;
+      }
+      
+      // Save to Firebase or localStorage
+      saveNotifyRequest(email, currentProduct);
+      
+      // Show success message
+      document.getElementById('emailForm').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'flex';
+      
+      // Auto close after 3 seconds
+      setTimeout(() => {
+        closeHighDemandModal();
+      }, 3000);
+    };
+
+    // Email validation
+    function isValidEmail(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    }
+
+    // Save notification request to Firebase
+    async function saveNotifyRequest(email, product) {
+      if (typeof db !== 'undefined' && db) {
+        try {
+          await db.collection('notifyRequests').add({
+            email: email,
+            productId: product.id,
+            productTitle: product.title,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            status: 'pending'
+          });
+          console.log('Notification request saved to Firebase');
+        } catch (error) {
+          console.error('Error saving notification:', error);
+          // Fallback to localStorage
+          saveNotifyRequestLocal(email, product);
+        }
+      } else {
+        // Fallback to localStorage
+        saveNotifyRequestLocal(email, product);
+      }
+    }
+
+    // Local storage fallback
+    function saveNotifyRequestLocal(email, product) {
+      const requests = JSON.parse(localStorage.getItem('notifyRequests') || '[]');
+      requests.push({
+        email: email,
+        productId: product.id,
+        productTitle: product.title,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('notifyRequests', JSON.stringify(requests));
+      console.log('Notification request saved to localStorage');
+    }
+
+    // Enhanced showNotification with error type
+    function showNotification(m, type = 'success') { 
+      const n = document.createElement('div'); 
+      n.className = 'notification'; 
+      if (type === 'error') {
+        n.classList.add('error');
+        n.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ${m}`;
+      } else {
+        n.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${m}`;
+      }
+      document.body.appendChild(n); 
+      setTimeout(() => n.remove(), 2000); 
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('highDemandModal');
+      if (event.target === modal) {
+        closeHighDemandModal();
+      }
+    };
+
+    // Escape key to close modal
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeHighDemandModal();
+      }
+    });
+
+    // Enhanced buyNow function
+    window.buyNow = function() { 
+      const product = currentProduct;
+      if (!product) return;
+      
+      // Check if product is high demand
+      if (checkHighDemandAndShowModal(product)) {
+        // Don't proceed to checkout, show modal instead
+        return;
+      }
+      
+      // Normal flow for non-high-demand products
+      addToCart();
+      setTimeout(() => {
+        window.location.href = 'checkout.html';
+      }, 500);
+    };
+
+    // Enhanced addToCart function
+    window.addToCart = function() {
+      const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
+      const product = currentProduct;
+      
+      if (!product) {
+        showNotification('Error: Product not found');
+        return;
+      }
+
+      if (product.stock <= 0) {
+        showNotification('Sorry, this product is out of stock!');
+        return;
+      }
+
+      // If high demand, show modal instead of adding to cart
+      if (product.highDemand && checkHighDemandAndShowModal(product)) {
+        return;
+      }
+
+      if (quantity > product.stock) {
+        showNotification(`Only ${product.stock} items available!`);
+        return;
+      }
+
+      if (window.cart && Array.isArray(window.cart)) {
+        const existingItem = window.cart.find(item => item.id === product.id);
+        
+        if (existingItem) {
+          existingItem.quantity += quantity;
+        } else {
+          window.cart.push({
+            id: product.id,
+            title: product.title,
+            category: product.category || 'accessory',
+            price: product.price,
+            primaryImg: product.primaryImg || (product.images && product.images[0]) || (product.media?.images && product.media.images[0]?.url),
+            quantity: quantity
+          });
+        }
+        
+        localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
+        
+        if (typeof window.updateCartCount === 'function') {
+          window.updateCartCount();
+        }
+      }
+      
+      showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
+      
+      setTimeout(() => {
+        if (typeof window.openCart === 'function') {
+          window.openCart();
+        }
+      }, 500);
+    };
+
     async function loadProduct() {
       const productId = getProductId();
       if (!productId) return showNotFound();
@@ -1294,7 +1840,8 @@
             rating: 4.7,
             stock: 15,
             description: 'Handcrafted genuine leather backpack with premium metal hardware.',
-            primaryImg: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600'
+            primaryImg: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600',
+            highDemand: false
           };
           document.getElementById('breadcrumb-product').textContent = currentProduct.title;
           renderProduct(currentProduct);
@@ -1315,7 +1862,8 @@
           rating: 4.3,
           stock: 8,
           description: 'Comfortable and stylish sneakers for daily wear.',
-          primaryImg: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600'
+          primaryImg: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600',
+          highDemand: false
         };
         document.getElementById('breadcrumb-product').textContent = currentProduct.title;
         renderProduct(currentProduct);
@@ -1373,7 +1921,7 @@
             
             <!-- DESKTOP REVIEWS (hidden on mobile) -->
             <div class="desktop-reviews">
-                                  <div id="mobileRatingChart"></div>
+              <div id="mobileRatingChart"></div>
               <div class="reviews-header">
                 <span>Customer Reviews (${reviewCount})</span>
                 <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
@@ -1432,19 +1980,19 @@
               <div class="price-header">
                 <span class="current-price"><span class="inr-symbol">₹</span>${product.price.toFixed(2)}</span>
                 <span class="original-price">₹${originalPrice.toFixed(2)}</span>
-<span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE</span>
+                <span class="discount sale-badge"><i class="fa-solid fa-tag"></i> SALE</span>
               </div>
               <div class="tax-info"><i class="fa-solid fa-receipt"></i> Taxes included. Shipping calculated at checkout.</div>
-          <div class="price-options">
-  <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
-    <div class="option-label">Prepaid</div>
-    <div class="option-price">₹${prepaidPrice.toFixed(2)}</div>
-  </div>
-  <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
-    <div class="option-label">Cash on Delivery</div>
-    <div class="option-price">₹${codPrice.toFixed(2)}</div>
-  </div>
-</div>
+              <div class="price-options">
+                <div class="price-option prepaid selected" onclick="selectPaymentMethod('prepaid', event)">
+                  <div class="option-label">Prepaid</div>
+                  <div class="option-price">₹${prepaidPrice.toFixed(2)}</div>
+                </div>
+                <div class="price-option cod" onclick="selectPaymentMethod('cod', event)">
+                  <div class="option-label">Cash on Delivery</div>
+                  <div class="option-price">₹${codPrice.toFixed(2)}</div>
+                </div>
+              </div>
               
               <div class="quantity-stock-row">
                 <div class="quantity-controls">
@@ -1478,83 +2026,83 @@
               </div>
             </div>
 
-        <div class="feature-razor-card">
-  <!-- Razorpay popup card (square, appears above guarantee) -->
-  <div id="razorpayPopup" class="razorpay-popup">
-    <div class="popup-close" onclick="toggleRazorpayPopup()">✕</div>
-    <div class="popup-title">
-      <i class="fa-solid fa-shield"></i> Razorpay Money Back Promise
-    </div>
-    <div class="popup-desc" style="font-weight: 600; margin-bottom: 12px;">
-      Your purchase from MyEssantia is protected by Razorpay Money Back Promise
-    </div>
-    <p style="font-size: 0.85rem; margin-bottom: 16px; line-height: 1.5;">
-      If your order is incorrect, damaged, or not delivered, you'll be eligible for full refund at no additional cost from Razorpay. Valid only on Prepaid orders above ₹200.
-    </p>
-    
-    <div style="background: #f5f5f5; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #000;">
-      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-        <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
-        <span style="font-weight: 700; font-size: 0.9rem;">100% refund</span>
-        <span style="font-size: 0.8rem; color: #555;">on non-delivery or damaged / defective items</span>
-      </div>
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
-        <span style="font-weight: 700; font-size: 0.9rem;">100% free</span>
-        <span style="font-size: 0.8rem; color: #555;">with no hidden costs</span>
-      </div>
-    </div>
-    
-    <p style="font-size: 0.8rem; margin-bottom: 16px; font-style: italic;">
-      Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
-    </p>
-    
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
-      <button onclick="toggleRazorpayPopup()" style="background: #000; color: #d4af37; border: 2px solid #d4af37; padding: 8px 20px; border-radius: 40px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
-        Yes, got it
-      </button>
-      <a href="shipping.html" style="color: #d4af37; font-weight: 600; font-size: 0.75rem; text-decoration: underline; cursor: pointer;">
-        To read detailed terms and conditions, click here.
-      </a>
-    </div>
-  </div>
-  
-  <!-- Razorpay Promise clickable -->
-  <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
-    <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
-    <div class="promise-content">
-      <h4>Razorpay Money Back Promise</h4>
-      <p>Click to view full guarantee</p>
-    </div>
-  </div>
-  
-  <div class="features-grid">
-    <div class="feature-item">
-      <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
-      <div class="feature-text">
-        <h4>Free Shipping</h4>
-        <p>Above ₹1,299</p>
-      </div>
-    </div>
-    <div class="feature-item">
-      <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
-      <div class="feature-text">
-        <h4>Easy Returns</h4>
-        <p>7-Days</p>
-      </div>
-    </div>
-  </div>
-</div>
+            <div class="feature-razor-card">
+              <!-- Razorpay popup card -->
+              <div id="razorpayPopup" class="razorpay-popup">
+                <div class="popup-close" onclick="toggleRazorpayPopup()">✕</div>
+                <div class="popup-title">
+                  <i class="fa-solid fa-shield"></i> Razorpay Money Back Promise
+                </div>
+                <div class="popup-desc" style="font-weight: 600; margin-bottom: 12px;">
+                  Your purchase from MyEssantia is protected by Razorpay Money Back Promise
+                </div>
+                <p style="font-size: 0.85rem; margin-bottom: 16px; line-height: 1.5;">
+                  If your order is incorrect, damaged, or not delivered, you'll be eligible for full refund at no additional cost from Razorpay. Valid only on Prepaid orders above ₹200.
+                </p>
+                
+                <div style="background: #f5f5f5; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #000;">
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+                    <span style="font-weight: 700; font-size: 0.9rem;">100% refund</span>
+                    <span style="font-size: 0.8rem; color: #555;">on non-delivery or damaged / defective items</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+                    <span style="font-weight: 700; font-size: 0.9rem;">100% free</span>
+                    <span style="font-size: 0.8rem; color: #555;">with no hidden costs</span>
+                  </div>
+                </div>
+                
+                <p style="font-size: 0.8rem; margin-bottom: 16px; font-style: italic;">
+                  Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
+                </p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                  <button onclick="toggleRazorpayPopup()" style="background: #000; color: #d4af37; border: 2px solid #d4af37; padding: 8px 20px; border-radius: 40px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+                    Yes, got it
+                  </button>
+                  <a href="shipping.html" style="color: #d4af37; font-weight: 600; font-size: 0.75rem; text-decoration: underline; cursor: pointer;">
+                    To read detailed terms and conditions, click here.
+                  </a>
+                </div>
+              </div>
+              
+              <!-- Razorpay Promise clickable -->
+              <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
+                <div class="promise-icon"><i class="fa-solid fa-shield"></i></div>
+                <div class="promise-content">
+                  <h4>Razorpay Money Back Promise</h4>
+                  <p>Click to view full guarantee</p>
+                </div>
+              </div>
+              
+              <div class="features-grid">
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                  <div class="feature-text">
+                    <h4>Free Shipping</h4>
+                    <p>Above ₹1,299</p>
+                  </div>
+                </div>
+                <div class="feature-item">
+                  <div class="feature-icon"><i class="fa-solid fa-rotate-left"></i></div>
+                  <div class="feature-text">
+                    <h4>Easy Returns</h4>
+                    <p>7-Days</p>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-<div style="margin-top: 16px; padding-top: 12px; border-top: 2px dashed #d4af37; display: flex; align-items: center; gap: 10px;">
-    <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000;">
-      <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
-    </div>
-    <div>
-      <div style="font-weight: 800; font-size: 0.85rem; color: #000;">Delivery Guarantee</div>
-      <div style="font-size: 0.8rem; color: #555;" id="deliveryDates">Loading dates...</div>
-    </div>
-  </div>
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 2px dashed #d4af37; display: flex; align-items: center; gap: 10px;">
+              <div style="background: #d4af37; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #000;">
+                <i class="fa-regular fa-calendar-check" style="color: #000; font-size: 1rem;"></i>
+              </div>
+              <div>
+                <div style="font-weight: 800; font-size: 0.85rem; color: #000;">Delivery Guarantee</div>
+                <div style="font-size: 0.8rem; color: #555;" id="deliveryDates">Loading dates...</div>
+              </div>
+            </div>
 
             <!-- ACTION BUTTONS -->
             <div class="action-buttons">
@@ -1566,7 +2114,7 @@
               </button>
             </div>
 
-            <!-- TABS (description appears first on mobile) -->
+            <!-- TABS -->
             <div class="tabs">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('desc')">Description</div>
@@ -1602,10 +2150,9 @@
               </div>
             </div>
             
-
             <!-- mobile reviews -->
             <div class="mobile-reviews">
-                      <div id="mobileRatingChart"></div>
+              <div id="mobileRatingChart"></div>
               <div class="reviews-header">
                 <span>Customer Reviews (${reviewCount})</span>
                 <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
@@ -1633,7 +2180,7 @@
         </div>
       `;
 
-      // Move rating chart into #mobileRatingChart for mobile (desktop unaffected)
+      // Move rating chart into #mobileRatingChart
       const chartHTML = `
         <div class="rating-chart-card">
           <div class="rating-chart-header">
@@ -1727,115 +2274,49 @@
       if (shareUrl) window.open(shareUrl, '_blank');
     };
 
-    window.addToCart = function() {
-      const quantity = parseInt(document.getElementById('productQuantity').value) || 1;
-      const product = currentProduct;
-      
-      if (!product) {
-        showNotification('Error: Product not found');
-        return;
-      }
-
-      if (product.stock <= 0) {
-        showNotification('Sorry, this product is out of stock!');
-        return;
-      }
-
-      if (quantity > product.stock) {
-        showNotification(`Only ${product.stock} items available!`);
-        return;
-      }
-
-      if (window.cart && Array.isArray(window.cart)) {
-        const existingItem = window.cart.find(item => item.id === product.id);
-        
-        if (existingItem) {
-          existingItem.quantity += quantity;
-        } else {
-          window.cart.push({
-            id: product.id,
-            title: product.title,
-            category: product.category || 'accessory',
-            price: product.price,
-            primaryImg: product.primaryImg || (product.images && product.images[0]) || (product.media?.images && product.media.images[0]?.url),
-            quantity: quantity
-          });
-        }
-        
-        localStorage.setItem('MyEssantia_cart', JSON.stringify(window.cart));
-        
-        if (typeof window.updateCartCount === 'function') {
-          window.updateCartCount();
-        }
-      }
-      
-      showNotification(`Added ${quantity} item${quantity > 1 ? 's' : ''} to cart!`);
-      
-      setTimeout(() => {
-        if (typeof window.openCart === 'function') {
-          window.openCart();
-        }
-      }, 500);
-    };
-
-    window.buyNow = function() { 
-      addToCart();
-      setTimeout(() => {
-        window.location.href = 'checkout.html';
-      }, 500);
-    };
-
-    function showNotification(m) { 
-      const n = document.createElement('div'); 
-      n.className = 'notification'; 
-      n.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${m}`; 
-      document.body.appendChild(n); 
-      setTimeout(() => n.remove(), 2000); 
-    }
-
     window.switchTab = function(t) { 
       document.querySelectorAll('.tab-header').forEach(h => h.classList.remove('active')); 
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); 
       document.querySelector(`.tab-header[onclick="switchTab('${t}')"]`).classList.add('active'); 
       document.getElementById(`tab-${t}`).classList.add('active'); 
     };
-    
+
     function getDeliveryDates() {
-  const today = new Date();
-  
-  // Calculate min delivery date (5 days from now)
-  const minDate = new Date(today);
-  minDate.setDate(today.getDate() + 5);
-  
-  // Calculate max delivery date (7 days from now)
-  const maxDate = new Date(today);
-  maxDate.setDate(today.getDate() + 7);
-  
-  // Format dates
-  const options = { day: 'numeric', month: 'short' };
-  const minDateStr = minDate.toLocaleDateString('en-IN', options);
-  const maxDateStr = maxDate.toLocaleDateString('en-IN', options);
-  
-  // Add year if month is December/January (to avoid confusion)
-  const minYear = minDate.getFullYear();
-  const maxYear = maxDate.getFullYear();
-  const currentYear = today.getFullYear();
-  
-  if (minYear !== currentYear || maxYear !== currentYear) {
-    const yearOptions = { day: 'numeric', month: 'short', year: 'numeric' };
-    return {
-      min: minDate.toLocaleDateString('en-IN', yearOptions),
-      max: maxDate.toLocaleDateString('en-IN', yearOptions),
-      display: `${minDate.toLocaleDateString('en-IN', yearOptions)} - ${maxDate.toLocaleDateString('en-IN', yearOptions)}`
-    };
-  }
-  
-  return {
-    min: minDateStr,
-    max: maxDateStr,
-    display: `${minDateStr} - ${maxDateStr}`
-  };
-}
+      const today = new Date();
+      
+      // Calculate min delivery date (5 days from now)
+      const minDate = new Date(today);
+      minDate.setDate(today.getDate() + 5);
+      
+      // Calculate max delivery date (7 days from now)
+      const maxDate = new Date(today);
+      maxDate.setDate(today.getDate() + 7);
+      
+      // Format dates
+      const options = { day: 'numeric', month: 'short' };
+      const minDateStr = minDate.toLocaleDateString('en-IN', options);
+      const maxDateStr = maxDate.toLocaleDateString('en-IN', options);
+      
+      // Add year if month is December/January (to avoid confusion)
+      const minYear = minDate.getFullYear();
+      const maxYear = maxDate.getFullYear();
+      const currentYear = today.getFullYear();
+      
+      if (minYear !== currentYear || maxYear !== currentYear) {
+        const yearOptions = { day: 'numeric', month: 'short', year: 'numeric' };
+        return {
+          min: minDate.toLocaleDateString('en-IN', yearOptions),
+          max: maxDate.toLocaleDateString('en-IN', yearOptions),
+          display: `${minDate.toLocaleDateString('en-IN', yearOptions)} - ${maxDate.toLocaleDateString('en-IN', yearOptions)}`
+        };
+      }
+      
+      return {
+        min: minDateStr,
+        max: maxDateStr,
+        display: `${minDateStr} - ${maxDateStr}`
+      };
+    }
 
     function loadComponents() { 
       if (!document.getElementById('header').innerHTML) {
