@@ -2155,6 +2155,15 @@
       }
     };
 
+    document.addEventListener('DOMContentLoaded', () => { 
+  // Ensure header and footer are loaded
+  if (typeof window.loadComponents === 'function') {
+    window.loadComponents();
+  }
+  
+  loadProduct(); 
+});
+
     window.copyLink = function() { 
       const i = document.getElementById('shareLink'); 
       i.select(); 
