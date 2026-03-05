@@ -2769,6 +2769,14 @@ let newInCheckInterval = null;
 let allRequests = [];
 let currentPage = 'dashboard';
 
+// Notify page global variables
+window.allNotifyRequests = [];
+window.filteredNotifyRequests = [];
+window.currentNotifyFilter = 'all';
+window.currentNotifyPage = 1;
+window.notifyItemsPerPage = 10;
+window.notifyProducts = {};
+
 // DOM Elements
 const slidingMenu = document.getElementById('slidingMenu');
 const menuOverlay = document.getElementById('menuOverlay');
@@ -2886,20 +2894,14 @@ async function loadNotifyPage() {
   const filtersBar = doc.querySelector('.filters-bar');
   if (filtersBar) notifyContent.appendChild(filtersBar.cloneNode(true));
   
-  // Add table container WITHOUT the tbody and mobile cards content
+  // Add table container
   const tableContainer = doc.querySelector('.table-container');
   if (tableContainer) {
-    // Clone the container but remove the pre-filled content
     const clonedContainer = tableContainer.cloneNode(true);
-    
-    // Clear out any pre-filled content in the table body
     const tbody = clonedContainer.querySelector('#table-body');
     if (tbody) tbody.innerHTML = '';
-    
-    // Clear out any pre-filled content in mobile cards
     const mobileCards = clonedContainer.querySelector('#mobile-cards');
     if (mobileCards) mobileCards.innerHTML = '';
-    
     notifyContent.appendChild(clonedContainer);
   }
   
@@ -2976,7 +2978,7 @@ function initializeDashboard() {
 function initializeNotify() {
   console.log('Initializing notify page...');
   
-  // Global variables for notify page
+  // Reset global variables for notify page
   window.allNotifyRequests = [];
   window.filteredNotifyRequests = [];
   window.currentNotifyFilter = 'all';
@@ -3102,7 +3104,7 @@ MyEssantia Team`;
   if (subjectInput) subjectInput.addEventListener('input', updatePreview);
   if (bodyInput) bodyInput.addEventListener('input', updatePreview);
 
-  // Filter requests function (called from HTML)
+  // Filter requests function
   window.filterRequests = function(filter) {
     window.currentNotifyFilter = filter;
     window.currentNotifyPage = 1;
@@ -3242,6 +3244,8 @@ MyEssantia Team`;
 
   // Render requests
   function renderNotifyRequests() {
+    if (!window.filteredNotifyRequests) return;
+    
     const start = (window.currentNotifyPage - 1) * window.notifyItemsPerPage;
     const end = start + window.notifyItemsPerPage;
     const pageRequests = window.filteredNotifyRequests.slice(start, end);
@@ -3285,7 +3289,7 @@ MyEssantia Team`;
           <tr>
             <td>
               <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="product-thumb" style="background-image: url('${product.primaryImg}');"></div>
+                <div class="product-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
                 <div class="product-info">
                   <span class="product-title">${product.title}</span>
                   <span class="product-id">${req.productId?.substring(0, 8)}...</span>
@@ -3359,7 +3363,7 @@ MyEssantia Team`;
         return `
           <div class="notification-card">
             <div class="card-header">
-              <div class="card-thumb" style="background-image: url('${product.primaryImg}');"></div>
+              <div class="card-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
               <div class="card-title">
                 <h4>${product.title}</h4>
                 <span class="product-id">${req.productId?.substring(0, 12)}...</span>
