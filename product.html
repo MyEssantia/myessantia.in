@@ -96,55 +96,6 @@
       border: 2px solid #000000;
       box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
     }
-    
-    /* Mobile Responsive Razorpay Popup */
-@media (max-width: 640px) {
-  .razorpay-popup {
-    padding: 16px !important;
-    margin: 10px 0 !important;
-    max-width: 100% !important;
-  }
-  
-  .razorpay-popup .popup-title {
-    font-size: 1rem !important;
-    flex-wrap: wrap !important;
-  }
-  
-  .razorpay-popup .popup-desc {
-    font-size: 0.8rem !important;
-  }
-  
-  .razorpay-popup p {
-    font-size: 0.75rem !important;
-  }
-  
-  .razorpay-popup div[style*="background: #f5f5f5"] {
-    padding: 10px !important;
-  }
-  
-  .razorpay-popup div[style*="background: #f5f5f5"] div {
-    flex-wrap: wrap !important;
-    gap: 4px !important;
-  }
-  
-  .razorpay-popup button {
-    padding: 10px 16px !important;
-    font-size: 0.85rem !important;
-  }
-}
-
-/* Ensure popup is centered and readable on very small screens */
-@media (max-width: 480px) {
-  .razorpay-popup {
-    border-radius: 16px !important;
-    box-shadow: 4px 4px 0 #000 !important;
-  }
-  
-  .razorpay-popup .popup-title i {
-    font-size: 0.9rem !important;
-    padding: 6px !important;
-  }
-}
 
     .rating-chart-header {
       display: flex;
@@ -803,25 +754,36 @@
     .promise-content h4 { font-size: 0.85rem; font-weight: 800; color: #d4af37; margin-bottom: 2px; }
     .promise-content p { font-size: 0.7rem; color: #eee; }
 
-    /* Razorpay popup card – appears above the guarantee bar */
+    /* Razorpay popup card – improved for mobile */
     .razorpay-popup {
       display: none;
       background: #fff9e6;
       border: 3px solid #d4af37;
       border-radius: 24px;
-      padding: 20px;
+      padding: 24px 20px;
       margin-bottom: 16px;
       box-shadow: 8px 8px 0 #000;
       position: relative;
       animation: popSlide 0.25s ease;
     }
+    
+    @media (max-width: 480px) {
+      .razorpay-popup {
+        padding: 20px 16px;
+        border-radius: 20px;
+        box-shadow: 4px 4px 0 #000;
+      }
+    }
+    
     .razorpay-popup.show {
       display: block;
     }
+    
     @keyframes popSlide {
       0% { opacity: 0; transform: translateY(-10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
+    
     .popup-title {
       display: flex;
       align-items: center;
@@ -829,10 +791,18 @@
       font-size: 1.2rem;
       font-weight: 900;
       color: #000;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       border-bottom: 2px dashed #d4af37;
-      padding-bottom: 8px;
+      padding-bottom: 12px;
     }
+    
+    @media (max-width: 480px) {
+      .popup-title {
+        font-size: 1rem;
+        gap: 8px;
+      }
+    }
+    
     .popup-title i {
       color: #d4af37;
       background: #000;
@@ -840,46 +810,104 @@
       padding: 8px;
       font-size: 1rem;
     }
+    
     .popup-desc {
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       color: #222;
       margin-bottom: 16px;
       line-height: 1.5;
       font-weight: 500;
     }
+    
+    @media (max-width: 480px) {
+      .popup-desc {
+        font-size: 0.85rem;
+      }
+    }
+    
     .popup-bullets {
       list-style: none;
       padding: 0;
     }
+    
     .popup-bullets li {
       display: flex;
-      gap: 10px;
-      align-items: center;
+      gap: 12px;
+      align-items: flex-start;
       margin-bottom: 12px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.9rem;
+      font-weight: 500;
     }
+    
+    @media (max-width: 480px) {
+      .popup-bullets li {
+        font-size: 0.8rem;
+        gap: 8px;
+      }
+    }
+    
     .popup-bullets li i {
       color: #d4af37;
       width: 20px;
       font-size: 1rem;
+      margin-top: 2px;
     }
-    .popup-close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.2rem;
-      cursor: pointer;
+    
+    .popup-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    
+    @media (min-width: 768px) {
+      .popup-footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    
+    .popup-gotit-btn {
       background: #000;
       color: #d4af37;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       border: 2px solid #d4af37;
+      padding: 12px 24px;
+      border-radius: 40px;
       font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: fit-content;
+    }
+    
+    @media (max-width: 480px) {
+      .popup-gotit-btn {
+        width: 100%;
+        text-align: center;
+        padding: 14px;
+      }
+    }
+    
+    .popup-gotit-btn:hover {
+      background: #d4af37;
+      color: #000;
+      transform: translateY(-2px);
+    }
+    
+    .popup-terms-link {
+      color: #d4af37;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    
+    @media (max-width: 480px) {
+      .popup-terms-link {
+        text-align: center;
+        font-size: 0.75rem;
+      }
     }
 
     /* HIGH DEMAND NOTIFICATION POPUP */
@@ -1126,6 +1154,7 @@
     /* mobile reviews */
     .mobile-reviews {
       background: #ffffff; border-radius: 20px; padding: 16px; border: 2px solid #000;
+      margin-top: 24px;
     }
     @media (min-width: 1024px) { .mobile-reviews { display: none; } }
     .reviews-header {
@@ -1578,11 +1607,17 @@
       }, 300);
     }
 
-    // Toggle Razorpay popup (square card above guarantee)
-  window.closeRazorpayPopup = function() {
-  const popup = document.getElementById('razorpayPopup');
-  if (popup) popup.classList.remove('show');
-};
+    // Toggle Razorpay popup
+    window.toggleRazorpayPopup = function() {
+      const popup = document.getElementById('razorpayPopup');
+      if (popup) popup.classList.toggle('show');
+    };
+
+    // Close Razorpay popup (now only called from "Yes, got it" button)
+    window.closeRazorpayPopup = function() {
+      const popup = document.getElementById('razorpayPopup');
+      if (popup) popup.classList.remove('show');
+    };
 
     function toggleReviews() {
       const container = document.getElementById('reviews-container');
@@ -1865,6 +1900,30 @@
         storeProductData(product.id, { ratingDist, reviewCount, reviews });
       }
 
+      // Create rating chart HTML
+      const ratingChartHTML = `
+        <div class="rating-chart-card">
+          <div class="rating-chart-header">
+            <div>
+              <span class="rating-main">${(product.rating || 4.5).toFixed(1)}</span>
+              <span class="rating-outof">/5</span>
+            </div>
+            <div class="rating-stars-large">${getLargeStars(product.rating || 4.5)}</div>
+            <span class="rating-count">${reviewCount} reviews</span>
+          </div>
+          <div class="rating-bars">
+            ${[5,4,3,2,1].map(star => `
+            <div class="rating-bar-row">
+              <span class="bar-label">${star} ★</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${ratingDist[star]}%"></div>
+              </div>
+              <span class="bar-percent">${ratingDist[star]}%</span>
+            </div>`).join('')}
+          </div>
+        </div>
+      `;
+
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
@@ -1877,12 +1936,12 @@
             
             <!-- DESKTOP REVIEWS (hidden on mobile) -->
             <div class="desktop-reviews">
-              <div id="mobileRatingChart"></div>
+              ${ratingChartHTML}
               <div class="reviews-header">
                 <span>Customer Reviews (${reviewCount})</span>
                 <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
               </div>
-              <div id="reviews-container" class="reviews-container">
+              <div id="reviews-container-desktop" class="reviews-container">
                 ${reviews.map(r => `
                   <div class="review-card">
                     <div style="display: flex; gap: 10px; margin-bottom: 6px;">
@@ -1897,7 +1956,7 @@
                   </div>
                 `).join('')}
               </div>
-              <div id="view-more-btn" class="view-more-btn" onclick="toggleReviews()">
+              <div id="view-more-btn-desktop" class="view-more-btn" onclick="toggleReviewsDesktop()">
                 <i class="fa-solid fa-chevron-down"></i> View More Reviews
               </div>
             </div>
@@ -1986,46 +2045,40 @@
               </div>
             </div>
 
-            <!-- Razorpay popup card (square, appears above guarantee) - UPDATED -->
-<div id="razorpayPopup" class="razorpay-popup">
-  <!-- REMOVED the separate close button -->
-  <div class="popup-title">
-    <i class="fa-solid fa-shield"></i> Razorpay Money Back Promise
-  </div>
-  <div class="popup-desc" style="font-weight: 600; margin-bottom: 12px;">
-    Your purchase from MyEssantia is protected by Razorpay Money Back Promise
-  </div>
-  <p style="font-size: 0.85rem; margin-bottom: 16px; line-height: 1.5;">
-    If your order is incorrect, damaged, or not delivered, you'll be eligible for full refund at no additional cost from Razorpay. Valid only on Prepaid orders above ₹200.
-  </p>
-  
-  <div style="background: #f5f5f5; border-radius: 12px; padding: 12px; margin-bottom: 16px; border: 1px solid #000;">
-    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
-      <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
-      <span style="font-weight: 700; font-size: 0.9rem;">100% refund</span>
-      <span style="font-size: 0.8rem; color: #555;">on non-delivery or damaged items</span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
-      <span style="font-weight: 700; font-size: 0.9rem;">100% free</span>
-      <span style="font-size: 0.8rem; color: #555;">with no hidden costs</span>
-    </div>
-  </div>
-  
-  <p style="font-size: 0.8rem; margin-bottom: 16px; font-style: italic;">
-    Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
-  </p>
-  
-  <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px;">
-    <!-- UPDATED: Yes, got it button now closes the popup -->
-    <button onclick="closeRazorpayPopup()" style="background: #000; color: #d4af37; border: 2px solid #d4af37; padding: 12px 20px; border-radius: 40px; font-weight: 700; font-size: 0.9rem; cursor: pointer; width: 100%;">
-      Yes, got it
-    </button>
-    <a href="shipping.html" style="color: #d4af37; font-weight: 600; font-size: 0.75rem; text-decoration: underline; cursor: pointer; text-align: center;">
-      View detailed terms and conditions
-    </a>
-  </div>
-</div>
+            <div class="feature-razor-card">
+              <!-- Razorpay popup card (no close button) -->
+              <div id="razorpayPopup" class="razorpay-popup">
+                <div class="popup-title">
+                  <i class="fa-solid fa-shield"></i> Razorpay Money Back Promise
+                </div>
+                <div class="popup-desc">
+                  Your purchase from MyEssantia is protected by Razorpay Money Back Promise
+                </div>
+                
+                <div class="popup-bullets">
+                  <div class="popup-bullets-item" style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+                    <span><strong>100% refund</strong> on non-delivery or damaged/defective items</span>
+                  </div>
+                  <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
+                    <span><strong>100% free</strong> with no hidden costs</span>
+                  </div>
+                </div>
+                
+                <p style="font-size: 0.85rem; margin-bottom: 16px; font-style: italic;">
+                  Razorpay offers Money Back Promise only on select businesses that pass detailed background checks.
+                </p>
+                
+                <div class="popup-footer">
+                  <button onclick="closeRazorpayPopup()" class="popup-gotit-btn">
+                    Yes, got it
+                  </button>
+                  <a href="shipping.html" class="popup-terms-link">
+                    Read detailed terms and conditions
+                  </a>
+                </div>
+              </div>
               
               <!-- Razorpay Promise clickable -->
               <div class="razorpay-promise" onclick="toggleRazorpayPopup()">
@@ -2100,61 +2153,35 @@
               </div>
             </div>
             
-
-            <!-- mobile reviews -->
-<div class="mobile-reviews">
-  <div id="mobileRatingChart"></div>
-  <div class="reviews-header">
-    <span>Customer Reviews (${reviewCount})</span>
-    <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
-  </div>
-  <div id="reviews-container" class="reviews-container">
-    ${reviews.map(r => `
-      <div class="review-card">
-        <div style="display: flex; gap: 10px; margin-bottom: 6px;">
-          <div class="reviewer-avatar">${r.avatar}</div>
-          <div>
-            <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
-            <div style="font-size: 0.7rem;">${r.city} • ${r.time} days ago ${r.verified ? '✓ Verified' : ''}</div>
-          </div>
-        </div>
-        <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
-        <p style="font-size: 0.75rem;">${r.comment}</p>
-      </div>
-    `).join('')}
-  </div>
-  <div id="view-more-btn" class="view-more-btn" onclick="toggleReviews()">
-    <i class="fa-solid fa-chevron-down"></i> View More Reviews
-  </div>
-</div>
-          </div>
-        </div>
-      `;
-
-      // Move rating chart into #mobileRatingChart for mobile (desktop unaffected)
-      const chartHTML = `
-        <div class="rating-chart-card">
-          <div class="rating-chart-header">
-            <div>
-              <span class="rating-main">${(product.rating || 4.5).toFixed(1)}</span>
-              <span class="rating-outof">/5</span>
-            </div>
-            <div class="rating-stars-large">${getLargeStars(product.rating || 4.5)}</div>
-            <span class="rating-count">${reviewCount} reviews</span>
-          </div>
-          <div class="rating-bars">
-            ${[5,4,3,2,1].map(star => `
-            <div class="rating-bar-row">
-              <span class="bar-label">${star} ★</span>
-              <div class="bar-container">
-                <div class="bar-fill" style="width: ${ratingDist[star]}%"></div>
+            <!-- MOBILE REVIEWS SECTION (includes rating chart) -->
+            <div class="mobile-reviews">
+              ${ratingChartHTML}
+              <div class="reviews-header">
+                <span>Customer Reviews (${reviewCount})</span>
+                <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
               </div>
-              <span class="bar-percent">${ratingDist[star]}%</span>
-            </div>`).join('')}
+              <div id="reviews-container-mobile" class="reviews-container">
+                ${reviews.map(r => `
+                  <div class="review-card">
+                    <div style="display: flex; gap: 10px; margin-bottom: 6px;">
+                      <div class="reviewer-avatar">${r.avatar}</div>
+                      <div>
+                        <div style="font-weight: 700; font-size: 0.85rem;">${r.name}</div>
+                        <div style="font-size: 0.7rem;">${r.city} • ${r.time} days ago ${r.verified ? '✓ Verified' : ''}</div>
+                      </div>
+                    </div>
+                    <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem;">${'★'.repeat(Math.floor(r.rating))}${r.rating % 1 >= 0.5 ? '½' : ''}</div>
+                    <p style="font-size: 0.75rem;">${r.comment}</p>
+                  </div>
+                `).join('')}
+              </div>
+              <div id="view-more-btn-mobile" class="view-more-btn" onclick="toggleReviewsMobile()">
+                <i class="fa-solid fa-chevron-down"></i> View More Reviews
+              </div>
+            </div>
           </div>
         </div>
       `;
-      document.getElementById('mobileRatingChart').innerHTML = chartHTML;
 
       updateDeliveryBar(product.price);
       
@@ -2165,6 +2192,31 @@
       const dates = getDeliveryDates();
       document.getElementById('deliveryDates').textContent = dates.display;
     }
+
+    // Separate toggle functions for desktop and mobile
+    window.toggleReviewsDesktop = function() {
+      const container = document.getElementById('reviews-container-desktop');
+      const btn = document.getElementById('view-more-btn-desktop');
+      if (container.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> View More Reviews';
+      } else {
+        container.classList.add('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
+      }
+    };
+
+    window.toggleReviewsMobile = function() {
+      const container = document.getElementById('reviews-container-mobile');
+      const btn = document.getElementById('view-more-btn-mobile');
+      if (container.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> View More Reviews';
+      } else {
+        container.classList.add('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
+      }
+    };
 
     window.changeImage = function(src, el) { 
       document.getElementById('mainImage').src = src; 
@@ -2284,9 +2336,6 @@
         display: `${minDateStr} - ${maxDateStr}`
       };
     }
-
-    // REMOVED THE DUPLICATE loadComponents FUNCTION
-    // Let common.js handle loading components
 
     document.addEventListener('DOMContentLoaded', () => { 
       // Don't load components here - common.js will handle it
