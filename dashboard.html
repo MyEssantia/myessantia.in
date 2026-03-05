@@ -2977,11 +2977,12 @@ function initializeNotify() {
   console.log('Initializing notify page...');
   
   // Global variables for notify page
- allNotifyRequests = [];
-  filteredNotifyRequests = [];
-  currentNotifyFilter = 'all';
-  currentNotifyPage = 1;
-  notifyProducts = {};
+  window.allNotifyRequests = [];
+  window.filteredNotifyRequests = [];
+  window.currentNotifyFilter = 'all';
+  window.currentNotifyPage = 1;
+  window.notifyItemsPerPage = 10;
+  window.notifyProducts = {};
 
   // Email Template
   let emailTemplate = {
@@ -3064,6 +3065,12 @@ MyEssantia Team`;
     updatePreview();
   };
 
+  // Toggle template panel
+  window.toggleTemplatePanel = function() {
+    const panel = document.getElementById('emailTemplatePanel');
+    if (panel) panel.classList.toggle('show');
+  };
+
   // Update preview with sample data
   function updatePreview() {
     const subject = document.getElementById('email-subject')?.value || '';
@@ -3095,18 +3102,45 @@ MyEssantia Team`;
   if (subjectInput) subjectInput.addEventListener('input', updatePreview);
   if (bodyInput) bodyInput.addEventListener('input', updatePreview);
 
-  // Toggle template panel
-  window.toggleTemplatePanel = function() {
-    const panel = document.getElementById('emailTemplatePanel');
-    if (panel) panel.classList.toggle('show');
+  // Filter requests function (called from HTML)
+  window.filterRequests = function(filter) {
+    window.currentNotifyFilter = filter;
+    window.currentNotifyPage = 1;
+    
+    // Update active tab
+    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+    const activeTab = document.getElementById(`filter-${filter}`);
+    if (activeTab) activeTab.classList.add('active');
+    
+    applyNotifyFilter(filter);
+    renderNotifyRequests();
   };
+
+  // Apply filter logic
+  function applyNotifyFilter(filter) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    window.filteredNotifyRequests = window.allNotifyRequests.filter(req => {
+      switch(filter) {
+        case 'pending':
+          return req.status === 'pending' || !req.status;
+        case 'notified':
+          return req.status === 'notified';
+        case 'today':
+          return req.timestamp && req.timestamp >= today;
+        default:
+          return true;
+      }
+    });
+  }
 
   // Load products for reference
   async function loadNotifyProducts() {
     try {
       const snapshot = await db.collection('products').get();
       snapshot.docs.forEach(doc => {
-        notifyProducts[doc.id] = {
+        window.notifyProducts[doc.id] = {
           title: doc.data().title,
           price: doc.data().price,
           primaryImg: doc.data().primaryImg || (doc.data().media?.[0]?.url) || 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image',
@@ -3135,19 +3169,19 @@ MyEssantia Team`;
         .orderBy('timestamp', 'desc')
         .get();
 
-      allNotifyRequests = snapshot.docs.map(doc => ({
+      window.allNotifyRequests = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().timestamp)
       }));
 
       await loadNotifyProducts();
-      applyNotifyFilter(currentNotifyFilter);
+      applyNotifyFilter(window.currentNotifyFilter);
       updateNotifyStats();
       
       if (loadingEl) loadingEl.style.display = 'none';
       
-      if (filteredNotifyRequests.length === 0) {
+      if (window.filteredNotifyRequests.length === 0) {
         if (emptyState) emptyState.style.display = 'block';
         if (tableWrapper) tableWrapper.style.display = 'none';
         if (mobileCards) mobileCards.style.display = 'none';
@@ -3166,37 +3200,6 @@ MyEssantia Team`;
     }
   }
 
-  // Filter requests
-  window.filterNotifyRequests = function(filter) {
-    currentNotifyFilter = filter;
-    currentNotifyPage = 1;
-    
-    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-    const activeTab = document.getElementById(`filter-${filter}`);
-    if (activeTab) activeTab.classList.add('active');
-    
-    applyNotifyFilter(filter);
-    renderNotifyRequests();
-  };
-
-  function applyNotifyFilter(filter) {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    filteredNotifyRequests = allNotifyRequests.filter(req => {
-      switch(filter) {
-        case 'pending':
-          return req.status === 'pending' || !req.status;
-        case 'notified':
-          return req.status === 'notified';
-        case 'today':
-          return req.timestamp && req.timestamp >= today;
-        default:
-          return true;
-      }
-    });
-  }
-
   // Search functionality
   const searchInput = document.getElementById('search-requests');
   if (searchInput) {
@@ -3204,27 +3207,27 @@ MyEssantia Team`;
       const searchTerm = e.target.value.toLowerCase();
       
       if (!searchTerm) {
-        applyNotifyFilter(currentNotifyFilter);
+        applyNotifyFilter(window.currentNotifyFilter);
       } else {
-        filteredNotifyRequests = allNotifyRequests.filter(req => {
-          const product = notifyProducts[req.productId] || { title: 'Unknown Product' };
+        window.filteredNotifyRequests = window.allNotifyRequests.filter(req => {
+          const product = window.notifyProducts[req.productId] || { title: 'Unknown Product' };
           return req.email?.toLowerCase().includes(searchTerm) ||
                  product.title?.toLowerCase().includes(searchTerm) ||
                  req.productId?.toLowerCase().includes(searchTerm);
         });
       }
       
-      currentNotifyPage = 1;
+      window.currentNotifyPage = 1;
       renderNotifyRequests();
     });
   }
 
   // Update statistics
   function updateNotifyStats() {
-    const total = allNotifyRequests.length;
-    const pending = allNotifyRequests.filter(r => r.status === 'pending' || !r.status).length;
-    const notified = allNotifyRequests.filter(r => r.status === 'notified').length;
-    const uniqueProducts = new Set(allNotifyRequests.map(r => r.productId)).size;
+    const total = window.allNotifyRequests.length;
+    const pending = window.allNotifyRequests.filter(r => r.status === 'pending' || !r.status).length;
+    const notified = window.allNotifyRequests.filter(r => r.status === 'notified').length;
+    const uniqueProducts = new Set(window.allNotifyRequests.map(r => r.productId)).size;
 
     const totalEl = document.getElementById('total-requests');
     const pendingEl = document.getElementById('pending-requests');
@@ -3239,9 +3242,9 @@ MyEssantia Team`;
 
   // Render requests
   function renderNotifyRequests() {
-    const start = (currentNotifyPage - 1) * notifyItemsPerPage;
-    const end = start + notifyItemsPerPage;
-    const pageRequests = filteredNotifyRequests.slice(start, end);
+    const start = (window.currentNotifyPage - 1) * window.notifyItemsPerPage;
+    const end = start + window.notifyItemsPerPage;
+    const pageRequests = window.filteredNotifyRequests.slice(start, end);
     
     const tableWrapper = document.getElementById('table-wrapper');
     const mobileCards = document.getElementById('mobile-cards');
@@ -3259,13 +3262,13 @@ MyEssantia Team`;
     if (emptyState) emptyState.style.display = 'none';
     if (tableWrapper) tableWrapper.style.display = 'block';
     if (mobileCards) mobileCards.style.display = 'block';
-    if (pagination) pagination.style.display = filteredNotifyRequests.length > notifyItemsPerPage ? 'flex' : 'none';
+    if (pagination) pagination.style.display = window.filteredNotifyRequests.length > window.notifyItemsPerPage ? 'flex' : 'none';
     
     // Render table rows
     const tableBody = document.getElementById('table-body');
     if (tableBody) {
       tableBody.innerHTML = pageRequests.map(req => {
-        const product = notifyProducts[req.productId] || { 
+        const product = window.notifyProducts[req.productId] || { 
           title: 'Unknown Product', 
           price: 0,
           primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
@@ -3340,7 +3343,7 @@ MyEssantia Team`;
     const mobileCardsEl = document.getElementById('mobile-cards');
     if (mobileCardsEl) {
       mobileCardsEl.innerHTML = pageRequests.map(req => {
-        const product = notifyProducts[req.productId] || { 
+        const product = window.notifyProducts[req.productId] || { 
           title: 'Unknown Product', 
           price: 0,
           primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
@@ -3410,10 +3413,10 @@ MyEssantia Team`;
 
   // Send email function using mailto
   window.sendNotifyEmail = function(requestId) {
-    const request = allNotifyRequests.find(r => r.id === requestId);
+    const request = window.allNotifyRequests.find(r => r.id === requestId);
     if (!request) return;
     
-    const product = notifyProducts[request.productId] || { title: 'Unknown Product', price: 0 };
+    const product = window.notifyProducts[request.productId] || { title: 'Unknown Product', price: 0 };
     
     const subject = document.getElementById('email-subject')?.value || emailTemplate.subject;
     const body = document.getElementById('email-body')?.value || emailTemplate.body;
@@ -3454,8 +3457,8 @@ MyEssantia Team`;
   };
 
   // Send bulk emails to all pending
-  window.sendBulkNotifyEmails = function() {
-    const pendingRequests = filteredNotifyRequests.filter(r => r.status !== 'notified');
+  window.sendBulkEmails = function() {
+    const pendingRequests = window.filteredNotifyRequests.filter(r => r.status !== 'notified');
     
     if (pendingRequests.length === 0) {
       showNotification('No pending requests to email', 'error');
@@ -3487,88 +3490,10 @@ MyEssantia Team`;
     }
   };
 
-  // Pagination
-  function updateNotifyPagination() {
-    const totalPages = Math.ceil(filteredNotifyRequests.length / notifyItemsPerPage);
-    const pagination = document.getElementById('pagination');
-    const prevBtn = document.getElementById('prev-page');
-    const nextBtn = document.getElementById('next-page');
-    const pageNumbers = document.getElementById('page-numbers');
-    
-    if (totalPages <= 1) {
-      if (pagination) pagination.style.display = 'none';
-      return;
-    }
-
-    if (pagination) pagination.style.display = 'flex';
-    if (prevBtn) prevBtn.disabled = currentNotifyPage === 1;
-    if (nextBtn) nextBtn.disabled = currentNotifyPage === totalPages;
-
-    let pageNumbersHTML = '';
-    const startPage = Math.max(1, currentNotifyPage - 2);
-    const endPage = Math.min(totalPages, currentNotifyPage + 2);
-
-    for (let i = startPage; i <= endPage; i++) {
-      pageNumbersHTML += `
-        <button class="page-btn ${i === currentNotifyPage ? 'active' : ''}" onclick="goToNotifyPage(${i})">
-          ${i}
-        </button>
-      `;
-    }
-
-    if (pageNumbers) pageNumbers.innerHTML = pageNumbersHTML;
-  }
-
-  window.changeNotifyPage = function(direction) {
-    const totalPages = Math.ceil(filteredNotifyRequests.length / notifyItemsPerPage);
-    
-    if (direction === 'prev' && currentNotifyPage > 1) {
-      currentNotifyPage--;
-    } else if (direction === 'next' && currentNotifyPage < totalPages) {
-      currentNotifyPage++;
-    }
-    
-    renderNotifyRequests();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  window.goToNotifyPage = function(page) {
-    currentNotifyPage = page;
-    renderNotifyRequests();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // Mark notification as notified
-  window.markNotifyAsNotified = async function(notificationId) {
-    try {
-      await db.collection('notifications').doc(notificationId).update({
-        status: 'notified',
-        notifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      
-      showNotification('Marked as notified');
-      loadNotifyRequests();
-    } catch (error) {
-      console.error('Error updating notification:', error);
-      showNotification('Failed to update status', 'error');
-    }
-  };
-
-  // View product in new tab
-  window.viewNotifyProduct = function(productId) {
-    window.open(`product.html?id=${productId}`, '_blank');
-  };
-
-  // Copy email to clipboard
-  window.copyNotifyEmail = function(email) {
-    navigator.clipboard.writeText(email);
-    showNotification('Email copied to clipboard');
-  };
-
   // Export to CSV
-  window.exportNotifyRequests = function() {
-    const data = filteredNotifyRequests.map(req => {
-      const product = notifyProducts[req.productId] || { title: 'Unknown Product', price: 0 };
+  window.exportRequests = function() {
+    const data = window.filteredNotifyRequests.map(req => {
+      const product = window.notifyProducts[req.productId] || { title: 'Unknown Product', price: 0 };
       const date = req.timestamp ? new Date(req.timestamp) : new Date();
       
       return {
@@ -3615,9 +3540,88 @@ MyEssantia Team`;
     return csvRows.join('\n');
   }
 
+  // Mark notification as notified
+  window.markNotifyAsNotified = async function(notificationId) {
+    try {
+      await db.collection('notifications').doc(notificationId).update({
+        status: 'notified',
+        notifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      showNotification('Marked as notified');
+      loadNotifyRequests();
+    } catch (error) {
+      console.error('Error updating notification:', error);
+      showNotification('Failed to update status', 'error');
+    }
+  };
+
+  // View product in new tab
+  window.viewNotifyProduct = function(productId) {
+    window.open(`product.html?id=${productId}`, '_blank');
+  };
+
+  // Copy email to clipboard
+  window.copyNotifyEmail = function(email) {
+    navigator.clipboard.writeText(email);
+    showNotification('Email copied to clipboard');
+  };
+
+  // Pagination functions
+  window.changePage = function(direction) {
+    const totalPages = Math.ceil(window.filteredNotifyRequests.length / window.notifyItemsPerPage);
+    
+    if (direction === 'prev' && window.currentNotifyPage > 1) {
+      window.currentNotifyPage--;
+    } else if (direction === 'next' && window.currentNotifyPage < totalPages) {
+      window.currentNotifyPage++;
+    }
+    
+    renderNotifyRequests();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.goToNotifyPage = function(page) {
+    window.currentNotifyPage = page;
+    renderNotifyRequests();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  function updateNotifyPagination() {
+    const totalPages = Math.ceil(window.filteredNotifyRequests.length / window.notifyItemsPerPage);
+    const pagination = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const pageNumbers = document.getElementById('page-numbers');
+    
+    if (totalPages <= 1) {
+      if (pagination) pagination.style.display = 'none';
+      return;
+    }
+
+    if (pagination) pagination.style.display = 'flex';
+    if (prevBtn) prevBtn.disabled = window.currentNotifyPage === 1;
+    if (nextBtn) nextBtn.disabled = window.currentNotifyPage === totalPages;
+
+    let pageNumbersHTML = '';
+    const startPage = Math.max(1, window.currentNotifyPage - 2);
+    const endPage = Math.min(totalPages, window.currentNotifyPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbersHTML += `
+        <button class="page-btn ${i === window.currentNotifyPage ? 'active' : ''}" onclick="goToNotifyPage(${i})">
+          ${i}
+        </button>
+      `;
+    }
+
+    if (pageNumbers) pageNumbers.innerHTML = pageNumbersHTML;
+  }
+
   // Initialize
   loadTemplate();
   loadNotifyRequests();
+}
 
   // Set up filter tab click handlers
   document.querySelectorAll('.filter-tab').forEach(tab => {
