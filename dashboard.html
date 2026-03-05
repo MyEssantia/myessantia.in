@@ -1,0 +1,3102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>MyEssantia · admin · dashboard</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..700&family=Montserrat:wght@300..900&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  
+  <style>
+    /* ===== GLOBAL & RESETS ===== */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    html { 
+      scroll-behavior: smooth; 
+    }
+    
+    body { 
+      font-family: 'Inter', 'Montserrat', sans-serif; 
+      background: #fcfaf7; 
+      color: #1e1e1e; 
+      overflow-x: hidden;
+      line-height: 1.5;
+      padding: 20px;
+      position: relative;
+    }
+    
+    .admin-container { 
+      width: 100%; 
+      max-width: 1600px; 
+      margin: 0 auto; 
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      transition: transform 0.3s ease;
+    }
+    
+    .admin-container.menu-open {
+      transform: translateX(300px);
+    }
+    
+    @media (min-width: 640px) { 
+      body { padding: 24px 32px; }
+    }
+    
+    /* ===== SLIDING MENU ===== */
+    .sliding-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 300px;
+      height: 100vh;
+      background: #ffffff;
+      border-right: 3px solid #000;
+      box-shadow: 10px 0 0 rgba(0,0,0,0.2);
+      z-index: 1000;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sliding-menu.open {
+      left: 0;
+    }
+
+    .menu-header {
+      background: #000;
+      padding: 30px 24px;
+      border-bottom: 4px solid #d4af37;
+    }
+
+    .menu-header h2 {
+      color: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .menu-header h2 i {
+      color: #d4af37;
+    }
+
+    .menu-header p {
+      color: #d4af37;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    .menu-items {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fcfaf7;
+    }
+
+    .menu-item:hover {
+      transform: translateX(5px);
+      border-color: #d4af37;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .menu-item.active {
+      background: #000;
+      border-color: #d4af37;
+    }
+
+    .menu-item.active .menu-item-icon,
+    .menu-item.active .menu-item-title,
+    .menu-item.active .menu-item-desc {
+      color: #d4af37;
+    }
+
+    .menu-item-icon {
+      width: 40px;
+      height: 40px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      font-size: 1.2rem;
+      border: 2px solid #d4af37;
+    }
+
+    .menu-item.active .menu-item-icon {
+      background: #d4af37;
+      color: #000;
+      border-color: #000;
+    }
+
+    .menu-item-content {
+      flex: 1;
+    }
+
+    .menu-item-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      color: #000;
+    }
+
+    .menu-item-desc {
+      font-size: 0.65rem;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .menu-item-badge {
+      background: #d4af37;
+      color: #000;
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      border: 2px solid #000;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .menu-footer {
+      padding: 20px;
+      border-top: 2px solid #000;
+      background: #fcfaf7;
+    }
+
+    .menu-footer .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      background: #000;
+      border-radius: 30px;
+      color: #d4af37;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .menu-footer .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #d4af37;
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Overlay for when menu is open */
+    .menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .menu-overlay.show {
+      display: block;
+    }
+
+    /* Loading animation */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 2000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 6px solid #fcfaf7;
+      border-top: 6px solid #d4af37;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: #fff;
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    /* Menu icon in header */
+    .menu-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #d4af37;
+      border: 3px solid #d4af37;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .menu-icon:hover {
+      transform: scale(1.05);
+      background: #d4af37;
+      color: #000;
+      border-color: #000;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn { 
+      border-radius: 60px; 
+      padding: 0.85rem 2.2rem; 
+      font-weight: 600; 
+      font-size: 1rem;
+      text-transform: uppercase; 
+      letter-spacing: 0.5px; 
+      transition: all 0.2s;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      gap: 8px;
+      border: 2px solid transparent; 
+      cursor: pointer;
+      text-decoration: none;
+      min-height: 48px;
+    }
+    
+    .btn-primary { 
+      background: #000; 
+      color: #fff; 
+      border-color: #000; 
+    }
+    
+    .btn-primary:hover:not(:disabled) { 
+      background: #d4af37; 
+      color: #000; 
+      border-color: #000; 
+    }
+    
+    .btn-outline { 
+      background: transparent; 
+      border-color: #000; 
+      color: #000; 
+    }
+    
+    .btn-outline:hover:not(:disabled) { 
+      background: #000; 
+      color: #d4af37; 
+      border-color: #d4af37; 
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* ===== HEADER - RESPONSIVE ===== */
+    .header {
+      background: #ffffff;
+      padding: 20px 24px;
+      border-radius: 40px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.2;
+      color: #000;
+    }
+    
+    .brand h1 strong { 
+      color: #d4af37; 
+      font-weight: 900;
+    }
+
+    .brand span {
+      font-size: 0.8rem;
+      color: #666;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .admin-badge {
+      background: #000;
+      color: #d4af37;
+      padding: 8px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid #d4af37;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .admin-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #d4af37;
+      border: 3px solid #d4af37;
+      overflow: hidden;
+    }
+
+    .admin-details {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .admin-details {
+        display: block;
+      }
+      .admin-details .name {
+        font-weight: 800;
+        color: #000;
+      }
+      .admin-details .email {
+        font-size: 0.8rem;
+        color: #666;
+        text-transform: uppercase;
+      }
+    }
+    
+    /* Mobile header compact */
+    @media (max-width: 640px) {
+      .header {
+        padding: 16px;
+      }
+      .brand h1 {
+        font-size: 1.4rem;
+      }
+      .brand span {
+        font-size: 0.7rem;
+      }
+      .admin-badge {
+        padding: 4px 12px;
+        font-size: 0.7rem;
+      }
+      .admin-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .menu-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* ===== QUICK ACTIONS - RESPONSIVE ===== */
+    .quick-actions {
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 40px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 600px) {
+      .quick-actions {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fcfaf7;
+      padding: 8px 20px;
+      border-radius: 60px;
+      border: 2px solid #000;
+      min-height: 56px;
+      transition: all 0.2s;
+      flex: 1;
+      max-width: 500px;
+    }
+
+    .search-bar:focus-within {
+      border-color: #d4af37;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+    }
+
+    .search-bar i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+
+    .search-bar input {
+      border: none;
+      outline: none;
+      width: 100%;
+      background: transparent;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .quick-action-btn {
+      background: #fff;
+      border: 2px solid #000;
+      padding: 12px 24px;
+      border-radius: 60px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.9rem;
+      min-height: 48px;
+      transition: all 0.2s;
+      color: #000;
+      text-transform: uppercase;
+    }
+
+    .quick-action-btn:hover {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    }
+
+    .quick-action-btn i {
+      color: #d4af37;
+      transition: color 0.2s;
+    }
+
+    .quick-action-btn:hover i {
+      color: #d4af37;
+    }
+    
+    /* Mobile quick actions compact */
+    @media (max-width: 640px) {
+      .quick-actions {
+        padding: 16px;
+      }
+      .search-bar {
+        min-height: 48px;
+        padding: 6px 16px;
+      }
+      .search-bar i {
+        font-size: 1rem;
+      }
+      .search-bar input {
+        font-size: 0.9rem;
+      }
+      .quick-action-btn {
+        padding: 8px 16px;
+        min-height: 40px;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* ===== STATS GRID - RESPONSIVE ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+      gap: 20px;
+    }
+
+    .stat-card {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 30px;
+      border: 2px solid #000;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 10px 10px 0 rgba(0,0,0,0.2);
+      border-color: #d4af37;
+    }
+
+    .stat-icon {
+      width: 60px;
+      height: 60px;
+      background: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #d4af37;
+      border: 3px solid #d4af37;
+      flex-shrink: 0;
+    }
+
+    .stat-info h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      color: #000;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .stat-info p {
+      color: #666;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Mobile stats compact */
+    @media (max-width: 640px) {
+      .stats-grid {
+        gap: 12px;
+      }
+      .stat-card {
+        padding: 12px;
+        gap: 10px;
+      }
+      .stat-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4rem;
+        border-width: 2px;
+      }
+      .stat-info h3 {
+        font-size: 1.4rem;
+      }
+      .stat-info p {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* ===== PRODUCT FORM ===== */
+    .product-form {
+      background: #ffffff;
+      border-radius: 40px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+
+    .form-header {
+      background: #000;
+      padding: 24px 32px;
+      border-bottom: 4px solid #d4af37;
+    }
+
+    .form-header .form-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .form-header .form-title i {
+      color: #d4af37;
+      background: #fff;
+      padding: 10px;
+      border-radius: 50%;
+      border: 2px solid #d4af37;
+    }
+
+    .form-header .form-subtitle {
+      color: #d4af37;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-body {
+      padding: 32px;
+    }
+
+    .form-section {
+      background: #fcfaf7;
+      border-radius: 30px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 2px solid #000;
+      transition: all 0.2s;
+    }
+
+    .form-section:hover {
+      border-color: #d4af37;
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+    }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #000;
+      padding-bottom: 12px;
+      border-bottom: 3px solid #d4af37;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    .form-section-title i {
+      color: #d4af37;
+      font-size: 1.4rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group label i {
+      color: #d4af37;
+      margin-right: 6px;
+      width: 20px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i.input-icon {
+      position: absolute;
+      left: 16px;
+      color: #d4af37;
+      font-size: 1rem;
+      z-index: 2;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select,
+    .input-wrapper textarea {
+      width: 100%;
+      padding: 14px 18px;
+      padding-left: 48px;
+      border: 2px solid #000;
+      border-radius: 20px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      background: #fff;
+      transition: all 0.2s;
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus,
+    .input-wrapper textarea:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.2);
+    }
+
+    .input-wrapper textarea {
+      padding-left: 18px;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .input-wrapper select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      background-size: 16px;
+    }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-hint i {
+      color: #d4af37;
+    }
+    
+    /* Mobile form compact */
+    @media (max-width: 640px) {
+      .form-header {
+        padding: 16px 20px;
+      }
+      .form-header .form-title {
+        font-size: 1.4rem;
+        gap: 10px;
+      }
+      .form-header .form-title i {
+        padding: 6px;
+        font-size: 1rem;
+      }
+      .form-header .form-subtitle {
+        font-size: 0.7rem;
+      }
+      .form-body {
+        padding: 16px;
+      }
+      .form-section {
+        padding: 16px;
+        border-radius: 20px;
+      }
+      .form-section-title {
+        font-size: 1rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+      }
+      .form-section-title i {
+        font-size: 1.1rem;
+      }
+      .form-row {
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+      .form-group label {
+        font-size: 0.7rem;
+        margin-bottom: 4px;
+      }
+      .input-wrapper input,
+      .input-wrapper select,
+      .input-wrapper textarea {
+        padding: 10px 12px;
+        padding-left: 40px;
+        font-size: 0.9rem;
+      }
+      .input-wrapper i.input-icon {
+        left: 12px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ===== TOGGLE SWITCH - RESPONSIVE ===== */
+    .high-demand-toggle {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 70px;
+      height: 36px;
+      margin-right: 16px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 36px;
+      border: 2px solid #000;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 28px;
+      width: 28px;
+      left: 3px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      border: 2px solid #000;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #d4af37;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(34px);
+      background-color: #000;
+    }
+
+    .toggle-label {
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+    }
+
+    .toggle-label i {
+      color: #d4af37;
+      font-size: 1.2rem;
+    }
+    
+    /* Mobile toggle compact */
+    @media (max-width: 640px) {
+      .toggle-switch {
+        width: 50px;
+        height: 26px;
+        margin-right: 10px;
+      }
+      .toggle-slider:before {
+        height: 18px;
+        width: 18px;
+        left: 2px;
+        bottom: 2px;
+      }
+      input:checked + .toggle-slider:before {
+        transform: translateX(24px);
+      }
+      .toggle-label {
+        font-size: 0.8rem;
+      }
+      .toggle-label i {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ===== MEDIA SECTION - RESPONSIVE ===== */
+    .media-section {
+      background: #fff;
+      border-radius: 30px;
+      padding: 24px;
+      border: 2px solid #000;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .media-item {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      border: 3px solid #000;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fcfaf7;
+    }
+
+    .media-item:hover {
+      transform: scale(1.02);
+      border-color: #d4af37;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+    }
+
+    .media-item.selected {
+      border-color: #d4af37;
+      border-width: 4px;
+      box-shadow: 0 0 0 2px #d4af37;
+    }
+
+    .media-item img,
+    .media-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .media-add-item {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      border: 3px dashed #d4af37;
+      background: #fcfaf7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #d4af37;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .media-add-item i {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .media-add-item:hover {
+      background: #fff;
+      border-color: #000;
+      color: #000;
+    }
+
+    .media-type-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #000;
+      color: #d4af37;
+      padding: 2px 6px;
+      border-radius: 12px;
+      font-size: 0.6rem;
+      font-weight: 700;
+      border: 1px solid #d4af37;
+    }
+
+    .media-remove-btn {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      background: #d4af37;
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: 2px solid #000;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .media-item:hover .media-remove-btn {
+      opacity: 1;
+    }
+
+    .media-upload-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+
+    .media-url-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 12px 16px;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .media-url-input:focus {
+      outline: none;
+      border-color: #d4af37;
+    }
+
+    .media-upload-btn {
+      padding: 12px 24px;
+      background: #000;
+      color: #d4af37;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .media-upload-btn:hover {
+      background: #d4af37;
+      color: #000;
+    }
+
+    .media-file-input {
+      display: none;
+    }
+
+    .media-file-label {
+      padding: 12px 24px;
+      background: #fff;
+      color: #000;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .media-file-label:hover {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    .media-hint {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    /* Mobile media compact - 3 per row */
+    @media (max-width: 640px) {
+      .media-section {
+        padding: 16px;
+        border-radius: 20px;
+      }
+      .media-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .media-item, .media-add-item {
+        border-radius: 12px;
+        border-width: 2px;
+      }
+      .media-add-item {
+        padding: 8px;
+        font-size: 0.7rem;
+      }
+      .media-add-item i {
+        font-size: 1.4rem;
+        margin-bottom: 4px;
+      }
+      .media-type-badge {
+        font-size: 0.5rem;
+        padding: 1px 4px;
+      }
+      .media-remove-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 0.7rem;
+      }
+      .media-upload-row {
+        gap: 8px;
+        flex-direction: column;
+      }
+      .media-url-input {
+        width: 100%;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+      }
+      .media-upload-btn, .media-file-label {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        justify-content: center;
+      }
+      .media-hint {
+        font-size: 0.65rem;
+      }
+    }
+    
+    /* Desktop media - keep spacious */
+    @media (min-width: 1024px) {
+      .media-grid {
+        gap: 20px;
+      }
+    }
+
+    /* ===== VISIBILITY SECTION - RESPONSIVE ===== */
+    .visibility-section {
+      background: #fff;
+      border-radius: 30px;
+      padding: 24px;
+      border: 2px solid #000;
+    }
+
+    .flags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #000;
+    }
+
+    .flag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: #fcfaf7;
+      border: 2px solid #000;
+      border-radius: 60px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .flag-chip input[type="checkbox"] {
+      display: none;
+    }
+
+    .flag-chip.active {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    .flag-chip.active i {
+      color: #d4af37;
+    }
+
+    .flag-chip i {
+      color: #d4af37;
+      font-size: 1rem;
+    }
+
+    .pages-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+
+    .page-chip {
+      position: relative;
+    }
+
+    .page-chip input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .page-chip label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 8px;
+      background: #fcfaf7;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid #000;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .page-chip input[type="checkbox"]:checked + label {
+      background: #000;
+      border-color: #d4af37;
+      color: #d4af37;
+    }
+
+    .page-chip label i {
+      color: #d4af37;
+      font-size: 1rem;
+    }
+
+    .newin-status-badge {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fcfaf7;
+      padding: 12px 20px;
+      border-radius: 60px;
+      border: 2px solid #d4af37;
+      margin: 16px 0 12px;
+      font-weight: 700;
+    }
+
+    .newin-timer {
+      background: #000;
+      color: #d4af37;
+      padding: 4px 12px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      border: 2px solid #d4af37;
+    }
+
+    .info-note {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #fcfaf7;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      color: #000;
+      border: 2px solid #000;
+      margin-top: 12px;
+    }
+
+    .info-note i {
+      color: #d4af37;
+      font-size: 1rem;
+    }
+    
+    /* Mobile visibility compact */
+    @media (max-width: 640px) {
+      .visibility-section {
+        padding: 16px;
+        border-radius: 20px;
+      }
+      .flags-row {
+        gap: 10px;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+      }
+      .flag-chip {
+        padding: 6px 14px;
+        font-size: 0.75rem;
+        gap: 4px;
+      }
+      .flag-chip i {
+        font-size: 0.8rem;
+      }
+      .pages-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin: 12px 0;
+      }
+      .page-chip label {
+        padding: 8px 4px;
+        font-size: 0.7rem;
+      }
+      .page-chip label i {
+        font-size: 0.8rem;
+      }
+      .newin-status-badge {
+        padding: 8px 12px;
+        font-size: 0.7rem;
+      }
+      .newin-timer {
+        padding: 2px 8px;
+        font-size: 0.7rem;
+      }
+      .info-note {
+        padding: 8px 12px;
+        font-size: 0.65rem;
+        gap: 6px;
+      }
+    }
+    
+    /* Desktop pages grid */
+    @media (min-width: 1024px) {
+      .pages-grid {
+        gap: 16px;
+      }
+    }
+
+    /* ===== FORM ACTIONS - RESPONSIVE ===== */
+    .form-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    
+    @media (max-width: 640px) {
+      .form-actions {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .form-actions .btn {
+        width: 100%;
+      }
+    }
+
+    /* ===== PRODUCTS TABLE - COMPACT MOBILE CARDS ===== */
+    .products-table {
+      background: #ffffff;
+      border-radius: 40px;
+      padding: 24px;
+      border: 2px solid #000;
+      box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+    }
+
+    .table-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .table-header h3 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-transform: uppercase;
+    }
+
+    .table-header h3 i {
+      color: #d4af37;
+    }
+
+    #product-count {
+      background: #000;
+      color: #d4af37;
+      padding: 8px 24px;
+      border-radius: 60px;
+      font-weight: 700;
+      border: 2px solid #d4af37;
+      white-space: nowrap;
+    }
+
+    /* Desktop table */
+    .desktop-table {
+      display: block;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th {
+      text-align: left;
+      padding: 16px 20px;
+      background: #000;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #d4af37;
+      text-transform: uppercase;
+      border-bottom: 3px solid #d4af37;
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 2px solid #000;
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: #fcfaf7;
+    }
+
+    .product-thumb {
+      width: 60px;
+      height: 60px;
+      border-radius: 16px;
+      background-size: cover;
+      background-position: center;
+      border: 3px solid #000;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .product-thumb:hover {
+      transform: scale(1.1);
+      border-color: #d4af37;
+    }
+
+    .page-badge {
+      padding: 4px 10px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: inline-block;
+      border: 2px solid #000;
+      text-transform: uppercase;
+    }
+
+    .page-badge.home { background: #d4af37; color: #000; }
+    .page-badge.accessories { background: #fff; color: #000; }
+    .page-badge.essentials { background: #000; color: #d4af37; }
+
+    .newin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #d4af37;
+      color: #000;
+      padding: 3px 10px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      border: 2px solid #000;
+      text-transform: uppercase;
+    }
+
+    .high-demand-badge-table {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #000;
+      color: #d4af37;
+      padding: 3px 10px;
+      border-radius: 40px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      border: 2px solid #d4af37;
+      text-transform: uppercase;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-btns button {
+      padding: 8px 12px;
+      border: 2px solid #000;
+      border-radius: 40px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fff;
+      color: #000;
+      font-size: 0.85rem;
+    }
+
+    .action-btns button:hover:not(:disabled) {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    /* Mobile card-based product list - COMPACT VERSION */
+    .products-list {
+      display: none;
+    }
+
+    .product-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .product-item {
+      background: #fcfaf7;
+      border: 2px solid #000;
+      border-radius: 20px;
+      padding: 12px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }
+
+    .product-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.1);
+      border-color: #d4af37;
+    }
+
+    .product-item-header {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .product-item-thumb {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .product-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .product-item-title {
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-item-title strong {
+      color: #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-item-category {
+      font-size: 0.6rem;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .product-item-flags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .product-item-flags .newin-badge,
+    .product-item-flags .high-demand-badge-table {
+      padding: 2px 6px;
+      font-size: 0.55rem;
+    }
+
+    .product-item-details {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 8px 0;
+      padding: 8px 0;
+      border-top: 1px solid #000;
+      border-bottom: 1px solid #000;
+    }
+
+    .product-item-detail {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-item-detail .label {
+      font-size: 0.55rem;
+      text-transform: uppercase;
+      color: #666;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 1px;
+    }
+
+    .product-item-detail .value {
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #000;
+    }
+
+    .product-item-detail .value small {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: #666;
+    }
+
+    .product-item-pages {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 6px 0;
+    }
+
+    .product-item-pages .page-badge {
+      padding: 2px 6px;
+      font-size: 0.55rem;
+    }
+
+    .product-item-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .product-item-actions button {
+      flex: 1;
+      padding: 8px 4px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      background: #fff;
+      min-height: 32px;
+    }
+
+    .product-item-actions button i {
+      font-size: 0.7rem;
+    }
+
+    .product-item-actions button:hover {
+      background: #000;
+      color: #d4af37;
+      border-color: #d4af37;
+    }
+
+    .stock-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 30px;
+      font-weight: 700;
+      border: 2px solid #000;
+      font-size: 0.7rem;
+    }
+
+    .stock-badge.low {
+      background: #ffebee;
+    }
+    
+    .stock-badge.medium {
+      background: #fff3e0;
+    }
+    
+    .stock-badge.high {
+      background: #fcfaf7;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 900px) {
+      .desktop-table {
+        display: none;
+      }
+      
+      .products-list {
+        display: block;
+      }
+      
+      .table-header h3 {
+        font-size: 1.4rem;
+      }
+      
+      #product-count {
+        padding: 6px 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (min-width: 901px) {
+      .products-list {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .products-table {
+        padding: 16px;
+      }
+      
+      .product-item-actions button {
+        font-size: 0.65rem;
+        padding: 6px 2px;
+      }
+      
+      .product-item-actions button i {
+        display: none;
+      }
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+      border: 2px dashed #000;
+      border-radius: 40px;
+      background: #fcfaf7;
+    }
+
+    .empty-state i {
+      font-size: 4rem;
+      color: #d4af37;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      font-family: 'Montserrat', sans-serif;
+      text-transform: uppercase;
+    }
+
+    /* ===== NOTIFICATION ===== */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 32px;
+      border-radius: 60px;
+      color: #fff;
+      font-weight: 700;
+      z-index: 9999;
+      animation: slideInRight 0.3s ease;
+      border: 2px solid #000;
+      text-transform: uppercase;
+    }
+
+    .notification.success { background: #000; color: #d4af37; border-color: #d4af37; }
+    .notification.error { background: #ff4444; color: #fff; border-color: #000; }
+    .notification.info { background: #2196F3; color: #fff; border-color: #000; }
+    .notification.warning { background: #ffbb33; color: #000; border-color: #000; }
+
+    @keyframes slideInRight {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    /* Page container for dynamic loading */
+    .page-container {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sliding Menu -->
+<div class="sliding-menu" id="slidingMenu">
+  <div class="menu-header">
+    <h2><i class="fa-solid fa-bars"></i> menu</h2>
+    <p>navigate · manage</p>
+  </div>
+  
+  <div class="menu-items">
+    <!-- Home Menu Item -->
+    <div class="menu-item active" onclick="loadPage('dashboard')" id="menuDashboard">
+      <div class="menu-item-icon">
+        <i class="fa-solid fa-house"></i>
+      </div>
+      <div class="menu-item-content">
+        <div class="menu-item-title">dashboard</div>
+        <div class="menu-item-desc">product management</div>
+      </div>
+      <div class="menu-item-badge">
+        <i class="fa-solid fa-chevron-right"></i>
+      </div>
+    </div>
+    
+    <!-- Notify Menu Item -->
+    <div class="menu-item" onclick="loadPage('notify')" id="menuNotify">
+      <div class="menu-item-icon">
+        <i class="fa-solid fa-bell"></i>
+      </div>
+      <div class="menu-item-content">
+        <div class="menu-item-title">notify</div>
+        <div class="menu-item-desc">notification requests</div>
+      </div>
+      <div class="menu-item-badge" id="notifyBadge">0</div>
+    </div>
+  </div>
+  
+  <div class="menu-footer">
+    <div class="live-indicator">
+      <span class="live-dot"></span>
+      <span>live · realtime updates</span>
+    </div>
+  </div>
+</div>
+
+<!-- Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">loading page...</div>
+</div>
+
+<div class="admin-container" id="admin-content">
+    <!-- Header with Menu Icon (COMMON HEADER) -->
+    <div class="header">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div class="menu-icon" onclick="toggleMenu()">
+          <i class="fa-solid fa-bars"></i>
+        </div>
+        <div class="brand">
+          <h1><strong>MyEssantia</strong> · admin</h1>
+          <span id="pageTitle">dashboard</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <div class="admin-badge">
+          <i class="fa-solid fa-crown"></i> master admin
+        </div>
+        <div class="admin-info">
+          <div class="admin-avatar">
+            <i class="fa-regular fa-user"></i>
+          </div>
+          <div class="admin-details">
+            <div class="name">admin</div>
+            <div class="email">product manager</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Page Container -->
+    <div id="page-container" class="page-container">
+      <!-- Dashboard content will be loaded here by default -->
+    </div>
+  </div>
+
+  <script>
+// ========== FIREBASE CONFIGURATION ==========
+const firebaseConfig = {
+  apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
+  authDomain: "myessantia.firebaseapp.com",
+  projectId: "myessantia",
+  storageBucket: "myessantia.firebasestorage.app",
+  messagingSenderId: "701726517205",
+  appId: "1:701726517205:web:f6ab79efdffeab6dbbbf5c",
+  measurementId: "G-SZF11SHZBH"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ========== GLOBAL VARIABLES ==========
+let products = [];
+let productMedia = [];
+let selectedMediaIndex = 0;
+let newInCheckInterval = null;
+let allRequests = [];
+let currentPage = 'dashboard';
+
+// DOM Elements
+const slidingMenu = document.getElementById('slidingMenu');
+const menuOverlay = document.getElementById('menuOverlay');
+const adminContent = document.getElementById('admin-content');
+const menuDashboard = document.getElementById('menuDashboard');
+const menuNotify = document.getElementById('menuNotify');
+const notifyBadge = document.getElementById('notifyBadge');
+const loadingOverlay = document.getElementById('loadingOverlay');
+const pageContainer = document.getElementById('page-container');
+const pageTitle = document.getElementById('pageTitle');
+
+// ========== MENU FUNCTIONS ==========
+function toggleMenu() {
+  slidingMenu.classList.toggle('open');
+  menuOverlay.classList.toggle('show');
+  adminContent.classList.toggle('menu-open');
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.sliding-menu') && !event.target.closest('.menu-icon')) {
+    slidingMenu.classList.remove('open');
+    menuOverlay.classList.remove('show');
+    adminContent.classList.remove('menu-open');
+  }
+});
+
+// ========== PAGE LOADING FUNCTIONS ==========
+async function loadPage(page) {
+  // Update active menu item
+  if (page === 'dashboard') {
+    menuDashboard.classList.add('active');
+    menuNotify.classList.remove('active');
+    pageTitle.textContent = 'dashboard';
+  } else {
+    menuNotify.classList.add('active');
+    menuDashboard.classList.remove('active');
+    pageTitle.textContent = 'notifications';
+  }
+
+  // Show loading overlay
+  loadingOverlay.classList.add('show');
+  
+  // Close menu
+  toggleMenu();
+  
+  try {
+    if (page === 'dashboard') {
+      await loadDashboardPage();
+    } else {
+      await loadNotifyPage();
+    }
+  } catch (error) {
+    console.error('Error loading page:', error);
+    showNotification('Failed to load page', 'error');
+  } finally {
+    // Hide loading overlay
+    loadingOverlay.classList.remove('show');
+  }
+}
+
+async function loadDashboardPage() {
+  // Fetch dashboard HTML
+  const response = await fetch('dashboard.html');
+  const html = await response.text();
+  
+  // Extract only the content we need (everything after the header)
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  // Get the main content (everything after header and quick actions)
+  const content = doc.querySelector('.stats-grid, .product-form, .products-table');
+  if (content) {
+    // Create a container for dashboard content
+    const dashboardContent = document.createElement('div');
+    
+    // Add stats grid
+    const statsGrid = doc.querySelector('.stats-grid');
+    if (statsGrid) dashboardContent.appendChild(statsGrid.cloneNode(true));
+    
+    // Add product form
+    const productForm = doc.querySelector('.product-form');
+    if (productForm) dashboardContent.appendChild(productForm.cloneNode(true));
+    
+    // Add products table
+    const productsTable = doc.querySelector('.products-table');
+    if (productsTable) dashboardContent.appendChild(productsTable.cloneNode(true));
+    
+    // Clear and append
+    pageContainer.innerHTML = '';
+    pageContainer.appendChild(dashboardContent);
+    
+    // Reinitialize dashboard functionality
+    initializeDashboard();
+  }
+}
+
+async function loadNotifyPage() {
+  // Fetch notify HTML
+  const response = await fetch('notify.html');
+  const html = await response.text();
+  
+  // Parse the HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  // Get the main content (everything after the header)
+  const content = doc.querySelector('.stats-grid, .filters-bar, .table-container');
+  if (content) {
+    // Create a container for notify content
+    const notifyContent = document.createElement('div');
+    
+    // Add stats grid
+    const statsGrid = doc.querySelector('.stats-grid');
+    if (statsGrid) notifyContent.appendChild(statsGrid.cloneNode(true));
+    
+    // Add email template panel
+    const templatePanel = doc.querySelector('.email-template-panel');
+    if (templatePanel) notifyContent.appendChild(templatePanel.cloneNode(true));
+    
+    // Add filters bar
+    const filtersBar = doc.querySelector('.filters-bar');
+    if (filtersBar) notifyContent.appendChild(filtersBar.cloneNode(true));
+    
+    // Add table container
+    const tableContainer = doc.querySelector('.table-container');
+    if (tableContainer) notifyContent.appendChild(tableContainer.cloneNode(true));
+    
+    // Clear and append
+    pageContainer.innerHTML = '';
+    pageContainer.appendChild(notifyContent);
+    
+    // Reinitialize notify functionality
+    initializeNotify();
+  }
+}
+
+// ========== DASHBOARD FUNCTIONS ==========
+function initializeDashboard() {
+  // Re-get all dashboard DOM elements
+  const productForm = document.getElementById('product-form');
+  const productId = document.getElementById('product-id');
+  const productCreationDate = document.getElementById('product-creation-date');
+  const productTitle = document.getElementById('product-title');
+  const productCategory = document.getElementById('product-category');
+  const productPrice = document.getElementById('product-price');
+  const productRating = document.getElementById('product-rating');
+  const productStock = document.getElementById('product-stock');
+  const productBrand = document.getElementById('product-brand');
+  const productShortDesc = document.getElementById('product-short-desc');
+  const productDescription = document.getElementById('product-description');
+  const productSpecs = document.getElementById('product-specs');
+  const productHighDemand = document.getElementById('product-high-demand');
+  const showOnHome = document.getElementById('show-on-home');
+  const showOnAccessories = document.getElementById('show-on-accessories');
+  const showOnEssentials = document.getElementById('show-on-essentials');
+  const showOnNew = document.getElementById('show-on-new');
+  const productsList = document.getElementById('products-list');
+  const emptyProducts = document.getElementById('empty-products');
+  const totalProducts = document.getElementById('total-products');
+  const newinProducts = document.getElementById('newin-products');
+  const highDemandProducts = document.getElementById('high-demand-products');
+  const totalStock = document.getElementById('total-stock');
+  const productCount = document.getElementById('product-count');
+  const formTitle = document.getElementById('form-title');
+  const cancelEdit = document.getElementById('cancel-edit');
+  const searchInput = document.getElementById('search-products');
+  const highDemandChip = document.getElementById('high-demand-chip');
+  const mediaGrid = document.getElementById('media-grid');
+
+  // Reinitialize media array
+  productMedia = [];
+  selectedMediaIndex = 0;
+  renderMediaGrid();
+
+  // Setup event listeners
+  if (productCategory) {
+    productCategory.addEventListener('change', updateCategorySync);
+  }
+  if (productForm) {
+    productForm.addEventListener('submit', handleProductSubmit);
+  }
+  if (cancelEdit) {
+    cancelEdit.addEventListener('click', resetForm);
+  }
+  if (searchInput) {
+    searchInput.addEventListener('input', filterProducts);
+  }
+  if (productHighDemand) {
+    productHighDemand.addEventListener('change', updateHighDemandChip);
+  }
+
+  // Load products
+  loadProducts();
+}
+
+// ========== NOTIFY FUNCTIONS ==========
+function initializeNotify() {
+  // Load notifications data
+  loadNotifications();
+  
+  // Setup event listeners
+  const searchInput = document.getElementById('search-requests');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      filterRequests(e.target.value);
+    });
+  }
+  
+  // Setup filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const filter = this.textContent.toLowerCase();
+      filterRequestsByType(filter);
+    });
+  });
+  
+  // Load template from localStorage
+  loadTemplate();
+  
+  // Setup preview updates
+  const subjectInput = document.getElementById('email-subject');
+  const bodyInput = document.getElementById('email-body');
+  if (subjectInput) subjectInput.addEventListener('input', updatePreview);
+  if (bodyInput) bodyInput.addEventListener('input', updatePreview);
+}
+
+// ========== FIREBASE FUNCTIONS ==========
+async function loadProducts() {
+  try {
+    const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+    products = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    renderProducts();
+    updateStats();
+    startNewInMonitor();
+  } catch (error) {
+    console.error('Error loading products:', error);
+    showNotification('failed to load products', 'error');
+  }
+}
+
+async function loadNotifications() {
+  try {
+    const snapshot = await db.collection('notifications')
+      .orderBy('timestamp', 'desc')
+      .get();
+
+    allRequests = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().timestamp)
+    }));
+
+    // Update badge
+    const pendingCount = allRequests.filter(r => r.status === 'pending' || !r.status).length;
+    notifyBadge.textContent = pendingCount;
+    
+    renderNotifications();
+  } catch (error) {
+    console.error('Error loading notifications:', error);
+  }
+}
+
+// Set up real-time listener for notifications
+db.collection('notifications')
+  .onSnapshot((snapshot) => {
+    const pendingCount = snapshot.docs.filter(doc => {
+      const data = doc.data();
+      return data.status === 'pending' || !data.status;
+    }).length;
+    notifyBadge.textContent = pendingCount;
+    
+    // Update if on notify page
+    if (document.getElementById('table-body')) {
+      loadNotifications();
+    }
+  });
+
+// ========== DASHBOARD HELPER FUNCTIONS ==========
+function renderMediaGrid() {
+  const mediaGrid = document.getElementById('media-grid');
+  if (!mediaGrid) return;
+  
+  let html = '';
+  
+  for (let i = 0; i < Math.min(productMedia.length, 8); i++) {
+    const media = productMedia[i];
+    const isVideo = media.type === 'video';
+    const isSelected = (i === selectedMediaIndex);
+    
+    html += `
+      <div class="media-item ${isSelected ? 'selected' : ''}" onclick="selectMedia(${i})">
+        ${isVideo ? 
+          `<video src="${media.url}"></video>` : 
+          `<img src="${media.url}" alt="media">`
+        }
+        <span class="media-type-badge">${isVideo ? 'VID' : 'IMG'}</span>
+        <span class="media-remove-btn" onclick="removeMedia(${i}); event.stopPropagation();">
+          <i class="fa-solid fa-times"></i>
+        </span>
+      </div>
+    `;
+  }
+  
+  for (let i = productMedia.length; i < 8; i++) {
+    html += `
+      <div class="media-add-item" onclick="document.getElementById('media-url-input').focus()">
+        <i class="fa-solid fa-plus"></i>
+        <span>add media</span>
+      </div>
+    `;
+  }
+  
+  mediaGrid.innerHTML = html;
+}
+
+window.selectMedia = function(index) {
+  selectedMediaIndex = index;
+  renderMediaGrid();
+};
+
+window.addMediaFromUrl = function() {
+  const urlInput = document.getElementById('media-url-input');
+  if (!urlInput) return;
+  
+  const url = urlInput.value.trim();
+  
+  if (!url) {
+    showNotification('please enter a url', 'error');
+    return;
+  }
+
+  try {
+    new URL(url);
+  } catch {
+    showNotification('please enter a valid url', 'error');
+    return;
+  }
+
+  const isVideo = url.match(/\.(mp4|webm|ogg|mov|avi|wmv|flv|mkv)$/i) || 
+                 url.includes('youtube.com') || 
+                 url.includes('youtu.be') || 
+                 url.includes('vimeo.com') ||
+                 url.includes('player.vimeo');
+  
+  const mediaItem = {
+    url: url,
+    type: isVideo ? 'video' : 'image'
+  };
+
+  if (productMedia.length >= 8) {
+    showNotification('maximum 8 media files allowed', 'error');
+    return;
+  }
+
+  productMedia.push(mediaItem);
+  
+  if (productMedia.length === 1) {
+    selectedMediaIndex = 0;
+  }
+  
+  urlInput.value = '';
+  renderMediaGrid();
+  showNotification('media added successfully!', 'success');
+};
+
+window.handleFileUpload = function(files) {
+  if (!files) return;
+  
+  if (productMedia.length + files.length > 8) {
+    showNotification('maximum 8 media files allowed', 'error');
+    return;
+  }
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const url = URL.createObjectURL(file);
+    const isVideo = file.type.startsWith('video/');
+    
+    const mediaItem = {
+      url: url,
+      type: isVideo ? 'video' : 'image',
+      file: file
+    };
+
+    productMedia.push(mediaItem);
+  }
+
+  if (productMedia.length > 0 && selectedMediaIndex === 0 && productMedia.length === files.length) {
+    selectedMediaIndex = 0;
+  }
+
+  renderMediaGrid();
+  showNotification(`${files.length} file(s) added successfully!`, 'success');
+};
+
+window.removeMedia = function(index) {
+  productMedia.splice(index, 1);
+  
+  if (selectedMediaIndex >= productMedia.length) {
+    selectedMediaIndex = Math.max(0, productMedia.length - 1);
+  }
+  
+  renderMediaGrid();
+};
+
+function updateHighDemandChip() {
+  const highDemandChip = document.getElementById('high-demand-chip');
+  const productHighDemand = document.getElementById('product-high-demand');
+  
+  if (!highDemandChip || !productHighDemand) return;
+  
+  if (productHighDemand.checked) {
+    highDemandChip.classList.add('active');
+  } else {
+    highDemandChip.classList.remove('active');
+  }
+}
+
+window.toggleHighDemand = function() {
+  const productHighDemand = document.getElementById('product-high-demand');
+  if (productHighDemand) {
+    productHighDemand.checked = !productHighDemand.checked;
+    updateHighDemandChip();
+  }
+};
+
+async function handleProductSubmit(e) {
+  e.preventDefault();
+
+  const productTitle = document.getElementById('product-title');
+  const productCategory = document.getElementById('product-category');
+  const productPrice = document.getElementById('product-price');
+  const productRating = document.getElementById('product-rating');
+  const productStock = document.getElementById('product-stock');
+  const productBrand = document.getElementById('product-brand');
+  const productShortDesc = document.getElementById('product-short-desc');
+  const productDescription = document.getElementById('product-description');
+  const productSpecs = document.getElementById('product-specs');
+  const productId = document.getElementById('product-id');
+  const showOnHome = document.getElementById('show-on-home');
+  const showOnAccessories = document.getElementById('show-on-accessories');
+  const showOnEssentials = document.getElementById('show-on-essentials');
+  const productHighDemand = document.getElementById('product-high-demand');
+
+  const price = parseFloat(productPrice.value);
+  const rating = parseFloat(productRating.value);
+  
+  const showOnHomeChecked = showOnHome ? showOnHome.checked : false;
+  const showOnAccessoriesChecked = showOnAccessories ? showOnAccessories.checked : false;
+  const showOnEssentialsChecked = showOnEssentials ? showOnEssentials.checked : false;
+  const highDemandChecked = productHighDemand ? productHighDemand.checked : false;
+
+  const productData = {
+    title: productTitle.value,
+    category: productCategory.value,
+    price: price,
+    rating: rating,
+    stock: parseInt(productStock.value) || 10,
+    brand: productBrand.value || 'MyEssantia',
+    media: productMedia.map(m => ({ url: m.url, type: m.type })),
+    primaryImg: productMedia[selectedMediaIndex]?.url || '',
+    shortDesc: productShortDesc.value,
+    description: productDescription.value,
+    specs: productSpecs.value ? productSpecs.value.split('\n').filter(s => s.trim()) : [],
+    showOnHome: showOnHomeChecked,
+    showOnAccessories: showOnAccessoriesChecked,
+    showOnEssentials: showOnEssentialsChecked,
+    showOnNew: true,
+    highDemand: highDemandChecked
+  };
+
+  if (productId.value) {
+    productData.id = productId.value;
+  }
+
+  await saveProduct(productData);
+}
+
+async function saveProduct(productData) {
+  try {
+    if (productData.id) {
+      const { id, ...data } = productData;
+      await db.collection('products').doc(id).update({
+        ...data,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showNotification('product updated successfully!', 'success');
+    } else {
+      await db.collection('products').add({
+        ...productData,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      showNotification('product added successfully!', 'success');
+    }
+    loadProducts();
+    resetForm();
+  } catch (error) {
+    console.error('Error saving product:', error);
+    showNotification('failed to save product', 'error');
+  }
+}
+
+async function deleteProductFromFirebase(id) {
+  try {
+    await db.collection('products').doc(id).delete();
+    showNotification('product deleted successfully!', 'success');
+    loadProducts();
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    showNotification('failed to delete product', 'error');
+  }
+}
+
+window.deleteProduct = function(id) {
+  if (confirm('are you sure you want to delete this product?')) {
+    deleteProductFromFirebase(id);
+  }
+};
+
+window.editProduct = async function(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  document.getElementById('product-id').value = product.id;
+  document.getElementById('product-creation-date').value = product.createdAt || '';
+  document.getElementById('product-title').value = product.title;
+  document.getElementById('product-category').value = product.category;
+  document.getElementById('product-price').value = product.price;
+  document.getElementById('product-rating').value = product.rating;
+  document.getElementById('product-stock').value = product.stock || 10;
+  document.getElementById('product-brand').value = product.brand || 'MyEssantia';
+  document.getElementById('product-short-desc').value = product.shortDesc || '';
+  document.getElementById('product-description').value = product.description || '';
+  document.getElementById('product-specs').value = product.specs ? product.specs.join('\n') : '';
+
+  productMedia = product.media ? [...product.media] : [];
+  
+  if (product.primaryImg && productMedia.length > 0) {
+    selectedMediaIndex = productMedia.findIndex(m => m.url === product.primaryImg);
+    if (selectedMediaIndex === -1) selectedMediaIndex = 0;
+  } else {
+    selectedMediaIndex = 0;
+  }
+  
+  renderMediaGrid();
+
+  document.getElementById('show-on-home').checked = product.showOnHome || false;
+  document.getElementById('show-on-accessories').checked = product.showOnAccessories || false;
+  document.getElementById('show-on-essentials').checked = product.showOnEssentials || false;
+  document.getElementById('product-high-demand').checked = product.highDemand || false;
+  
+  updateHighDemandChip();
+  
+  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-edit"></i> edit product';
+  
+  document.querySelector('.product-form').scrollIntoView({ behavior: 'smooth' });
+};
+
+function resetForm() {
+  document.getElementById('product-form').reset();
+  document.getElementById('product-id').value = '';
+  document.getElementById('product-creation-date').value = '';
+  productMedia = [];
+  selectedMediaIndex = 0;
+  renderMediaGrid();
+  document.getElementById('show-on-home').checked = false;
+  document.getElementById('show-on-accessories').checked = false;
+  document.getElementById('show-on-essentials').checked = false;
+  document.getElementById('show-on-new').checked = false;
+  document.getElementById('product-high-demand').checked = false;
+  updateHighDemandChip();
+  document.getElementById('form-title').innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new product';
+}
+
+function updateStats() {
+  const totalProducts = document.getElementById('total-products');
+  const newinProducts = document.getElementById('newin-products');
+  const highDemandProducts = document.getElementById('high-demand-products');
+  const totalStock = document.getElementById('total-stock');
+  const productCount = document.getElementById('product-count');
+
+  if (!totalProducts) return;
+  
+  totalProducts.textContent = products.length;
+  const now = new Date();
+  const newInCount = products.filter(p => {
+    if (!p.createdAt) return false;
+    const creationDate = p.createdAt.toDate ? p.createdAt.toDate() : new Date(p.createdAt);
+    return (now - creationDate) < (24 * 60 * 60 * 1000);
+  }).length;
+  newinProducts.textContent = newInCount;
+  
+  const highDemandCount = products.filter(p => p.highDemand).length;
+  highDemandProducts.textContent = highDemandCount;
+  
+  const totalStockValue = products.reduce((sum, p) => sum + (p.stock || 0), 0);
+  totalStock.textContent = totalStockValue;
+  productCount.textContent = `${products.length} products`;
+}
+
+function filterProducts() {
+  const searchInput = document.getElementById('search-products');
+  if (!searchInput) return;
+  
+  const term = searchInput.value.toLowerCase();
+  const filtered = products.filter(p => 
+    p.title.toLowerCase().includes(term) ||
+    p.category.toLowerCase().includes(term) ||
+    (p.brand && p.brand.toLowerCase().includes(term))
+  );
+  renderProducts(filtered);
+}
+
+function renderProducts(productsToRender = products) {
+  const productsList = document.getElementById('products-list');
+  const emptyProducts = document.getElementById('empty-products');
+  
+  if (!productsList) return;
+  
+  if (productsToRender.length === 0 && products.length === 0) {
+    emptyProducts.style.display = 'block';
+    productsList.innerHTML = '';
+    return;
+  }
+  
+  emptyProducts.style.display = 'none';
+  
+  let desktopHTML = '';
+  let mobileHTML = '<div class="product-cards">';
+  
+  productsToRender.forEach(product => {
+    const pages = [];
+    if (product.showOnHome) pages.push('<span class="page-badge home"><i class="fa-solid fa-house"></i> home</span>');
+    if (product.showOnAccessories) pages.push('<span class="page-badge accessories"><i class="fa-solid fa-bag-shopping"></i> acc</span>');
+    if (product.showOnEssentials) pages.push('<span class="page-badge essentials"><i class="fa-solid fa-bolt"></i> ess</span>');
+    
+    const isNewIn = product.createdAt && 
+                    (new Date() - (product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt))) < (24 * 60 * 60 * 1000);
+    
+    let mainMedia = product.primaryImg || 
+                   (product.media?.[0]?.url) || 
+                   'https://via.placeholder.com/300/f0f0f0/999999?text=no+image';
+    
+    let stockClass = 'high';
+    if (product.stock <= 5) stockClass = 'low';
+    else if (product.stock <= 15) stockClass = 'medium';
+    
+    desktopHTML += `<tr>
+      <td>
+        <div class="product-thumb" 
+             style="background-image: url('${mainMedia}')" 
+             onclick="window.open('product.html?id=${product.id}', '_blank')">
+        </div>
+      </td>
+      <td>
+        <strong>${product.title}</strong>
+        ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+        ${product.highDemand ? '<span class="high-demand-badge-table"><i class="fa-solid fa-fire"></i> HIGH DEMAND</span>' : ''}
+        ${product.brand ? `<div style="font-size:0.7rem; color:#666; text-transform:uppercase;">${product.brand}</div>` : ''}
+      </td>
+      <td><span style="text-transform:uppercase;">${product.category}</span></td>
+      <td><strong>₹${product.price?.toFixed(2)}</strong></td>
+      <td>
+        <span class="stock-badge ${stockClass}">
+          ${product.stock || 0}
+        </span>
+      </td>
+      <td>${product.rating?.toFixed(1)} <i class="fa-solid fa-star" style="color:#d4af37;"></i></td>
+      <td>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
+          ${product.highDemand ? '<span class="high-demand-badge-table"><i class="fa-solid fa-fire"></i> HD</span>' : ''}
+          ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+        </div>
+      </td>
+      <td><div style="display:flex; gap:4px; flex-wrap:wrap;">${pages.join(' ')}</div></td>
+      <td>
+        <div class="action-btns">
+          <button class="view-btn" onclick="window.open('product.html?id=${product.id}', '_blank')">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+          <button class="edit-btn" onclick="editProduct('${product.id}')">
+            <i class="fa-solid fa-edit"></i>
+          </button>
+          <button class="delete-btn" onclick="deleteProduct('${product.id}')">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+    
+    mobileHTML += `
+      <div class="product-item">
+        <div class="product-item-header">
+          <div class="product-item-thumb" 
+               style="background-image: url('${mainMedia}')"
+               onclick="window.open('product.html?id=${product.id}', '_blank')">
+          </div>
+          <div class="product-item-info">
+            <div class="product-item-category">${product.category}</div>
+            <div class="product-item-title">
+              <strong>${product.title}</strong>
+            </div>
+            <div class="product-item-flags">
+              ${isNewIn ? '<span class="newin-badge"><i class="fa-regular fa-clock"></i> NEW</span>' : ''}
+              ${product.highDemand ? '<span class="high-demand-badge-table"><i class="fa-solid fa-fire"></i> HD</span>' : ''}
+            </div>
+          </div>
+        </div>
+        
+        <div class="product-item-details">
+          <div class="product-item-detail">
+            <span class="label">price</span>
+            <span class="value">₹${product.price?.toFixed(2)}</span>
+          </div>
+          <div class="product-item-detail">
+            <span class="label">stock</span>
+            <span class="value"><span class="stock-badge ${stockClass}">${product.stock || 0}</span></span>
+          </div>
+          <div class="product-item-detail">
+            <span class="label">rating</span>
+            <span class="value">${product.rating?.toFixed(1)} <small>★</small></span>
+          </div>
+        </div>
+        
+        ${pages.length > 0 ? `
+          <div class="product-item-pages">
+            ${pages.join(' ')}
+          </div>
+        ` : ''}
+        
+        <div class="product-item-actions">
+          <button class="view-btn" onclick="window.open('product.html?id=${product.id}', '_blank')">
+            <i class="fa-solid fa-eye"></i> view
+          </button>
+          <button class="edit-btn" onclick="editProduct('${product.id}')">
+            <i class="fa-solid fa-edit"></i> edit
+          </button>
+          <button class="delete-btn" onclick="deleteProduct('${product.id}')">
+            <i class="fa-solid fa-trash"></i> delete
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  
+  mobileHTML += '</div>';
+  
+  productsList.innerHTML = `
+    <div class="desktop-table">
+      <table>
+        <thead>
+          <tr>
+            <th>media</th>
+            <th>title</th>
+            <th>category</th>
+            <th>price</th>
+            <th>stock</th>
+            <th>rating</th>
+            <th>flags</th>
+            <th>pages</th>
+            <th>actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${desktopHTML}
+        </tbody>
+      </table>
+    </div>
+    <div class="products-list">
+      ${mobileHTML}
+    </div>
+  `;
+  
+  updateStats();
+}
+
+function updateCategorySync() {
+  const category = document.getElementById('product-category');
+  if (!category) return;
+  
+  const catValue = category.value;
+  
+  if (catValue === 'accessories') {
+    document.getElementById('show-on-accessories').checked = true;
+    document.getElementById('show-on-essentials').checked = false;
+  } else if (catValue === 'essentials') {
+    document.getElementById('show-on-essentials').checked = true;
+    document.getElementById('show-on-accessories').checked = false;
+  }
+}
+
+function startNewInMonitor() {
+  if (newInCheckInterval) clearInterval(newInCheckInterval);
+  updateNewInStatus();
+  newInCheckInterval = setInterval(updateNewInStatus, 60000);
+}
+
+function updateNewInStatus() {
+  const now = new Date();
+  let changed = false;
+
+  products.forEach(product => {
+    if (product.createdAt) {
+      const creationDate = product.createdAt.toDate ? product.createdAt.toDate() : new Date(product.createdAt);
+      const hoursDiff = (now - creationDate) / (1000 * 60 * 60);
+      
+      const shouldBeNew = hoursDiff < 24;
+      if (product.showOnNew !== shouldBeNew) {
+        product.showOnNew = shouldBeNew;
+        changed = true;
+        
+        db.collection('products').doc(product.id).update({
+          showOnNew: shouldBeNew
+        }).catch(error => console.error('Error updating new status:', error));
+      }
+    }
+  });
+
+  if (changed) {
+    renderProducts();
+    updateStats();
+  }
+}
+
+// ========== NOTIFY HELPER FUNCTIONS ==========
+function renderNotifications() {
+  const tableBody = document.getElementById('table-body');
+  const mobileCards = document.getElementById('mobile-cards');
+  
+  if (!tableBody || !mobileCards) return;
+  
+  // Simple render for now - you can expand this with full notify.html functionality
+  tableBody.innerHTML = allRequests.map(req => {
+    const status = req.status || 'pending';
+    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+    const date = req.timestamp ? new Date(req.timestamp) : new Date();
+    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    return `
+      <tr>
+        <td>${req.productId || 'Unknown'}</td>
+        <td>${req.email || 'No email'}</td>
+        <td>${req.actionType || 'buy'}</td>
+        <td><span class="status-badge ${statusClass}">${status}</span></td>
+        <td>${formattedDate}</td>
+        <td>${req.id.substring(0, 8)}...</td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn email-btn" onclick="markAsNotified('${req.id}')" ${status === 'notified' ? 'disabled' : ''}>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+  
+  mobileCards.innerHTML = allRequests.map(req => {
+    const status = req.status || 'pending';
+    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+    const date = req.timestamp ? new Date(req.timestamp) : new Date();
+    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    return `
+      <div class="notification-card">
+        <div class="card-body">
+          <div class="card-row"><strong>Product:</strong> ${req.productId}</div>
+          <div class="card-row"><strong>Email:</strong> ${req.email}</div>
+          <div class="card-row"><strong>Status:</strong> <span class="status-badge ${statusClass}">${status}</span></div>
+          <div class="card-row"><strong>Date:</strong> ${formattedDate}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.markAsNotified = async function(notificationId) {
+  try {
+    await db.collection('notifications').doc(notificationId).update({
+      status: 'notified',
+      notifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    showNotification('Marked as notified');
+    loadNotifications();
+  } catch (error) {
+    console.error('Error updating notification:', error);
+    showNotification('Failed to update status', 'error');
+  }
+};
+
+function filterRequests(searchTerm) {
+  // Simple filter implementation
+  const filtered = allRequests.filter(req => 
+    req.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    req.productId?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  renderFilteredNotifications(filtered);
+}
+
+function filterRequestsByType(type) {
+  // Update active tab
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  
+  // Filter based on type
+  let filtered = [];
+  const now = new Date();
+  const today = new Date(now.setHours(0,0,0,0));
+  
+  switch(type) {
+    case 'pending':
+      filtered = allRequests.filter(r => r.status === 'pending' || !r.status);
+      break;
+    case 'notified':
+      filtered = allRequests.filter(r => r.status === 'notified');
+      break;
+    case 'today':
+      filtered = allRequests.filter(r => {
+        const date = r.timestamp ? new Date(r.timestamp) : new Date();
+        return date >= today;
+      });
+      break;
+    default:
+      filtered = allRequests;
+  }
+  
+  renderFilteredNotifications(filtered);
+}
+
+function renderFilteredNotifications(filtered) {
+  const tableBody = document.getElementById('table-body');
+  const mobileCards = document.getElementById('mobile-cards');
+  
+  if (!tableBody || !mobileCards) return;
+  
+  tableBody.innerHTML = filtered.map(req => {
+    const status = req.status || 'pending';
+    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+    const date = req.timestamp ? new Date(req.timestamp) : new Date();
+    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    return `
+      <tr>
+        <td>${req.productId || 'Unknown'}</td>
+        <td>${req.email || 'No email'}</td>
+        <td>${req.actionType || 'buy'}</td>
+        <td><span class="status-badge ${statusClass}">${status}</span></td>
+        <td>${formattedDate}</td>
+        <td>${req.id.substring(0, 8)}...</td>
+        <td>
+          <div class="action-btns">
+            <button class="action-btn email-btn" onclick="markAsNotified('${req.id}')" ${status === 'notified' ? 'disabled' : ''}>
+              <i class="fa-solid fa-check"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+  
+  mobileCards.innerHTML = filtered.map(req => {
+    const status = req.status || 'pending';
+    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+    const date = req.timestamp ? new Date(req.timestamp) : new Date();
+    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    
+    return `
+      <div class="notification-card">
+        <div class="card-body">
+          <div class="card-row"><strong>Product:</strong> ${req.productId}</div>
+          <div class="card-row"><strong>Email:</strong> ${req.email}</div>
+          <div class="card-row"><strong>Status:</strong> <span class="status-badge ${statusClass}">${status}</span></div>
+          <div class="card-row"><strong>Date:</strong> ${formattedDate}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Template functions
+function loadTemplate() {
+  const saved = localStorage.getItem('myessantia_email_template');
+  if (saved) {
+    try {
+      const template = JSON.parse(saved);
+      document.getElementById('email-subject').value = template.subject || '';
+      document.getElementById('email-body').value = template.body || '';
+      document.getElementById('email-cc').value = template.cc || '';
+      document.getElementById('email-bcc').value = template.bcc || '';
+    } catch (e) {
+      console.error('Error loading template:', e);
+    }
+  }
+}
+
+function updatePreview() {
+  const subject = document.getElementById('email-subject')?.value || '';
+  const body = document.getElementById('email-body')?.value || '';
+  
+  const previewSubject = subject
+    .replace('{{product}}', 'Premium Leather Backpack')
+    .replace('{{price}}', '2499')
+    .replace('{{productLink}}', 'https://myessantia.com/product/123')
+    .replace('{{email}}', 'user@example.com');
+  
+  const previewBody = body
+    .replace('{{product}}', 'Premium Leather Backpack')
+    .replace('{{price}}', '2499')
+    .replace('{{productLink}}', 'https://myessantia.com/product/123')
+    .replace('{{email}}', 'user@example.com');
+  
+  const previewSubjectEl = document.getElementById('preview-subject');
+  const previewBodyEl = document.getElementById('preview-body');
+  
+  if (previewSubjectEl) previewSubjectEl.textContent = 'Subject: ' + previewSubject;
+  if (previewBodyEl) previewBodyEl.textContent = previewBody;
+}
+
+window.toggleTemplatePanel = function() {
+  const panel = document.getElementById('emailTemplatePanel');
+  if (panel) panel.classList.toggle('show');
+};
+
+window.saveTemplate = function() {
+  const template = {
+    subject: document.getElementById('email-subject').value,
+    body: document.getElementById('email-body').value,
+    cc: document.getElementById('email-cc').value,
+    bcc: document.getElementById('email-bcc').value
+  };
+  localStorage.setItem('myessantia_email_template', JSON.stringify(template));
+  showNotification('Email template saved');
+  toggleTemplatePanel();
+};
+
+window.resetTemplate = function() {
+  document.getElementById('email-subject').value = 'Good news! {{product}} is now available at MyEssantia';
+  document.getElementById('email-body').value = `Hi there,\n\nGreat news! The product you were interested in is now available:\n\n✨ {{product}}\n💰 Price: ₹{{price}}\n\nClick here to view: {{productLink}}\n\nWe have limited stock available, so don't wait too long!\n\nThank you for your interest,\nMyEssantia Team`;
+  document.getElementById('email-cc').value = '';
+  document.getElementById('email-bcc').value = '';
+  updatePreview();
+};
+
+// ========== UTILITY FUNCTIONS ==========
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.remove();
+  }, 3000);
+}
+
+// ========== EXPORT / IMPORT ==========
+window.exportProducts = function() {
+  const data = JSON.stringify(products, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `myessantia_products_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showNotification('products exported successfully!', 'success');
+};
+
+window.importProducts = function() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (Array.isArray(imported)) {
+          for (const product of imported) {
+            const { id, ...productData } = product;
+            await db.collection('products').add({
+              ...productData,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }
+          showNotification('products imported successfully!', 'success');
+          loadProducts();
+        }
+      } catch {
+        showNotification('invalid file format', 'error');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+};
+
+// ========== INITIALIZE ==========
+document.addEventListener('DOMContentLoaded', () => {
+  // Load dashboard by default
+  loadPage('dashboard');
+});
+  </script>
+</body>
+</html>
