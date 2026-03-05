@@ -2420,7 +2420,7 @@
     </div>
   </div>
 
-  <script>
+<script>
 // ========== FIREBASE CONFIGURATION ==========
 const firebaseConfig = {
   apiKey: "AIzaSyD16uGnm1vodkbqGoFSdFdJjGFSLpJmflk",
@@ -2510,35 +2510,31 @@ async function loadDashboardPage() {
   const response = await fetch('dashhome.html');
   const html = await response.text();
   
-  // Extract only the content we need (everything after the header)
+  // Parse the HTML
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Get the main content (everything after header and quick actions)
-  const content = doc.querySelector('.stats-grid, .product-form, .products-table');
-  if (content) {
-    // Create a container for dashboard content
-    const dashboardContent = document.createElement('div');
-    
-    // Add stats grid
-    const statsGrid = doc.querySelector('.stats-grid');
-    if (statsGrid) dashboardContent.appendChild(statsGrid.cloneNode(true));
-    
-    // Add product form
-    const productForm = doc.querySelector('.product-form');
-    if (productForm) dashboardContent.appendChild(productForm.cloneNode(true));
-    
-    // Add products table
-    const productsTable = doc.querySelector('.products-table');
-    if (productsTable) dashboardContent.appendChild(productsTable.cloneNode(true));
-    
-    // Clear and append
-    pageContainer.innerHTML = '';
-    pageContainer.appendChild(dashboardContent);
-    
-    // Reinitialize dashboard functionality
-    initializeDashboard();
-  }
+  // Create a container for dashboard content
+  const dashboardContent = document.createElement('div');
+  
+  // Add stats grid
+  const statsGrid = doc.querySelector('.stats-grid');
+  if (statsGrid) dashboardContent.appendChild(statsGrid.cloneNode(true));
+  
+  // Add product form
+  const productForm = doc.querySelector('.product-form');
+  if (productForm) dashboardContent.appendChild(productForm.cloneNode(true));
+  
+  // Add products table
+  const productsTable = doc.querySelector('.products-table');
+  if (productsTable) dashboardContent.appendChild(productsTable.cloneNode(true));
+  
+  // Clear and append
+  pageContainer.innerHTML = '';
+  pageContainer.appendChild(dashboardContent);
+  
+  // Reinitialize dashboard functionality
+  initializeDashboard();
 }
 
 async function loadNotifyPage() {
@@ -2550,39 +2546,37 @@ async function loadNotifyPage() {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, 'text/html');
   
-  // Get the main content (everything after the header)
-  const content = doc.querySelector('.stats-grid, .filters-bar, .table-container');
-  if (content) {
-    // Create a container for notify content
-    const notifyContent = document.createElement('div');
-    
-    // Add stats grid
-    const statsGrid = doc.querySelector('.stats-grid');
-    if (statsGrid) notifyContent.appendChild(statsGrid.cloneNode(true));
-    
-    // Add email template panel
-    const templatePanel = doc.querySelector('.email-template-panel');
-    if (templatePanel) notifyContent.appendChild(templatePanel.cloneNode(true));
-    
-    // Add filters bar
-    const filtersBar = doc.querySelector('.filters-bar');
-    if (filtersBar) notifyContent.appendChild(filtersBar.cloneNode(true));
-    
-    // Add table container
-    const tableContainer = doc.querySelector('.table-container');
-    if (tableContainer) notifyContent.appendChild(tableContainer.cloneNode(true));
-    
-    // Clear and append
-    pageContainer.innerHTML = '';
-    pageContainer.appendChild(notifyContent);
-    
-    // Reinitialize notify functionality
-    initializeNotify();
-  }
+  // Create a container for notify content
+  const notifyContent = document.createElement('div');
+  
+  // Add stats grid
+  const statsGrid = doc.querySelector('.stats-grid');
+  if (statsGrid) notifyContent.appendChild(statsGrid.cloneNode(true));
+  
+  // Add email template panel
+  const templatePanel = doc.querySelector('.email-template-panel');
+  if (templatePanel) notifyContent.appendChild(templatePanel.cloneNode(true));
+  
+  // Add filters bar
+  const filtersBar = doc.querySelector('.filters-bar');
+  if (filtersBar) notifyContent.appendChild(filtersBar.cloneNode(true));
+  
+  // Add table container
+  const tableContainer = doc.querySelector('.table-container');
+  if (tableContainer) notifyContent.appendChild(tableContainer.cloneNode(true));
+  
+  // Clear and append
+  pageContainer.innerHTML = '';
+  pageContainer.appendChild(notifyContent);
+  
+  // Initialize notify functionality
+  initializeNotify();
 }
 
 // ========== DASHBOARD FUNCTIONS ==========
 function initializeDashboard() {
+  console.log('Initializing dashboard...');
+  
   // Re-get all dashboard DOM elements
   const productForm = document.getElementById('product-form');
   const productId = document.getElementById('product-id');
@@ -2617,7 +2611,7 @@ function initializeDashboard() {
   // Reinitialize media array
   productMedia = [];
   selectedMediaIndex = 0;
-  renderMediaGrid();
+  if (mediaGrid) renderMediaGrid();
 
   // Setup event listeners
   if (productCategory) {
@@ -2642,36 +2636,674 @@ function initializeDashboard() {
 
 // ========== NOTIFY FUNCTIONS ==========
 function initializeNotify() {
-  // Load notifications data
-  loadNotifications();
+  console.log('Initializing notify page...');
   
-  // Setup event listeners
+  // Global variables for notify page
+  let allNotifyRequests = [];
+  let filteredNotifyRequests = [];
+  let currentNotifyFilter = 'all';
+  let currentNotifyPage = 1;
+  const notifyItemsPerPage = 20;
+  let notifyProducts = {};
+
+  // Email Template
+  let emailTemplate = {
+    subject: 'Good news! {{product}} is now available at MyEssantia',
+    body: `Hi there,
+
+Great news! The product you were interested in is now available:
+
+✨ {{product}}
+💰 Price: ₹{{price}}
+
+Click here to view: {{productLink}}
+
+We have limited stock available, so don't wait too long!
+
+Thank you for your interest,
+MyEssantia Team`,
+    cc: '',
+    bcc: ''
+  };
+
+  // Load template from localStorage
+  function loadTemplate() {
+    const saved = localStorage.getItem('myessantia_email_template');
+    if (saved) {
+      try {
+        emailTemplate = JSON.parse(saved);
+        const subjectEl = document.getElementById('email-subject');
+        const bodyEl = document.getElementById('email-body');
+        const ccEl = document.getElementById('email-cc');
+        const bccEl = document.getElementById('email-bcc');
+        
+        if (subjectEl) subjectEl.value = emailTemplate.subject || '';
+        if (bodyEl) bodyEl.value = emailTemplate.body || '';
+        if (ccEl) ccEl.value = emailTemplate.cc || '';
+        if (bccEl) bccEl.value = emailTemplate.bcc || '';
+      } catch (e) {
+        console.error('Error loading template:', e);
+      }
+    }
+    updatePreview();
+  }
+
+  // Save template
+  window.saveTemplate = function() {
+    emailTemplate = {
+      subject: document.getElementById('email-subject').value,
+      body: document.getElementById('email-body').value,
+      cc: document.getElementById('email-cc').value,
+      bcc: document.getElementById('email-bcc').value
+    };
+    localStorage.setItem('myessantia_email_template', JSON.stringify(emailTemplate));
+    showNotification('Email template saved');
+    toggleTemplatePanel();
+  };
+
+  // Reset template to default
+  window.resetTemplate = function() {
+    const subjectEl = document.getElementById('email-subject');
+    const bodyEl = document.getElementById('email-body');
+    const ccEl = document.getElementById('email-cc');
+    const bccEl = document.getElementById('email-bcc');
+    
+    if (subjectEl) subjectEl.value = 'Good news! {{product}} is now available at MyEssantia';
+    if (bodyEl) bodyEl.value = `Hi there,
+
+Great news! The product you were interested in is now available:
+
+✨ {{product}}
+💰 Price: ₹{{price}}
+
+Click here to view: {{productLink}}
+
+We have limited stock available, so don't wait too long!
+
+Thank you for your interest,
+MyEssantia Team`;
+    if (ccEl) ccEl.value = '';
+    if (bccEl) bccEl.value = '';
+    updatePreview();
+  };
+
+  // Update preview with sample data
+  function updatePreview() {
+    const subject = document.getElementById('email-subject')?.value || '';
+    const body = document.getElementById('email-body')?.value || '';
+    
+    const previewSubject = subject
+      .replace('{{product}}', 'Premium Leather Backpack')
+      .replace('{{price}}', '2499')
+      .replace('{{productLink}}', 'https://myessantia.com/product/123')
+      .replace('{{email}}', 'user@example.com');
+    
+    const previewBody = body
+      .replace('{{product}}', 'Premium Leather Backpack')
+      .replace('{{price}}', '2499')
+      .replace('{{productLink}}', 'https://myessantia.com/product/123')
+      .replace('{{email}}', 'user@example.com');
+    
+    const previewSubjectEl = document.getElementById('preview-subject');
+    const previewBodyEl = document.getElementById('preview-body');
+    
+    if (previewSubjectEl) previewSubjectEl.textContent = 'Subject: ' + previewSubject;
+    if (previewBodyEl) previewBodyEl.textContent = previewBody;
+  }
+
+  // Add input listeners for preview
+  const subjectInput = document.getElementById('email-subject');
+  const bodyInput = document.getElementById('email-body');
+  
+  if (subjectInput) subjectInput.addEventListener('input', updatePreview);
+  if (bodyInput) bodyInput.addEventListener('input', updatePreview);
+
+  // Toggle template panel
+  window.toggleTemplatePanel = function() {
+    const panel = document.getElementById('emailTemplatePanel');
+    if (panel) panel.classList.toggle('show');
+  };
+
+  // Load products for reference
+  async function loadNotifyProducts() {
+    try {
+      const snapshot = await db.collection('products').get();
+      snapshot.docs.forEach(doc => {
+        notifyProducts[doc.id] = {
+          title: doc.data().title,
+          price: doc.data().price,
+          primaryImg: doc.data().primaryImg || (doc.data().media?.[0]?.url) || 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image',
+          category: doc.data().category
+        };
+      });
+    } catch (error) {
+      console.error('Error loading products:', error);
+    }
+  }
+
+  // Load notifications from Firestore
+  async function loadNotifyRequests() {
+    try {
+      const loadingEl = document.getElementById('loading');
+      const tableWrapper = document.getElementById('table-wrapper');
+      const mobileCards = document.getElementById('mobile-cards');
+      const emptyState = document.getElementById('empty-state');
+      
+      if (loadingEl) loadingEl.style.display = 'flex';
+      if (tableWrapper) tableWrapper.style.display = 'none';
+      if (mobileCards) mobileCards.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'none';
+
+      const snapshot = await db.collection('notifications')
+        .orderBy('timestamp', 'desc')
+        .get();
+
+      allNotifyRequests = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().timestamp)
+      }));
+
+      await loadNotifyProducts();
+      applyNotifyFilter(currentNotifyFilter);
+      updateNotifyStats();
+      
+      if (loadingEl) loadingEl.style.display = 'none';
+      
+      if (filteredNotifyRequests.length === 0) {
+        if (emptyState) emptyState.style.display = 'block';
+        if (tableWrapper) tableWrapper.style.display = 'none';
+        if (mobileCards) mobileCards.style.display = 'none';
+      } else {
+        if (tableWrapper) tableWrapper.style.display = 'block';
+        if (mobileCards) mobileCards.style.display = 'block';
+        renderNotifyRequests();
+      }
+    } catch (error) {
+      console.error('Error loading notifications:', error);
+      showNotification('Failed to load notifications', 'error');
+      const loadingEl = document.getElementById('loading');
+      const emptyState = document.getElementById('empty-state');
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'block';
+    }
+  }
+
+  // Filter requests
+  window.filterNotifyRequests = function(filter) {
+    currentNotifyFilter = filter;
+    currentNotifyPage = 1;
+    
+    document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+    const activeTab = document.getElementById(`filter-${filter}`);
+    if (activeTab) activeTab.classList.add('active');
+    
+    applyNotifyFilter(filter);
+    renderNotifyRequests();
+  };
+
+  function applyNotifyFilter(filter) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    filteredNotifyRequests = allNotifyRequests.filter(req => {
+      switch(filter) {
+        case 'pending':
+          return req.status === 'pending' || !req.status;
+        case 'notified':
+          return req.status === 'notified';
+        case 'today':
+          return req.timestamp && req.timestamp >= today;
+        default:
+          return true;
+      }
+    });
+  }
+
+  // Search functionality
   const searchInput = document.getElementById('search-requests');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
-      filterRequests(e.target.value);
+      const searchTerm = e.target.value.toLowerCase();
+      
+      if (!searchTerm) {
+        applyNotifyFilter(currentNotifyFilter);
+      } else {
+        filteredNotifyRequests = allNotifyRequests.filter(req => {
+          const product = notifyProducts[req.productId] || { title: 'Unknown Product' };
+          return req.email?.toLowerCase().includes(searchTerm) ||
+                 product.title?.toLowerCase().includes(searchTerm) ||
+                 req.productId?.toLowerCase().includes(searchTerm);
+        });
+      }
+      
+      currentNotifyPage = 1;
+      renderNotifyRequests();
     });
   }
-  
-  // Setup filter tabs
+
+  // Update statistics
+  function updateNotifyStats() {
+    const total = allNotifyRequests.length;
+    const pending = allNotifyRequests.filter(r => r.status === 'pending' || !r.status).length;
+    const notified = allNotifyRequests.filter(r => r.status === 'notified').length;
+    const uniqueProducts = new Set(allNotifyRequests.map(r => r.productId)).size;
+
+    const totalEl = document.getElementById('total-requests');
+    const pendingEl = document.getElementById('pending-requests');
+    const notifiedEl = document.getElementById('notified-requests');
+    const uniqueEl = document.getElementById('unique-products');
+    
+    if (totalEl) totalEl.textContent = total;
+    if (pendingEl) pendingEl.textContent = pending;
+    if (notifiedEl) notifiedEl.textContent = notified;
+    if (uniqueEl) uniqueEl.textContent = uniqueProducts;
+  }
+
+  // Render requests
+  function renderNotifyRequests() {
+    const start = (currentNotifyPage - 1) * notifyItemsPerPage;
+    const end = start + notifyItemsPerPage;
+    const pageRequests = filteredNotifyRequests.slice(start, end);
+    
+    const tableWrapper = document.getElementById('table-wrapper');
+    const mobileCards = document.getElementById('mobile-cards');
+    const emptyState = document.getElementById('empty-state');
+    const pagination = document.getElementById('pagination');
+    
+    if (pageRequests.length === 0) {
+      if (tableWrapper) tableWrapper.style.display = 'none';
+      if (mobileCards) mobileCards.style.display = 'none';
+      if (emptyState) emptyState.style.display = 'block';
+      if (pagination) pagination.style.display = 'none';
+      return;
+    }
+
+    if (emptyState) emptyState.style.display = 'none';
+    if (tableWrapper) tableWrapper.style.display = 'block';
+    if (mobileCards) mobileCards.style.display = 'block';
+    if (pagination) pagination.style.display = filteredNotifyRequests.length > notifyItemsPerPage ? 'flex' : 'none';
+    
+    // Render table rows
+    const tableBody = document.getElementById('table-body');
+    if (tableBody) {
+      tableBody.innerHTML = pageRequests.map(req => {
+        const product = notifyProducts[req.productId] || { 
+          title: 'Unknown Product', 
+          price: 0,
+          primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
+        };
+        
+        const status = req.status || 'pending';
+        const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+        
+        const date = req.timestamp ? new Date(req.timestamp) : new Date();
+        const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+        return `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="product-thumb" style="background-image: url('${product.primaryImg}');"></div>
+                <div class="product-info">
+                  <span class="product-title">${product.title}</span>
+                  <span class="product-id">${req.productId?.substring(0, 8)}...</span>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="user-email">
+                <i class="fa-regular fa-envelope"></i>
+                ${req.email}
+              </div>
+            </td>
+            <td>
+              <span style="text-transform: uppercase; font-weight: 600; background: #f0f0f0; padding: 4px 12px; border-radius: 40px; border: 1px solid #000;">
+                ${req.actionType || 'buy'}
+              </span>
+            </td>
+            <td>
+              <span class="status-badge ${statusClass}">
+                <i class="fa-solid ${status === 'pending' ? 'fa-clock' : status === 'notified' ? 'fa-check-circle' : 'fa-circle-exclamation'}"></i>
+                ${status}
+              </span>
+            </td>
+            <td>
+              <div class="timestamp">
+                <span class="date">${formattedDate}</span>
+                <span class="time">${formattedTime}</span>
+              </div>
+            </td>
+            <td>
+              <span style="font-family: monospace; font-size: 0.75rem;">${req.productId}</span>
+            </td>
+            <td>
+              <div class="action-btns">
+                <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
+                  <i class="fa-solid fa-envelope"></i>
+                </button>
+                <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
+                  <i class="fa-solid fa-check"></i>
+                </button>
+                <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Render mobile cards
+    const mobileCardsEl = document.getElementById('mobile-cards');
+    if (mobileCardsEl) {
+      mobileCardsEl.innerHTML = pageRequests.map(req => {
+        const product = notifyProducts[req.productId] || { 
+          title: 'Unknown Product', 
+          price: 0,
+          primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
+        };
+        
+        const status = req.status || 'pending';
+        const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+        
+        const date = req.timestamp ? new Date(req.timestamp) : new Date();
+        const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+        return `
+          <div class="notification-card">
+            <div class="card-header">
+              <div class="card-thumb" style="background-image: url('${product.primaryImg}');"></div>
+              <div class="card-title">
+                <h4>${product.title}</h4>
+                <span class="product-id">${req.productId?.substring(0, 12)}...</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-row">
+                <i class="fa-regular fa-envelope"></i>
+                <span>${req.email}</span>
+              </div>
+              <div class="card-row">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Action: <strong>${req.actionType || 'buy'}</strong></span>
+              </div>
+              <div class="card-row">
+                <i class="fa-regular fa-calendar"></i>
+                <span>${formattedDate} at ${formattedTime}</span>
+              </div>
+              <div class="card-row">
+                <i class="fa-regular fa-circle-check"></i>
+                <span>Status: </span>
+                <span class="status-badge ${statusClass}" style="margin-left: 0;">
+                  ${status}
+                </span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span style="font-family: monospace; font-size: 0.7rem;">ID: ${req.id.substring(0, 8)}</span>
+              <div class="card-actions">
+                <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
+                  <i class="fa-solid fa-envelope"></i>
+                </button>
+                <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
+                  <i class="fa-solid fa-check"></i>
+                </button>
+                <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+                <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    updateNotifyPagination();
+  }
+
+  // Send email function using mailto
+  window.sendNotifyEmail = function(requestId) {
+    const request = allNotifyRequests.find(r => r.id === requestId);
+    if (!request) return;
+    
+    const product = notifyProducts[request.productId] || { title: 'Unknown Product', price: 0 };
+    
+    const subject = document.getElementById('email-subject')?.value || emailTemplate.subject;
+    const body = document.getElementById('email-body')?.value || emailTemplate.body;
+    const cc = document.getElementById('email-cc')?.value || '';
+    const bcc = document.getElementById('email-bcc')?.value || '';
+    
+    const processedSubject = subject
+      .replace('{{product}}', product.title)
+      .replace('{{price}}', product.price)
+      .replace('{{productLink}}', `${window.location.origin}/product.html?id=${request.productId}`)
+      .replace('{{email}}', request.email);
+    
+    const processedBody = body
+      .replace('{{product}}', product.title)
+      .replace('{{price}}', product.price)
+      .replace('{{productLink}}', `${window.location.origin}/product.html?id=${request.productId}`)
+      .replace('{{email}}', request.email);
+    
+    let mailtoLink = `mailto:${request.email}`;
+    const params = [];
+    
+    if (cc) params.push(`cc=${encodeURIComponent(cc)}`);
+    if (bcc) params.push(`bcc=${encodeURIComponent(bcc)}`);
+    params.push(`subject=${encodeURIComponent(processedSubject)}`);
+    params.push(`body=${encodeURIComponent(processedBody)}`);
+    
+    if (params.length > 0) {
+      mailtoLink += '?' + params.join('&');
+    }
+    
+    window.location.href = mailtoLink;
+    
+    setTimeout(() => {
+      if (confirm('Email client opened. Mark this request as notified?')) {
+        markNotifyAsNotified(requestId);
+      }
+    }, 1000);
+  };
+
+  // Send bulk emails to all pending
+  window.sendBulkNotifyEmails = function() {
+    const pendingRequests = filteredNotifyRequests.filter(r => r.status !== 'notified');
+    
+    if (pendingRequests.length === 0) {
+      showNotification('No pending requests to email', 'error');
+      return;
+    }
+    
+    if (pendingRequests.length === 1) {
+      sendNotifyEmail(pendingRequests[0].id);
+      return;
+    }
+    
+    const choice = confirm(
+      `You have ${pendingRequests.length} pending requests.\n\n` +
+      `Choose OK to open separate emails for each (will open ${pendingRequests.length} tabs/windows)\n` +
+      `Choose Cancel to copy all emails to clipboard for manual sending`
+    );
+    
+    if (choice) {
+      pendingRequests.forEach((req, index) => {
+        setTimeout(() => {
+          sendNotifyEmail(req.id);
+        }, index * 1500);
+      });
+      showNotification(`Opening ${pendingRequests.length} email windows...`);
+    } else {
+      const emails = pendingRequests.map(r => r.email).join(', ');
+      navigator.clipboard.writeText(emails);
+      showNotification('Emails copied to clipboard');
+    }
+  };
+
+  // Pagination
+  function updateNotifyPagination() {
+    const totalPages = Math.ceil(filteredNotifyRequests.length / notifyItemsPerPage);
+    const pagination = document.getElementById('pagination');
+    const prevBtn = document.getElementById('prev-page');
+    const nextBtn = document.getElementById('next-page');
+    const pageNumbers = document.getElementById('page-numbers');
+    
+    if (totalPages <= 1) {
+      if (pagination) pagination.style.display = 'none';
+      return;
+    }
+
+    if (pagination) pagination.style.display = 'flex';
+    if (prevBtn) prevBtn.disabled = currentNotifyPage === 1;
+    if (nextBtn) nextBtn.disabled = currentNotifyPage === totalPages;
+
+    let pageNumbersHTML = '';
+    const startPage = Math.max(1, currentNotifyPage - 2);
+    const endPage = Math.min(totalPages, currentNotifyPage + 2);
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbersHTML += `
+        <button class="page-btn ${i === currentNotifyPage ? 'active' : ''}" onclick="goToNotifyPage(${i})">
+          ${i}
+        </button>
+      `;
+    }
+
+    if (pageNumbers) pageNumbers.innerHTML = pageNumbersHTML;
+  }
+
+  window.changeNotifyPage = function(direction) {
+    const totalPages = Math.ceil(filteredNotifyRequests.length / notifyItemsPerPage);
+    
+    if (direction === 'prev' && currentNotifyPage > 1) {
+      currentNotifyPage--;
+    } else if (direction === 'next' && currentNotifyPage < totalPages) {
+      currentNotifyPage++;
+    }
+    
+    renderNotifyRequests();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.goToNotifyPage = function(page) {
+    currentNotifyPage = page;
+    renderNotifyRequests();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Mark notification as notified
+  window.markNotifyAsNotified = async function(notificationId) {
+    try {
+      await db.collection('notifications').doc(notificationId).update({
+        status: 'notified',
+        notifiedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      
+      showNotification('Marked as notified');
+      loadNotifyRequests();
+    } catch (error) {
+      console.error('Error updating notification:', error);
+      showNotification('Failed to update status', 'error');
+    }
+  };
+
+  // View product in new tab
+  window.viewNotifyProduct = function(productId) {
+    window.open(`product.html?id=${productId}`, '_blank');
+  };
+
+  // Copy email to clipboard
+  window.copyNotifyEmail = function(email) {
+    navigator.clipboard.writeText(email);
+    showNotification('Email copied to clipboard');
+  };
+
+  // Export to CSV
+  window.exportNotifyRequests = function() {
+    const data = filteredNotifyRequests.map(req => {
+      const product = notifyProducts[req.productId] || { title: 'Unknown Product', price: 0 };
+      const date = req.timestamp ? new Date(req.timestamp) : new Date();
+      
+      return {
+        'Email': req.email,
+        'Product ID': req.productId,
+        'Product Title': product.title,
+        'Product Price': product.price,
+        'Action Type': req.actionType || 'buy',
+        'Status': req.status || 'pending',
+        'Requested Date': date.toLocaleDateString('en-IN'),
+        'Requested Time': date.toLocaleTimeString('en-IN'),
+        'Notification ID': req.id
+      };
+    });
+
+    const csv = convertToCSV(data);
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `notification_requests_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    
+    showNotification('Exported to CSV');
+  };
+
+  function convertToCSV(data) {
+    if (data.length === 0) return '';
+    
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+    
+    csvRows.push(headers.join(','));
+    
+    for (const row of data) {
+      const values = headers.map(header => {
+        const value = row[header]?.toString() || '';
+        return `"${value.replace(/"/g, '""')}"`;
+      });
+      csvRows.push(values.join(','));
+    }
+    
+    return csvRows.join('\n');
+  }
+
+  // Initialize
+  loadTemplate();
+  loadNotifyRequests();
+
+  // Set up filter tab click handlers
   document.querySelectorAll('.filter-tab').forEach(tab => {
     tab.addEventListener('click', function() {
-      const filter = this.textContent.toLowerCase();
-      filterRequestsByType(filter);
+      const filter = this.textContent.toLowerCase().trim();
+      filterNotifyRequests(filter);
     });
   });
-  
-  // Load template from localStorage
-  loadTemplate();
-  
-  // Setup preview updates
-  const subjectInput = document.getElementById('email-subject');
-  const bodyInput = document.getElementById('email-body');
-  if (subjectInput) subjectInput.addEventListener('input', updatePreview);
-  if (bodyInput) bodyInput.addEventListener('input', updatePreview);
+
+  // Set up export button
+  const exportBtn = document.querySelector('[onclick="exportRequests()"]');
+  if (exportBtn) {
+    exportBtn.onclick = exportNotifyRequests;
+  }
+
+  // Set up bulk email button
+  const bulkEmailBtn = document.querySelector('[onclick="sendBulkEmails()"]');
+  if (bulkEmailBtn) {
+    bulkEmailBtn.onclick = sendBulkNotifyEmails;
+  }
 }
 
-// ========== FIREBASE FUNCTIONS ==========
+// ========== DASHBOARD FIREBASE FUNCTIONS ==========
 async function loadProducts() {
   try {
     const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
@@ -2688,29 +3320,7 @@ async function loadProducts() {
   }
 }
 
-async function loadNotifications() {
-  try {
-    const snapshot = await db.collection('notifications')
-      .orderBy('timestamp', 'desc')
-      .get();
-
-    allRequests = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data(),
-      timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().timestamp)
-    }));
-
-    // Update badge
-    const pendingCount = allRequests.filter(r => r.status === 'pending' || !r.status).length;
-    notifyBadge.textContent = pendingCount;
-    
-    renderNotifications();
-  } catch (error) {
-    console.error('Error loading notifications:', error);
-  }
-}
-
-// Set up real-time listener for notifications
+// Set up real-time listener for notifications badge
 db.collection('notifications')
   .onSnapshot((snapshot) => {
     const pendingCount = snapshot.docs.filter(doc => {
@@ -2718,11 +3328,6 @@ db.collection('notifications')
       return data.status === 'pending' || !data.status;
     }).length;
     notifyBadge.textContent = pendingCount;
-    
-    // Update if on notify page
-    if (document.getElementById('table-body')) {
-      loadNotifications();
-    }
   });
 
 // ========== DASHBOARD HELPER FUNCTIONS ==========
@@ -3273,227 +3878,6 @@ function updateNewInStatus() {
   }
 }
 
-// ========== NOTIFY HELPER FUNCTIONS ==========
-function renderNotifications() {
-  const tableBody = document.getElementById('table-body');
-  const mobileCards = document.getElementById('mobile-cards');
-  
-  if (!tableBody || !mobileCards) return;
-  
-  // Simple render for now - you can expand this with full notify.html functionality
-  tableBody.innerHTML = allRequests.map(req => {
-    const status = req.status || 'pending';
-    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-    const date = req.timestamp ? new Date(req.timestamp) : new Date();
-    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    
-    return `
-      <tr>
-        <td>${req.productId || 'Unknown'}</td>
-        <td>${req.email || 'No email'}</td>
-        <td>${req.actionType || 'buy'}</td>
-        <td><span class="status-badge ${statusClass}">${status}</span></td>
-        <td>${formattedDate}</td>
-        <td>${req.id.substring(0, 8)}...</td>
-        <td>
-          <div class="action-btns">
-            <button class="action-btn email-btn" onclick="markAsNotified('${req.id}')" ${status === 'notified' ? 'disabled' : ''}>
-              <i class="fa-solid fa-check"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-  
-  mobileCards.innerHTML = allRequests.map(req => {
-    const status = req.status || 'pending';
-    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-    const date = req.timestamp ? new Date(req.timestamp) : new Date();
-    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    
-    return `
-      <div class="notification-card">
-        <div class="card-body">
-          <div class="card-row"><strong>Product:</strong> ${req.productId}</div>
-          <div class="card-row"><strong>Email:</strong> ${req.email}</div>
-          <div class="card-row"><strong>Status:</strong> <span class="status-badge ${statusClass}">${status}</span></div>
-          <div class="card-row"><strong>Date:</strong> ${formattedDate}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-window.markAsNotified = async function(notificationId) {
-  try {
-    await db.collection('notifications').doc(notificationId).update({
-      status: 'notified',
-      notifiedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    showNotification('Marked as notified');
-    loadNotifications();
-  } catch (error) {
-    console.error('Error updating notification:', error);
-    showNotification('Failed to update status', 'error');
-  }
-};
-
-function filterRequests(searchTerm) {
-  // Simple filter implementation
-  const filtered = allRequests.filter(req => 
-    req.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    req.productId?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  renderFilteredNotifications(filtered);
-}
-
-function filterRequestsByType(type) {
-  // Update active tab
-  document.querySelectorAll('.filter-tab').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  event.target.classList.add('active');
-  
-  // Filter based on type
-  let filtered = [];
-  const now = new Date();
-  const today = new Date(now.setHours(0,0,0,0));
-  
-  switch(type) {
-    case 'pending':
-      filtered = allRequests.filter(r => r.status === 'pending' || !r.status);
-      break;
-    case 'notified':
-      filtered = allRequests.filter(r => r.status === 'notified');
-      break;
-    case 'today':
-      filtered = allRequests.filter(r => {
-        const date = r.timestamp ? new Date(r.timestamp) : new Date();
-        return date >= today;
-      });
-      break;
-    default:
-      filtered = allRequests;
-  }
-  
-  renderFilteredNotifications(filtered);
-}
-
-function renderFilteredNotifications(filtered) {
-  const tableBody = document.getElementById('table-body');
-  const mobileCards = document.getElementById('mobile-cards');
-  
-  if (!tableBody || !mobileCards) return;
-  
-  tableBody.innerHTML = filtered.map(req => {
-    const status = req.status || 'pending';
-    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-    const date = req.timestamp ? new Date(req.timestamp) : new Date();
-    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    
-    return `
-      <tr>
-        <td>${req.productId || 'Unknown'}</td>
-        <td>${req.email || 'No email'}</td>
-        <td>${req.actionType || 'buy'}</td>
-        <td><span class="status-badge ${statusClass}">${status}</span></td>
-        <td>${formattedDate}</td>
-        <td>${req.id.substring(0, 8)}...</td>
-        <td>
-          <div class="action-btns">
-            <button class="action-btn email-btn" onclick="markAsNotified('${req.id}')" ${status === 'notified' ? 'disabled' : ''}>
-              <i class="fa-solid fa-check"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
-  }).join('');
-  
-  mobileCards.innerHTML = filtered.map(req => {
-    const status = req.status || 'pending';
-    const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-    const date = req.timestamp ? new Date(req.timestamp) : new Date();
-    const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-    
-    return `
-      <div class="notification-card">
-        <div class="card-body">
-          <div class="card-row"><strong>Product:</strong> ${req.productId}</div>
-          <div class="card-row"><strong>Email:</strong> ${req.email}</div>
-          <div class="card-row"><strong>Status:</strong> <span class="status-badge ${statusClass}">${status}</span></div>
-          <div class="card-row"><strong>Date:</strong> ${formattedDate}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-// Template functions
-function loadTemplate() {
-  const saved = localStorage.getItem('myessantia_email_template');
-  if (saved) {
-    try {
-      const template = JSON.parse(saved);
-      document.getElementById('email-subject').value = template.subject || '';
-      document.getElementById('email-body').value = template.body || '';
-      document.getElementById('email-cc').value = template.cc || '';
-      document.getElementById('email-bcc').value = template.bcc || '';
-    } catch (e) {
-      console.error('Error loading template:', e);
-    }
-  }
-}
-
-function updatePreview() {
-  const subject = document.getElementById('email-subject')?.value || '';
-  const body = document.getElementById('email-body')?.value || '';
-  
-  const previewSubject = subject
-    .replace('{{product}}', 'Premium Leather Backpack')
-    .replace('{{price}}', '2499')
-    .replace('{{productLink}}', 'https://myessantia.com/product/123')
-    .replace('{{email}}', 'user@example.com');
-  
-  const previewBody = body
-    .replace('{{product}}', 'Premium Leather Backpack')
-    .replace('{{price}}', '2499')
-    .replace('{{productLink}}', 'https://myessantia.com/product/123')
-    .replace('{{email}}', 'user@example.com');
-  
-  const previewSubjectEl = document.getElementById('preview-subject');
-  const previewBodyEl = document.getElementById('preview-body');
-  
-  if (previewSubjectEl) previewSubjectEl.textContent = 'Subject: ' + previewSubject;
-  if (previewBodyEl) previewBodyEl.textContent = previewBody;
-}
-
-window.toggleTemplatePanel = function() {
-  const panel = document.getElementById('emailTemplatePanel');
-  if (panel) panel.classList.toggle('show');
-};
-
-window.saveTemplate = function() {
-  const template = {
-    subject: document.getElementById('email-subject').value,
-    body: document.getElementById('email-body').value,
-    cc: document.getElementById('email-cc').value,
-    bcc: document.getElementById('email-bcc').value
-  };
-  localStorage.setItem('myessantia_email_template', JSON.stringify(template));
-  showNotification('Email template saved');
-  toggleTemplatePanel();
-};
-
-window.resetTemplate = function() {
-  document.getElementById('email-subject').value = 'Good news! {{product}} is now available at MyEssantia';
-  document.getElementById('email-body').value = `Hi there,\n\nGreat news! The product you were interested in is now available:\n\n✨ {{product}}\n💰 Price: ₹{{price}}\n\nClick here to view: {{productLink}}\n\nWe have limited stock available, so don't wait too long!\n\nThank you for your interest,\nMyEssantia Team`;
-  document.getElementById('email-cc').value = '';
-  document.getElementById('email-bcc').value = '';
-  updatePreview();
-};
-
 // ========== UTILITY FUNCTIONS ==========
 function showNotification(message, type = 'info') {
   const notification = document.createElement('div');
@@ -3554,6 +3938,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load dashboard by default
   loadPage('dashboard');
 });
-  </script>
+</script>
 </body>
 </html>
