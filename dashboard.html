@@ -546,6 +546,110 @@
       cursor: not-allowed;
     }
 
+    /* ============================= */
+/* MOBILE / DESKTOP SWITCH LOGIC */
+/* ============================= */
+
+/* Desktop default */
+.mobile-cards{
+  display:none;
+}
+
+.table-wrapper{
+  display:block;
+}
+
+/* Mobile layout */
+@media (max-width:900px){
+
+  .table-wrapper{
+    display:none;
+  }
+
+  .mobile-cards{
+    display:block;
+  }
+
+  .notification-card{
+    background:#fff;
+    border:2px solid #000;
+    border-radius:24px;
+    padding:16px;
+    margin-bottom:12px;
+    box-shadow:4px 4px 0 rgba(0,0,0,0.1);
+  }
+
+  .card-header{
+    display:flex;
+    gap:12px;
+    margin-bottom:12px;
+    padding-bottom:12px;
+    border-bottom:2px solid #d4af37;
+  }
+
+  .card-thumb{
+    width:60px;
+    height:60px;
+    border-radius:12px;
+    background-size:cover;
+    background-position:center;
+    border:2px solid #000;
+  }
+
+  .card-title{
+    flex:1;
+  }
+
+  .card-title h4{
+    font-weight:800;
+    font-size:1rem;
+    margin-bottom:4px;
+  }
+
+  .card-title .product-id{
+    font-size:0.65rem;
+    color:#666;
+  }
+
+  .card-body{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px;
+  }
+
+  .card-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:0.85rem;
+  }
+
+  .card-row i{
+    color:#d4af37;
+    width:20px;
+  }
+
+  .card-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:8px;
+    border-top:2px solid #d4af37;
+  }
+
+  .card-actions{
+    display:flex;
+    gap:8px;
+  }
+
+  .card-actions .action-btn{
+    width:40px;
+    height:40px;
+  }
+
+}
+
     /* Timestamp */
     .timestamp {
       font-size: 0.75rem;
@@ -582,38 +686,6 @@
       margin-bottom: 8px;
     }
 
-.mobile-cards{
-  display:none;
-}
-
-@media (max-width:900px){
-
-  .table-wrapper{
-    display:none;
-  }
-
-  .mobile-cards{
-    display:block;
-  }
-
-  .notification-card{
-    background:#fff;
-    border:2px solid #000;
-    border-radius:24px;
-    padding:16px;
-    margin-bottom:12px;
-    box-shadow:4px 4px 0 rgba(0,0,0,0.1);
-  }
-
-  .card-header{
-    display:flex;
-    gap:12px;
-    margin-bottom:12px;
-    padding-bottom:12px;
-    border-bottom:2px solid #d4af37;
-  }
-}
-      
       .notification-card {
         background: #fff;
         border: 2px solid #000;
@@ -2597,16 +2669,13 @@
       }
     }
 
-    @media (min-width: 901px) {
-      .products-list {
-        display: none;
-      }
-        .mobile-cards {
-    display: none;
+
+@media (min-width:901px){
+  .products-list{
+    display:none;
   }
-
-    }
-
+}
+    
     @media (max-width: 480px) {
       .products-table {
         padding: 16px;
@@ -3184,7 +3253,6 @@ MyEssantia Team`;
       
       if (loadingEl) loadingEl.style.display = 'flex';
       if (tableWrapper) tableWrapper.style.display = 'none';
-      if (mobileCards) mobileCards.style.display = 'none';
       if (emptyState) emptyState.style.display = 'none';
 
       const snapshot = await db.collection('notifications')
@@ -3209,7 +3277,6 @@ MyEssantia Team`;
         if (mobileCards) mobileCards.style.display = 'none';
       } else {
         if (tableWrapper) tableWrapper.style.display = 'block';
-        if (mobileCards) mobileCards.style.display = 'block';
         renderNotifyRequests();
       }
     } catch (error) {
