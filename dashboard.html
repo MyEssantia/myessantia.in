@@ -3242,177 +3242,182 @@ MyEssantia Team`;
   }
 
   // Render requests
-  function renderNotifyRequests() {
-    if (!window.filteredNotifyRequests) return;
-    
-    const start = (window.currentNotifyPage - 1) * window.notifyItemsPerPage;
-    const end = start + window.notifyItemsPerPage;
-    const pageRequests = window.filteredNotifyRequests.slice(start, end);
-    
-    const tableWrapper = document.getElementById('table-wrapper');
-    const mobileCards = document.getElementById('mobile-cards');
-    const emptyState = document.getElementById('empty-state');
-    const pagination = document.getElementById('pagination');
-    
-    if (pageRequests.length === 0) {
-      if (tableWrapper) tableWrapper.style.display = 'none';
-      if (mobileCards) mobileCards.style.display = 'none';
-      if (emptyState) emptyState.style.display = 'block';
-      if (pagination) pagination.style.display = 'none';
-      return;
-    }
+// Render requests - FIXED VERSION (no double rendering)
+function renderNotifyRequests() {
+  if (!window.filteredNotifyRequests) return;
+  
+  const start = (window.currentNotifyPage - 1) * window.notifyItemsPerPage;
+  const end = start + window.notifyItemsPerPage;
+  const pageRequests = window.filteredNotifyRequests.slice(start, end);
+  
+  const tableWrapper = document.getElementById('table-wrapper');
+  const mobileCards = document.getElementById('mobile-cards');
+  const emptyState = document.getElementById('empty-state');
+  const pagination = document.getElementById('pagination');
+  
+  if (pageRequests.length === 0) {
+    if (tableWrapper) tableWrapper.style.display = 'none';
+    if (mobileCards) mobileCards.style.display = 'none';
+    if (emptyState) emptyState.style.display = 'block';
+    if (pagination) pagination.style.display = 'none';
+    return;
+  }
 
-    if (emptyState) emptyState.style.display = 'none';
-    if (tableWrapper) tableWrapper.style.display = 'block';
-    if (mobileCards) mobileCards.style.display = 'block';
-    if (pagination) pagination.style.display = window.filteredNotifyRequests.length > window.notifyItemsPerPage ? 'flex' : 'none';
-    
-    // Render table rows
-    const tableBody = document.getElementById('table-body');
-    if (tableBody) {
-      tableBody.innerHTML = pageRequests.map(req => {
-        const product = window.notifyProducts[req.productId] || { 
-          title: 'Unknown Product', 
-          price: 0,
-          primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
-        };
-        
-        const status = req.status || 'pending';
-        const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-        
-        const date = req.timestamp ? new Date(req.timestamp) : new Date();
-        const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+  if (emptyState) emptyState.style.display = 'none';
+  if (tableWrapper) tableWrapper.style.display = 'block';
+  if (mobileCards) mobileCards.style.display = 'block';
+  if (pagination) pagination.style.display = window.filteredNotifyRequests.length > window.notifyItemsPerPage ? 'flex' : 'none';
+  
+  // Render table rows (desktop view)
+  const tableBody = document.getElementById('table-body');
+  if (tableBody) {
+    tableBody.innerHTML = pageRequests.map(req => {
+      const product = window.notifyProducts[req.productId] || { 
+        title: 'Unknown Product', 
+        price: 0,
+        primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
+      };
+      
+      const status = req.status || 'pending';
+      const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+      
+      const date = req.timestamp || new Date();
+      const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 
-        return `
-          <tr>
-            <td>
-              <div style="display: flex; align-items: center; gap: 12px;">
-                <div class="product-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
-                <div class="product-info">
-                  <span class="product-title">${product.title}</span>
-                  <span class="product-id">${req.productId?.substring(0, 8)}...</span>
-                </div>
-              </div>
-            </td>
-            <td>
-              <div class="user-email">
-                <i class="fa-regular fa-envelope"></i>
-                ${req.email}
-              </div>
-            </td>
-            <td>
-              <span style="text-transform: uppercase; font-weight: 600; background: #f0f0f0; padding: 4px 12px; border-radius: 40px; border: 1px solid #000;">
-                ${req.actionType || 'buy'}
-              </span>
-            </td>
-            <td>
-              <span class="status-badge ${statusClass}">
-                <i class="fa-solid ${status === 'pending' ? 'fa-clock' : status === 'notified' ? 'fa-check-circle' : 'fa-circle-exclamation'}"></i>
-                ${status}
-              </span>
-            </td>
-            <td>
-              <div class="timestamp">
-                <span class="date">${formattedDate}</span>
-                <span class="time">${formattedTime}</span>
-              </div>
-            </td>
-            <td>
-              <span style="font-family: monospace; font-size: 0.75rem;">${req.productId}</span>
-            </td>
-            <td>
-              <div class="action-btns">
-                <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
-                  <i class="fa-solid fa-envelope"></i>
-                </button>
-                <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
-                  <i class="fa-solid fa-check"></i>
-                </button>
-                <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-                <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
-                  <i class="fa-regular fa-copy"></i>
-                </button>
-              </div>
-            </td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    // Render mobile cards
-    const mobileCardsEl = document.getElementById('mobile-cards');
-    if (mobileCardsEl) {
-      mobileCardsEl.innerHTML = pageRequests.map(req => {
-        const product = window.notifyProducts[req.productId] || { 
-          title: 'Unknown Product', 
-          price: 0,
-          primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
-        };
-        
-        const status = req.status || 'pending';
-        const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
-        
-        const date = req.timestamp ? new Date(req.timestamp) : new Date();
-        const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-        const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
-
-        return `
-          <div class="notification-card">
-            <div class="card-header">
-              <div class="card-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
-              <div class="card-title">
-                <h4>${product.title}</h4>
-                <span class="product-id">${req.productId?.substring(0, 12)}...</span>
+      return `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <div class="product-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
+              <div class="product-info">
+                <span class="product-title">${product.title}</span>
+                <span class="product-id">${req.productId?.substring(0, 8)}...</span>
               </div>
             </div>
-            <div class="card-body">
-              <div class="card-row">
-                <i class="fa-regular fa-envelope"></i>
-                <span>${req.email}</span>
-              </div>
-              <div class="card-row">
-                <i class="fa-solid fa-bolt"></i>
-                <span>Action: <strong>${req.actionType || 'buy'}</strong></span>
-              </div>
-              <div class="card-row">
-                <i class="fa-regular fa-calendar"></i>
-                <span>${formattedDate} at ${formattedTime}</span>
-              </div>
-              <div class="card-row">
-                <i class="fa-regular fa-circle-check"></i>
-                <span>Status: </span>
-                <span class="status-badge ${statusClass}" style="margin-left: 0;">
-                  ${status}
-                </span>
-              </div>
+          </td>
+          <td>
+            <div class="user-email">
+              <i class="fa-regular fa-envelope"></i>
+              ${req.email}
             </div>
-            <div class="card-footer">
-              <span style="font-family: monospace; font-size: 0.7rem;">ID: ${req.id.substring(0, 8)}</span>
-              <div class="card-actions">
-                <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
-                  <i class="fa-solid fa-envelope"></i>
-                </button>
-                <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
-                  <i class="fa-solid fa-check"></i>
-                </button>
-                <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
-                  <i class="fa-solid fa-eye"></i>
-                </button>
-                <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
-                  <i class="fa-regular fa-copy"></i>
-                </button>
-              </div>
+          </td>
+          <td>
+            <span style="text-transform: uppercase; font-weight: 600; background: #f0f0f0; padding: 4px 12px; border-radius: 40px; border: 1px solid #000;">
+              ${req.actionType || 'buy'}
+            </span>
+          </td>
+          <td>
+            <span class="status-badge ${statusClass}">
+              <i class="fa-solid ${status === 'pending' ? 'fa-clock' : status === 'notified' ? 'fa-check-circle' : 'fa-circle-exclamation'}"></i>
+              ${status}
+            </span>
+          </td>
+          <td>
+            <div class="timestamp">
+              <span class="date">${formattedDate}</span>
+              <span class="time">${formattedTime}</span>
+            </div>
+          </td>
+          <td>
+            <span style="font-family: monospace; font-size: 0.75rem;">${req.productId}</span>
+          </td>
+          <td>
+            <div class="action-btns">
+              <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
+                <i class="fa-solid fa-envelope"></i>
+              </button>
+              <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Render mobile cards (mobile view) - FIXED: Only render if not already rendered above
+  const mobileCardsEl = document.getElementById('mobile-cards');
+  if (mobileCardsEl) {
+    // Clear existing content first
+    mobileCardsEl.innerHTML = '';
+    
+    // Then render new content
+    mobileCardsEl.innerHTML = pageRequests.map(req => {
+      const product = window.notifyProducts[req.productId] || { 
+        title: 'Unknown Product', 
+        price: 0,
+        primaryImg: 'https://via.placeholder.com/300/f0f0f0/999999?text=no+image' 
+      };
+      
+      const status = req.status || 'pending';
+      const statusClass = status === 'pending' ? 'pending' : status === 'notified' ? 'notified' : 'expired';
+      
+      const date = req.timestamp || new Date();
+      const formattedDate = date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      const formattedTime = date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+      return `
+        <div class="notification-card">
+          <div class="card-header">
+            <div class="card-thumb" style="background-image: url('${product.primaryImg}'); background-size: cover; background-position: center;"></div>
+            <div class="card-title">
+              <h4>${product.title}</h4>
+              <span class="product-id">${req.productId?.substring(0, 12)}...</span>
             </div>
           </div>
-        `;
-      }).join('');
-    }
-
-    updateNotifyPagination();
+          <div class="card-body">
+            <div class="card-row">
+              <i class="fa-regular fa-envelope"></i>
+              <span>${req.email}</span>
+            </div>
+            <div class="card-row">
+              <i class="fa-solid fa-bolt"></i>
+              <span>Action: <strong>${req.actionType || 'buy'}</strong></span>
+            </div>
+            <div class="card-row">
+              <i class="fa-regular fa-calendar"></i>
+              <span>${formattedDate} at ${formattedTime}</span>
+            </div>
+            <div class="card-row">
+              <i class="fa-regular fa-circle-check"></i>
+              <span>Status: </span>
+              <span class="status-badge ${statusClass}" style="margin-left: 0;">
+                ${status}
+              </span>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span style="font-family: monospace; font-size: 0.7rem;">ID: ${req.id.substring(0, 8)}</span>
+            <div class="card-actions">
+              <button class="action-btn email-btn" onclick="sendNotifyEmail('${req.id}')" title="Send email" ${status === 'notified' ? 'disabled' : ''}>
+                <i class="fa-solid fa-envelope"></i>
+              </button>
+              <button class="action-btn" onclick="markNotifyAsNotified('${req.id}')" title="Mark as notified" ${status === 'notified' ? 'disabled' : ''}>
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button class="action-btn" onclick="viewNotifyProduct('${req.productId}')" title="View product">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="action-btn" onclick="copyNotifyEmail('${req.email}')" title="Copy email">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
   }
+
+  updateNotifyPagination();
+}
 
   // Send email function using mailto
   window.sendNotifyEmail = function(requestId) {
