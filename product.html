@@ -1388,21 +1388,33 @@ async function loadProductReviews(productId) {
     
     const reviews = snapshot.docs.map(doc => {
       const data = doc.data();
-      console.log('Review data:', data); // Debug log
+      
+      // Handle timestamp properly
+      let reviewDate = new Date();
+      if (data.timestamp) {
+        if (data.timestamp.toDate) {
+          reviewDate = data.timestamp.toDate();
+        } else if (data.timestamp.seconds) {
+          reviewDate = new Date(data.timestamp.seconds * 1000);
+        } else {
+          reviewDate = new Date(data.timestamp);
+        }
+      }
       
       return {
         id: doc.id,
-        reviewerName: data.reviewerName || 'Anonymous',
+        reviewerName: data.reviewerName || data.name || 'Anonymous',
         city: data.city || 'India',
         rating: data.rating || 5,
-        comment: data.comment || '',
+        comment: data.comment || data.review || '',
         verified: data.verified || false,
-        imageUrl: data.imageUrl || null,
-        timestamp: data.timestamp?.toDate() || new Date(data.timestamp || Date.now())
+        imageUrl: data.imageUrl || data.image || null,
+        timestamp: reviewDate
       };
     });
     
     return reviews;
+    
   } catch (error) {
     console.error('Error loading reviews:', error);
     return [];
@@ -1868,6 +1880,9 @@ if (productReviews && productReviews.length > 0) {
       else stars += '☆';
     }
     
+    // Handle image URL properly
+    const imageUrl = review.imageUrl || null;
+    
     return `
       <div class="review-card">
         <div style="display: flex; gap: 10px; margin-bottom: 6px;">
@@ -1879,9 +1894,9 @@ if (productReviews && productReviews.length > 0) {
         </div>
         <div class="stars" style="margin-bottom: 6px; font-size: 0.75rem; color: #d4af37;">${stars}</div>
         <p style="font-size: 0.75rem; line-height: 1.4;">${review.comment}</p>
-        ${review.imageUrl ? `
-        <div class="review-image" onclick="window.open('${review.imageUrl}', '_blank')">
-          <img src="${review.imageUrl}" alt="Review image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #000;">
+        ${imageUrl ? `
+        <div class="review-image" onclick="window.open('${imageUrl}', '_blank')">
+          <img src="${imageUrl}" alt="Review image" style="width: 100%; height: auto; border-radius: 8px; border: 1px solid #000;" onerror="this.style.display='none'">
         </div>
         ` : ''}
       </div>
@@ -1896,7 +1911,6 @@ if (productReviews && productReviews.length > 0) {
     </div>
   `;
 }
-
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
