@@ -1373,26 +1373,15 @@ async function loadProductReviews(productId) {
       return [];
     }
     
-    // Make sure we have a valid productId
     if (!productId) {
       console.log('No product ID provided');
       return [];
     }
     
-    // First, let's check if there are ANY reviews in the collection
-    const allReviewsSnapshot = await db.collection('reviews').limit(5).get();
-    console.log('Total reviews in database (first 5):', allReviewsSnapshot.size);
-    allReviewsSnapshot.docs.forEach(doc => {
-      console.log('Sample review:', doc.id, doc.data());
-    });
-    
-    // Now try to get reviews for this specific product
-    console.log('Querying reviews for productId:', productId);
-    
+    // TEMPORARY FIX: Remove orderBy while index is building
     const snapshot = await db.collection('reviews')
       .where('productId', '==', productId)
-      .orderBy('timestamp', 'desc')
-      .get();
+      .get(); // Removed .orderBy('timestamp', 'desc')
     
     console.log(`Found ${snapshot.docs.length} reviews for product ${productId}`);
     
@@ -1403,7 +1392,6 @@ async function loadProductReviews(productId) {
     
     const reviews = snapshot.docs.map(doc => {
       const data = doc.data();
-      console.log('Review data:', doc.id, data); // Debug log
       
       // Handle timestamp properly
       let reviewDate = new Date();
@@ -1428,6 +1416,9 @@ async function loadProductReviews(productId) {
         timestamp: reviewDate
       };
     });
+    
+    // Sort manually (descending order)
+    reviews.sort((a, b) => b.timestamp - a.timestamp);
     
     console.log('Processed reviews:', reviews);
     return reviews;
