@@ -1,198 +1,200 @@
- <!-- Filters Bar -->
-  <div class="filters-bar">
-    <div class="search-box">
-      <i class="fa-solid fa-search"></i>
-      <input type="text" id="search-reviews" placeholder="search reviewer, city or comment...">
-    </div>
-    
-    <div class="filter-tabs">
-      <span class="filter-tab active" id="filter-all" onclick="filterReviews('all')">all</span>
-      <span class="filter-tab" id="filter-verified" onclick="filterReviews('verified')">verified</span>
-      <span class="filter-tab" id="filter-unverified" onclick="filterReviews('unverified')">unverified</span>
-      <span class="filter-tab" id="filter-with-image" onclick="filterReviews('with-image')">with images</span>
-    </div>
-    
-    <div class="action-group">
-      <button class="export-btn" onclick="resetReviewForm()">
-        <i class="fa-solid fa-plus"></i> new review
-      </button>
-      <button class="export-btn" onclick="exportReviews()">
-        <i class="fa-solid fa-download"></i> export
-      </button>
+<!-- Filters Bar -->
+<div class="filters-bar">
+  <div class="search-box">
+    <i class="fa-solid fa-search"></i>
+    <input type="text" id="search-reviews" placeholder="search reviewer, city or comment...">
+  </div>
+  
+  <div class="filter-tabs">
+    <span class="filter-tab active" data-filter="all">all</span>
+    <span class="filter-tab" data-filter="verified">verified</span>
+    <span class="filter-tab" data-filter="unverified">unverified</span>
+    <span class="filter-tab" data-filter="with-image">with images</span>
+  </div>
+  
+  <div class="action-group">
+    <button class="export-btn" onclick="resetReviewForm()">
+      <i class="fa-solid fa-plus"></i> new review
+    </button>
+    <button class="export-btn" onclick="exportReviews()">
+      <i class="fa-solid fa-download"></i> export
+    </button>
+  </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+    <div class="stat-info">
+      <h3 id="total-reviews">0</h3>
+      <p>total reviews</p>
     </div>
   </div>
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+    <div class="stat-info">
+      <h3 id="verified-reviews">0</h3>
+      <p>verified</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fa-solid fa-image"></i></div>
+    <div class="stat-info">
+      <h3 id="reviews-with-images">0</h3>
+      <p>with images</p>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
+    <div class="stat-info">
+      <h3 id="reviewed-products">0</h3>
+      <p>products</p>
+    </div>
+  </div>
+</div>
 
-  <!-- Stats Cards -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
-      <div class="stat-info">
-        <h3 id="total-reviews">0</h3>
-        <p>total reviews</p>
-      </div>
+<!-- Loading State -->
+<div id="reviews-loading" class="loading-state" style="display: none;">
+  <div class="spinner"></div>
+</div>
+
+<!-- Review Form (Add/Edit) -->
+<div class="review-form" id="reviewForm">
+  <div class="form-header">
+    <div class="form-title">
+      <i class="fa-solid fa-plus-circle"></i> 
+      <span id="review-form-title">add new review</span>
     </div>
-    <div class="stat-card">
-      <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
-      <div class="stat-info">
-        <h3 id="verified-reviews">0</h3>
-        <p>verified</p>
+  </div>
+  <div class="form-body">
+    <form id="review-form" onsubmit="return handleReviewSubmit(event)">
+      <input type="hidden" id="review-id">
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-box"></i> product</label>
+          <select id="review-product-id" required>
+            <option value="">Choose product...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> reviewer name</label>
+          <input type="text" id="reviewer-name" required>
+        </div>
       </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon"><i class="fa-solid fa-image"></i></div>
-      <div class="stat-info">
-        <h3 id="reviews-with-images">0</h3>
-        <p>with images</p>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-city"></i> city</label>
+          <input type="text" id="reviewer-city" required>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-star"></i> rating (1-5)</label>
+          <input type="number" step="0.5" min="1" max="5" id="review-rating" required>
+        </div>
       </div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-icon"><i class="fa-solid fa-box"></i></div>
-      <div class="stat-info">
-        <h3 id="reviewed-products">0</h3>
-        <p>products</p>
+      
+      <div class="form-row">
+        <div class="form-group full-width">
+          <label><i class="fa-solid fa-comment"></i> comment</label>
+          <textarea id="review-comment" rows="2" required></textarea>
+        </div>
       </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-image"></i> image (optional)</label>
+          <div class="media-upload-row">
+            <input type="text" class="media-url-input" id="review-image-url" placeholder="image URL...">
+            <button type="button" class="media-upload-btn" onclick="addReviewImageFromUrl()">
+              <i class="fa-solid fa-plus"></i> add
+            </button>
+            <input type="file" id="review-image-file" class="media-file-input" accept="image/*" onchange="handleReviewImageUpload(this.files)" style="display:none;">
+            <label for="review-image-file" class="media-file-label">
+              <i class="fa-solid fa-upload"></i> upload
+            </label>
+          </div>
+          <div id="review-image-preview" style="margin-top:12px; display:none;">
+            <img id="review-image-preview-img" style="width:80px; height:80px; border-radius:12px; border:2px solid #000; object-fit:cover;">
+            <button type="button" class="action-btn" onclick="removeReviewImage()" style="margin-top:6px;">
+              <i class="fa-solid fa-times"></i> remove
+            </button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-check-circle"></i> verified purchase</label>
+          <div class="toggle-container">
+            <label class="toggle-switch">
+              <input type="checkbox" id="review-verified" checked> 
+              <span class="toggle-slider"></span>
+            </label>
+            <span class="toggle-label">verified</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+          <i class="fa-solid fa-save"></i> save review
+        </button>
+        <button type="button" class="btn btn-outline" onclick="resetReviewForm()">
+          <i class="fa-solid fa-times"></i> cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Reviews Table Container -->
+<div class="reviews-table">
+  <div class="table-header">
+    <h2><i class="fa-solid fa-star"></i> product reviews</h2>
+    <div class="header-actions">
+      <span class="template-btn" onclick="resetReviewForm()">
+        <i class="fa-solid fa-plus"></i> new review
+      </span>
     </div>
   </div>
   
-  <div class="container">
-  <!-- Review Form (Add/Edit) -->
-  <div class="review-form" id="reviewForm">
-    <div class="form-header">
-      <div class="form-title">
-        <i class="fa-solid fa-plus-circle"></i> 
-        <span id="review-form-title">add new review</span>
-      </div>
-    </div>
-    <div class="form-body">
-      <form id="review-form" onsubmit="return handleReviewSubmit(event)">
-        <input type="hidden" id="review-id">
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fa-solid fa-box"></i> product</label>
-            <select id="review-product-id" required>
-              <option value="">Choose product...</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label><i class="fa-solid fa-user"></i> reviewer name</label>
-            <input type="text" id="reviewer-name" required>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fa-solid fa-city"></i> city</label>
-            <input type="text" id="reviewer-city" required>
-          </div>
-          <div class="form-group">
-            <label><i class="fa-solid fa-star"></i> rating (1-5)</label>
-            <input type="number" step="0.5" min="1" max="5" id="review-rating" required>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label><i class="fa-solid fa-comment"></i> comment</label>
-            <textarea id="review-comment" rows="2" required></textarea>
-          </div>
-        </div>
-        
-        <div class="form-row">
-          <div class="form-group">
-            <label><i class="fa-solid fa-image"></i> image (optional)</label>
-            <div class="media-upload-row">
-              <input type="text" class="media-url-input" id="review-image-url" placeholder="image URL...">
-              <button type="button" class="media-upload-btn" onclick="addReviewImageFromUrl()">
-                <i class="fa-solid fa-plus"></i> add
-              </button>
-              <input type="file" id="review-image-file" class="media-file-input" accept="image/*" onchange="handleReviewImageUpload(this.files)" style="display:none;">
-              <label for="review-image-file" class="media-file-label">
-                <i class="fa-solid fa-upload"></i> upload
-              </label>
-            </div>
-            <div id="review-image-preview" style="margin-top:12px; display:none;">
-              <img id="review-image-preview-img" style="width:80px; height:80px; border-radius:12px; border:2px solid #000; object-fit:cover;">
-              <button type="button" class="action-btn" onclick="removeReviewImage()" style="margin-top:6px;">
-                <i class="fa-solid fa-times"></i> remove
-              </button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label><i class="fa-solid fa-check-circle"></i> verified purchase</label>
-            <div class="toggle-container">
-              <label class="toggle-switch">
-                <input type="checkbox" id="review-verified" checked> 
-                <span class="toggle-slider"></span>
-              </label>
-              <span class="toggle-label">verified</span>
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-save"></i> save review
-          </button>
-          <button type="button" class="btn btn-outline" onclick="resetReviewForm()">
-            <i class="fa-solid fa-times"></i> cancel
-          </button>
-        </div>
-      </form>
-    </div>
+  <!-- Empty State -->
+  <div id="reviews-empty-state" class="empty-state" style="display: none;">
+    <i class="fa-regular fa-star"></i>
+    <h3>no reviews yet</h3>
+    <p>add your first review using the form above.</p>
   </div>
-
-
-  <!-- Reviews Table Container -->
-  <div class="reviews-table">
-    <div class="table-header">
-      <h2><i class="fa-solid fa-star"></i> product reviews</h2>
-      <div class="header-actions">
-        <span class="template-btn" onclick="resetReviewForm()">
-          <i class="fa-solid fa-plus"></i> new review
-        </span>
-      </div>
-    </div>
-    
-    <!-- Empty State -->
-    <div id="reviews-empty-state" class="empty-state" style="display: none;">
-      <i class="fa-regular fa-star"></i>
-      <h3>no reviews yet</h3>
-      <p>add your first review using the form above.</p>
-    </div>
-    
-    <!-- Desktop Table View -->
-    <div class="table-wrapper" id="reviews-table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>product</th>
-            <th>reviewer</th>
-            <th>rating</th>
-            <th>comment</th>
-            <th>image</th>
-            <th>verified</th>
-            <th>date</th>
-            <th>actions</th>
-          </tr>
-        </thead>
-        <tbody id="reviews-table-body"></tbody>
-      </table>
-    </div>
-    
-    <!-- Mobile Cards View -->
-    <div id="reviews-mobile-cards" class="mobile-cards"></div>
-    
-    <!-- Pagination -->
-    <div class="pagination" id="reviews-pagination" style="display: none;">
-      <button class="page-btn" id="prev-review-page" onclick="changeReviewPage('prev')">
-        <i class="fa-solid fa-chevron-left"></i>
-      </button>
-      <div class="page-numbers" id="review-page-numbers"></div>
-      <button class="page-btn" id="next-review-page" onclick="changeReviewPage('next')">
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-    </div>
+  
+  <!-- Desktop Table View -->
+  <div class="table-wrapper" id="reviews-table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>product</th>
+          <th>reviewer</th>
+          <th>rating</th>
+          <th>comment</th>
+          <th>image</th>
+          <th>verified</th>
+          <th>date</th>
+          <th>actions</th>
+        </tr>
+      </thead>
+      <tbody id="reviews-table-body"></tbody>
+    </table>
+  </div>
+  
+  <!-- Mobile Cards View -->
+  <div id="reviews-mobile-cards" class="mobile-cards"></div>
+  
+  <!-- Pagination -->
+  <div class="pagination" id="reviews-pagination" style="display: none;">
+    <button class="page-btn" id="prev-review-page" onclick="changeReviewPage('prev')">
+      <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    <div class="page-numbers" id="review-page-numbers"></div>
+    <button class="page-btn" id="next-review-page" onclick="changeReviewPage('next')">
+      <i class="fa-solid fa-chevron-right"></i>
+    </button>
   </div>
 </div>
 
@@ -200,12 +202,198 @@
   /* Global Styles */
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
   }
   
   .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
+  }
+  
+  /* Filters Bar */
+  .filters-bar {
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 30px;
+    border: 2px solid #000;
+    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fcfaf7;
+    padding: 4px 16px;
+    border-radius: 40px;
+    border: 2px solid #000;
+    flex: 1;
+    min-width: 240px;
+    max-width: 320px;
+    height: 44px;
+  }
+  
+  .search-box i {
+    color: #d4af37;
+    font-size: 1rem;
+  }
+  
+  .search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    background: transparent;
+    font-size: 0.9rem;
+    height: 100%;
+  }
+  
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  
+  .filter-tab {
+    padding: 8px 16px;
+    border: 2px solid #000;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fff;
+    color: #000;
+    white-space: nowrap;
+  }
+  
+  .filter-tab:hover {
+    background: #000;
+    color: #d4af37;
+    border-color: #d4af37;
+  }
+  
+  .filter-tab.active {
+    background: #000;
+    color: #d4af37;
+    border-color: #d4af37;
+  }
+  
+  .action-group {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .export-btn {
+    padding: 8px 18px;
+    background: #000;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 40px;
+    white-space: nowrap;
+  }
+  
+  .export-btn:hover {
+    background: #d4af37;
+    color: #000;
+    border-color: #000;
+  }
+  
+  /* Stats Cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .stat-card {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 24px;
+    border: 2px solid #000;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .stat-icon {
+    width: 44px;
+    height: 44px;
+    background: #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    color: #d4af37;
+    border: 2px solid #d4af37;
+    flex-shrink: 0;
+  }
+  
+  .stat-info {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .stat-info h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #000;
+    line-height: 1.2;
+    margin: 0;
+  }
+  
+  .stat-info p {
+    color: #666;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+  }
+  
+  /* Loading State */
+  .loading-state {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #eee;
+    border-top-color: #d4af37;
+    border-radius: 50%;
+    animation: spin 1s infinite linear;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
   
   /* Review Form */
@@ -441,184 +629,6 @@
     background: #000;
     color: #d4af37;
     border-color: #d4af37;
-  }
-  
-  /* Filters Bar */
-  .filters-bar {
-    background: #ffffff;
-    padding: 16px 20px;
-    border-radius: 30px;
-    border: 2px solid #000;
-    box-shadow: 6px 6px 0 rgba(0,0,0,0.2);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .search-box {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #fcfaf7;
-    padding: 4px 16px;
-    border-radius: 40px;
-    border: 2px solid #000;
-    flex: 1;
-    min-width: 240px;
-    max-width: 320px;
-    height: 44px;
-  }
-  
-  .search-box i {
-    color: #d4af37;
-    font-size: 1rem;
-  }
-  
-  .search-box input {
-    border: none;
-    outline: none;
-    width: 100%;
-    background: transparent;
-    font-size: 0.9rem;
-    height: 100%;
-  }
-  
-  .filter-tabs {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  
-  .filter-tab {
-    padding: 8px 16px;
-    border: 2px solid #000;
-    border-radius: 40px;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: #fff;
-    color: #000;
-    white-space: nowrap;
-  }
-  
-  .filter-tab:hover {
-    background: #000;
-    color: #d4af37;
-    border-color: #d4af37;
-  }
-  
-  .filter-tab.active {
-    background: #000;
-    color: #d4af37;
-    border-color: #d4af37;
-  }
-  
-  .action-group {
-    display: flex;
-    gap: 8px;
-  }
-  
-  .export-btn {
-    padding: 8px 18px;
-    background: #000;
-    color: #d4af37;
-    border: 2px solid #d4af37;
-    border-radius: 40px;
-    font-weight: 700;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    height: 40px;
-    white-space: nowrap;
-  }
-  
-  .export-btn:hover {
-    background: #d4af37;
-    color: #000;
-    border-color: #000;
-  }
-  
-  /* Stats Cards */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-  
-  .stat-card {
-    background: #ffffff;
-    padding: 16px;
-    border-radius: 24px;
-    border: 2px solid #000;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .stat-icon {
-    width: 44px;
-    height: 44px;
-    background: #000;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    color: #d4af37;
-    border: 2px solid #d4af37;
-    flex-shrink: 0;
-  }
-  
-  .stat-info {
-    flex: 1;
-    min-width: 0;
-  }
-  
-  .stat-info h3 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #000;
-    line-height: 1.2;
-    margin: 0;
-  }
-  
-  .stat-info p {
-    color: #666;
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin: 0;
-    white-space: nowrap;
-  }
-  
-  /* Loading State */
-  .loading-state {
-    display: flex;
-    justify-content: center;
-    padding: 40px;
-  }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #eee;
-    border-top-color: #d4af37;
-    border-radius: 50%;
-    animation: spin 1s infinite linear;
-  }
-  
-  @keyframes spin {
-    to { transform: rotate(360deg); }
   }
   
   /* Reviews Table */
@@ -935,6 +945,18 @@
     background: #000;
     color: #d4af37;
     font-size: 0.9rem;
+    animation: slideIn 0.3s ease;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
   }
   
   /* Responsive Design */
@@ -1033,25 +1055,69 @@
 </style>
 
 <script>
-// ===== GLOBALLY ACCESSIBLE REVIEW FUNCTIONS =====
-// Store variables in window object
-window.allReviews = [];
-window.filteredReviews = [];
-window.currentReviewFilter = 'all';
-window.currentReviewPage = 1;
-window.reviewItemsPerPage = 10;
-window.reviewProducts = {};
-window.reviewImageUrl = '';
-
-// Show notification function (global)
-window.showReviewNotification = function(message, type = 'success') {
-  // Try to use parent notification first
-  if (typeof window.parent.showNotification === 'function') {
-    window.parent.showNotification(message, type);
+// Make sure Firebase is initialized
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if Firebase is available
+  if (typeof firebase === 'undefined') {
+    console.error('Firebase not loaded. Please include Firebase SDK.');
+    showReviewNotification('Firebase not loaded', 'error');
     return;
   }
   
-  // Fallback notification
+  // Initialize if not already initialized
+  if (!firebase.apps.length) {
+    const firebaseConfig = {
+      // Add your Firebase config here
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+  }
+  
+  // Initialize db
+  window.db = firebase.firestore();
+  
+  // Initialize global variables
+  window.allReviews = [];
+  window.filteredReviews = [];
+  window.currentReviewFilter = 'all';
+  window.currentReviewPage = 1;
+  window.reviewItemsPerPage = 10;
+  window.reviewProducts = {};
+  window.reviewImageUrl = '';
+  
+  // Load data
+  loadReviews();
+  
+  // Setup event listeners
+  setupEventListeners();
+});
+
+// Setup event listeners
+function setupEventListeners() {
+  // Filter tabs
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      const filter = this.dataset.filter;
+      filterReviews(filter);
+    });
+  });
+  
+  // Search input
+  const searchInput = document.getElementById('search-reviews');
+  if (searchInput) {
+    searchInput.addEventListener('input', function(e) {
+      performSearch(e.target.value);
+    });
+  }
+}
+
+// Show notification
+function showReviewNotification(message, type = 'success') {
   const notification = document.createElement('div');
   notification.className = `notification ${type}`;
   notification.textContent = message;
@@ -1059,13 +1125,17 @@ window.showReviewNotification = function(message, type = 'success') {
   setTimeout(() => {
     notification.remove();
   }, 2000);
-};
+}
 
 // Load products for dropdown
-window.loadReviewProducts = async function() {
+async function loadReviewProducts() {
   try {
+    const loadingEl = document.getElementById('reviews-loading');
+    if (loadingEl) loadingEl.style.display = 'flex';
+    
     const snap = await db.collection('products').get();
     let options = '<option value="">Choose product...</option>';
+    
     snap.docs.forEach(doc => {
       const prod = doc.data();
       window.reviewProducts[doc.id] = { 
@@ -1075,16 +1145,21 @@ window.loadReviewProducts = async function() {
       };
       options += `<option value="${doc.id}">${prod.title}</option>`;
     });
+    
     const selectProduct = document.getElementById('review-product-id');
     if (selectProduct) selectProduct.innerHTML = options;
+    
   } catch (e) { 
     console.error('Error loading products:', e); 
-    window.showReviewNotification('Error loading products', 'error');
+    showReviewNotification('Error loading products', 'error');
+  } finally {
+    const loadingEl = document.getElementById('reviews-loading');
+    if (loadingEl) loadingEl.style.display = 'none';
   }
-};
+}
 
 // Load reviews from Firestore
-window.loadReviews = async function() {
+async function loadReviews() {
   const loadingEl = document.getElementById('reviews-loading');
   if (loadingEl) loadingEl.style.display = 'flex';
   
@@ -1096,21 +1171,21 @@ window.loadReviews = async function() {
       timestamp: doc.data().timestamp?.toDate() || new Date()
     }));
     
-    await window.loadReviewProducts();
-    window.applyReviewFilter(window.currentReviewFilter);
-    window.updateReviewStats();
-    window.renderReviews();
+    await loadReviewProducts();
+    applyReviewFilter(window.currentReviewFilter);
+    updateReviewStats();
+    renderReviews();
     
   } catch (error) {
     console.error('Error loading reviews:', error);
-    window.showReviewNotification('error loading reviews', 'error');
+    showReviewNotification('Error loading reviews', 'error');
   } finally {
     if (loadingEl) loadingEl.style.display = 'none';
   }
-};
+}
 
 // Apply filter logic
-window.applyReviewFilter = function(filter) {
+function applyReviewFilter(filter) {
   if (filter === 'all') {
     window.filteredReviews = [...window.allReviews];
   } else if (filter === 'verified') {
@@ -1120,23 +1195,39 @@ window.applyReviewFilter = function(filter) {
   } else if (filter === 'with-image') {
     window.filteredReviews = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '');
   }
-};
+}
 
-// Filter reviews function (global)
-window.filterReviews = function(filter) {
+// Filter reviews function
+function filterReviews(filter) {
   window.currentReviewFilter = filter;
   window.currentReviewPage = 1;
   
   document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
-  const activeTab = document.getElementById(`filter-${filter}`);
+  const activeTab = document.querySelector(`[data-filter="${filter}"]`);
   if (activeTab) activeTab.classList.add('active');
   
-  window.applyReviewFilter(filter);
-  window.renderReviews();
-};
+  applyReviewFilter(filter);
+  renderReviews();
+}
+
+// Perform search
+function performSearch(term) {
+  term = term.toLowerCase();
+  if (!term) { 
+    applyReviewFilter(window.currentReviewFilter); 
+  } else { 
+    window.filteredReviews = window.allReviews.filter(r => 
+      (r.reviewerName?.toLowerCase() || '').includes(term) || 
+      (r.city?.toLowerCase() || '').includes(term) || 
+      (r.comment?.toLowerCase() || '').includes(term)
+    ); 
+  }
+  window.currentReviewPage = 1;
+  renderReviews();
+}
 
 // Update statistics
-window.updateReviewStats = function() {
+function updateReviewStats() {
   const totalEl = document.getElementById('total-reviews');
   const verifiedEl = document.getElementById('verified-reviews');
   const imagesEl = document.getElementById('reviews-with-images');
@@ -1146,10 +1237,10 @@ window.updateReviewStats = function() {
   if (verifiedEl) verifiedEl.textContent = window.allReviews.filter(r => r.verified).length;
   if (imagesEl) imagesEl.textContent = window.allReviews.filter(r => r.imageUrl && r.imageUrl.trim() !== '').length;
   if (productsReviewedEl) productsReviewedEl.textContent = new Set(window.allReviews.map(r => r.productId)).size;
-};
+}
 
 // Render reviews
-window.renderReviews = function() {
+function renderReviews() {
   if (!window.filteredReviews) return;
   
   const tableBody = document.getElementById('reviews-table-body');
@@ -1251,11 +1342,11 @@ window.renderReviews = function() {
     }).join('');
   }
   
-  window.updateReviewPagination();
-};
+  updateReviewPagination();
+}
 
 // Pagination functions
-window.updateReviewPagination = function() {
+function updateReviewPagination() {
   const paginationDiv = document.getElementById('reviews-pagination');
   const prevBtn = document.getElementById('prev-review-page');
   const nextBtn = document.getElementById('next-review-page');
@@ -1277,31 +1368,31 @@ window.updateReviewPagination = function() {
     nums += `<button class="page-btn ${i===window.currentReviewPage?'active':''}" onclick="goToReviewPage(${i})">${i}</button>`;
   }
   if (pageNumbers) pageNumbers.innerHTML = nums;
-};
+}
 
-window.changeReviewPage = function(dir) {
+function changeReviewPage(dir) {
   const total = Math.ceil(window.filteredReviews.length / window.reviewItemsPerPage);
   if (dir === 'prev' && window.currentReviewPage > 1) window.currentReviewPage--;
   if (dir === 'next' && window.currentReviewPage < total) window.currentReviewPage++;
-  window.renderReviews();
-};
+  renderReviews();
+}
 
-window.goToReviewPage = function(p) { 
+function goToReviewPage(p) { 
   window.currentReviewPage = p; 
-  window.renderReviews(); 
-};
+  renderReviews(); 
+}
 
-// Form functions (global)
-window.addReviewImageFromUrl = function() {
+// Form functions
+function addReviewImageFromUrl() {
   const url = document.getElementById('review-image-url').value.trim();
   if (!url) {
-    window.showReviewNotification('enter url', 'error');
+    showReviewNotification('Enter URL', 'error');
     return;
   }
   try { 
     new URL(url); 
   } catch { 
-    window.showReviewNotification('invalid url', 'error'); 
+    showReviewNotification('Invalid URL', 'error'); 
     return; 
   }
   window.reviewImageUrl = url;
@@ -1310,10 +1401,10 @@ window.addReviewImageFromUrl = function() {
   if (previewImg) previewImg.src = url;
   if (preview) preview.style.display = 'block';
   document.getElementById('review-image-url').value = '';
-  window.showReviewNotification('image added');
-};
+  showReviewNotification('Image added');
+}
 
-window.handleReviewImageUpload = function(files) {
+function handleReviewImageUpload(files) {
   if (!files.length) return;
   const file = files[0];
   const url = URL.createObjectURL(file);
@@ -1321,36 +1412,36 @@ window.handleReviewImageUpload = function(files) {
   const previewImg = document.getElementById('review-image-preview-img');
   if (previewImg) previewImg.src = url;
   document.getElementById('review-image-preview').style.display = 'block';
-  window.showReviewNotification('image uploaded');
-};
+  showReviewNotification('Image uploaded');
+}
 
-window.removeReviewImage = function() {
+function removeReviewImage() {
   window.reviewImageUrl = '';
   document.getElementById('review-image-preview').style.display = 'none';
   const fileInput = document.getElementById('review-image-file');
   if (fileInput) fileInput.value = '';
-  window.showReviewNotification('image removed');
-};
+  showReviewNotification('Image removed');
+}
 
-window.resetReviewForm = function() {
+function resetReviewForm() {
   document.getElementById('review-form').reset();
   const reviewId = document.getElementById('review-id');
   const formTitle = document.getElementById('review-form-title');
   const reviewVerified = document.getElementById('review-verified');
   
   if (reviewId) reviewId.value = '';
-  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> add new review';
+  if (formTitle) formTitle.innerHTML = 'add new review';
   if (reviewVerified) reviewVerified.checked = true;
-  window.removeReviewImage();
+  removeReviewImage();
   document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
-};
+}
 
-window.handleReviewSubmit = async function(e) {
+async function handleReviewSubmit(e) {
   e.preventDefault();
   
   const productId = document.getElementById('review-product-id').value;
   if (!productId) { 
-    window.showReviewNotification('select product', 'error'); 
+    showReviewNotification('Select product', 'error'); 
     return false; 
   }
   
@@ -1369,24 +1460,24 @@ window.handleReviewSubmit = async function(e) {
     const reviewId = document.getElementById('review-id');
     if (reviewId && reviewId.value) {
       await db.collection('reviews').doc(reviewId.value).update(reviewData);
-      window.showReviewNotification('review updated');
+      showReviewNotification('Review updated');
     } else {
       await db.collection('reviews').add({ 
         ...reviewData, 
         timestamp: firebase.firestore.FieldValue.serverTimestamp() 
       });
-      window.showReviewNotification('review added');
+      showReviewNotification('Review added');
     }
-    window.resetReviewForm();
-    await window.loadReviews();
+    resetReviewForm();
+    await loadReviews();
   } catch (err) { 
     console.error(err);
-    window.showReviewNotification('error saving', 'error'); 
+    showReviewNotification('Error saving review', 'error'); 
   }
   return false;
-};
+}
 
-window.editReview = function(id) {
+function editReview(id) {
   const review = window.allReviews.find(r => r.id === id);
   if (!review) return;
   
@@ -1413,30 +1504,31 @@ window.editReview = function(id) {
     if (previewImg) previewImg.src = review.imageUrl;
     document.getElementById('review-image-preview').style.display = 'block';
   } else {
-    window.removeReviewImage();
+    removeReviewImage();
   }
   
-  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-edit"></i> edit review';
+  if (formTitle) formTitle.innerHTML = 'edit review';
   document.getElementById('reviewForm').scrollIntoView({ behavior: 'smooth' });
-};
+}
 
-window.deleteReview = async function(id) {
-  if (!confirm('delete review?')) return;
+async function deleteReview(id) {
+  if (!confirm('Delete review?')) return;
   try { 
     await db.collection('reviews').doc(id).delete(); 
-    window.showReviewNotification('deleted'); 
-    await window.loadReviews(); 
-  } catch { 
-    window.showReviewNotification('error', 'error'); 
+    showReviewNotification('Review deleted'); 
+    await loadReviews(); 
+  } catch (err) { 
+    console.error(err);
+    showReviewNotification('Error deleting review', 'error'); 
   }
-};
+}
 
-window.viewReviewProduct = function(productId) { 
+function viewReviewProduct(productId) { 
   window.open(`product.html?id=${productId}`, '_blank'); 
-};
+}
 
-// Export CSV (global)
-window.exportReviews = function() {
+// Export CSV
+function exportReviews() {
   const data = window.filteredReviews.map(review => {
     const product = window.reviewProducts[review.productId] || { title: '' };
     return {
@@ -1452,7 +1544,7 @@ window.exportReviews = function() {
   });
   
   if (data.length === 0) {
-    window.showReviewNotification('no reviews to export', 'error');
+    showReviewNotification('No reviews to export', 'error');
     return;
   }
   
@@ -1473,30 +1565,20 @@ window.exportReviews = function() {
   a.href = URL.createObjectURL(blob); 
   a.download = 'reviews.csv'; 
   a.click();
-  window.showReviewNotification('exported');
-};
+  showReviewNotification('Reviews exported');
+}
 
-// Search
-document.addEventListener('DOMContentLoaded', function() {
-  const searchInput = document.getElementById('search-reviews');
-  if (searchInput) {
-    searchInput.addEventListener('input', function(e) {
-      const term = e.target.value.toLowerCase();
-      if (!term) { 
-        window.applyReviewFilter(window.currentReviewFilter); 
-      } else { 
-        window.filteredReviews = window.allReviews.filter(r => 
-          (r.reviewerName?.toLowerCase() || '').includes(term) || 
-          (r.city?.toLowerCase() || '').includes(term) || 
-          (r.comment?.toLowerCase() || '').includes(term)
-        ); 
-      }
-      window.currentReviewPage = 1;
-      window.renderReviews();
-    });
-  }
-  
-  // Initialize
-  window.loadReviews();
-});
+// Make functions globally available
+window.filterReviews = filterReviews;
+window.changeReviewPage = changeReviewPage;
+window.goToReviewPage = goToReviewPage;
+window.addReviewImageFromUrl = addReviewImageFromUrl;
+window.handleReviewImageUpload = handleReviewImageUpload;
+window.removeReviewImage = removeReviewImage;
+window.resetReviewForm = resetReviewForm;
+window.handleReviewSubmit = handleReviewSubmit;
+window.editReview = editReview;
+window.deleteReview = deleteReview;
+window.viewReviewProduct = viewReviewProduct;
+window.exportReviews = exportReviews;
 </script>
