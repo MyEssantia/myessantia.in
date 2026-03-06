@@ -2793,8 +2793,21 @@
       </div>
       <div class="menu-item-badge" id="notifyBadge">0</div>
     </div>
+
+  <!-- Reviews Menu Item -->
+<div class="menu-item" onclick="loadPage('reviews')" id="menuReviews">
+  <div class="menu-item-icon">
+    <i class="fa-solid fa-star"></i>
   </div>
-  
+  <div class="menu-item-content">
+    <div class="menu-item-title">reviews</div>
+    <div class="menu-item-desc">product reviews</div>
+  </div>
+  <div class="menu-item-badge" id="reviewsBadge">0</div>
+</div>
+</div>
+
+
   <div class="menu-footer">
     <div class="live-indicator">
       <span class="live-dot"></span>
@@ -2908,14 +2921,19 @@ document.addEventListener('click', function(event) {
 // ========== PAGE LOADING FUNCTIONS ==========
 async function loadPage(page) {
   // Update active menu item
+  menuDashboard.classList.remove('active');
+  menuNotify.classList.remove('active');
+  menuReviews.classList.remove('active');
+  
   if (page === 'dashboard') {
     menuDashboard.classList.add('active');
-    menuNotify.classList.remove('active');
     pageTitle.textContent = 'dashboard';
-  } else {
+  } else if (page === 'notify') {
     menuNotify.classList.add('active');
-    menuDashboard.classList.remove('active');
     pageTitle.textContent = 'notifications';
+  } else if (page === 'reviews') {
+    menuReviews.classList.add('active');
+    pageTitle.textContent = 'reviews';
   }
 
   // Show loading overlay
@@ -2927,8 +2945,10 @@ async function loadPage(page) {
   try {
     if (page === 'dashboard') {
       await loadDashboardPage();
-    } else {
+    } else if (page === 'notify') {
       await loadNotifyPage();
+    } else if (page === 'reviews') {
+      await loadReviewsPage();
     }
   } catch (error) {
     console.error('Error loading page:', error);
@@ -2937,6 +2957,10 @@ async function loadPage(page) {
     // Hide loading overlay
     loadingOverlay.classList.remove('show');
   }
+}
+
+function initializeReviews() {
+  console.log('Initializing reviews page...');
 }
 
 async function loadDashboardPage() {
@@ -3012,6 +3036,49 @@ async function loadNotifyPage() {
   
   // Initialize notify functionality
   initializeNotify();
+}
+
+async function loadReviewsPage() {
+  // Fetch reviews HTML
+  const response = await fetch('review.html');
+  const html = await response.text();
+  
+  // Parse the HTML
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  
+  // Create a container for reviews content
+  const reviewsContent = document.createElement('div');
+  
+  // Add stats grid
+  const statsGrid = doc.querySelector('.stats-grid');
+  if (statsGrid) reviewsContent.appendChild(statsGrid.cloneNode(true));
+  
+  // Add review form panel
+  const formPanel = doc.querySelector('.email-template-panel');
+  if (formPanel) reviewsContent.appendChild(formPanel.cloneNode(true));
+  
+  // Add filters bar
+  const filtersBar = doc.querySelector('.filters-bar');
+  if (filtersBar) reviewsContent.appendChild(filtersBar.cloneNode(true));
+  
+  // Add table container
+  const tableContainer = doc.querySelector('.table-container');
+  if (tableContainer) {
+    const clonedContainer = tableContainer.cloneNode(true);
+    const tbody = clonedContainer.querySelector('#table-body');
+    if (tbody) tbody.innerHTML = '';
+    const mobileCards = clonedContainer.querySelector('#mobile-cards');
+    if (mobileCards) mobileCards.innerHTML = '';
+    reviewsContent.appendChild(clonedContainer);
+  }
+  
+  // Clear and append
+  pageContainer.innerHTML = '';
+  pageContainer.appendChild(reviewsContent);
+  
+  // Initialize reviews functionality
+  initializeReviews();
 }
 
 // ========== DASHBOARD FUNCTIONS ==========
@@ -3751,6 +3818,13 @@ db.collection('notifications')
       return data.status === 'pending' || !data.status;
     }).length;
     notifyBadge.textContent = pendingCount;
+  });
+  
+  // Set up real-time listener for reviews badge
+db.collection('reviews')
+  .onSnapshot((snapshot) => {
+    const reviewsBadge = document.getElementById('reviewsBadge');
+    if (reviewsBadge) reviewsBadge.textContent = snapshot.size;
   });
 
 // ========== DASHBOARD HELPER FUNCTIONS ==========
