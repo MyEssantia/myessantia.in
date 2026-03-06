@@ -630,20 +630,12 @@ function renderCartItems() {
   const cartItemCount = document.getElementById('cart-item-count');
   const cartTotalAmount = document.getElementById('cart-total-amount');
 
-  // Log all cart elements to debug
-  console.log('Cart elements:', {
-    container: cartItemsContainer,
-    countEl: cartItemCount,
-    totalEl: cartTotalAmount
-  });
-
   if (!cartItemsContainer) {
     console.error('Cart items container not found!');
     return;
   }
 
   if (!cart || cart.length === 0) {
-    console.log('Cart is empty, showing empty message');
     cartItemsContainer.innerHTML = `
       <div class="empty-cart-message">
         <i class="fa-regular fa-cart-shopping"></i>
@@ -659,30 +651,28 @@ function renderCartItems() {
   let total = 0;
   let totalItems = 0;
 
-  console.log('Cart items to render:', cart);
-
   const itemsHtml = cart.map(item => {
     const itemTotal = item.price * item.quantity;
     total += itemTotal;
     totalItems += item.quantity;
 
     return `
-      <div class="cart-item">
+      <div class="cart-item" data-product-id="${item.id}">
         <div class="cart-item-image" style="background-image: url('${item.primaryImg || 'https://via.placeholder.com/90'}');"></div>
         <div class="cart-item-details">
           <h4 class="cart-item-title">${item.title}</h4>
           <div class="cart-item-price">₹${formatPrice(item.price)}</div>
           <div class="cart-item-actions">
             <div class="quantity-controls">
-              <button class="quantity-btn" onclick="window.updateQuantity('${item.id}', -1)">
+              <button class="quantity-btn decrease-qty" data-product-id="${item.id}">
                 <i class="fa-solid fa-minus"></i>
               </button>
               <span class="quantity-value">${item.quantity}</span>
-              <button class="quantity-btn" onclick="window.updateQuantity('${item.id}', 1)">
+              <button class="quantity-btn increase-qty" data-product-id="${item.id}">
                 <i class="fa-solid fa-plus"></i>
               </button>
             </div>
-            <button class="remove-btn" onclick="window.removeFromCart('${item.id}')">
+            <button class="remove-btn remove-from-cart" data-product-id="${item.id}">
               <i class="fa-regular fa-trash-can"></i>
             </button>
           </div>
@@ -692,13 +682,117 @@ function renderCartItems() {
   }).join('');
 
   cartItemsContainer.innerHTML = itemsHtml;
-  console.log('Cart HTML rendered');
 
   if (cartItemCount) cartItemCount.textContent = totalItems;
   if (cartTotalAmount) cartTotalAmount.textContent = `₹${formatPrice(total)}`;
   
+  // Attach event listeners to the new buttons
+  attachCartButtonListeners();
+  
   console.log('Cart totals:', { totalItems, total });
 }
+
+// Add this new function to attach event listeners to cart buttons
+function attachCartButtonListeners() {
+  // Decrease quantity buttons
+  document.querySelectorAll('.decrease-qty').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const productId = this.getAttribute('data-product-id');
+      if (productId) {
+        window.updateQuantity(productId, -1);
+      }
+    });
+  });
+
+  // Increase quantity buttons
+  document.querySelectorAll('.increase-qty').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const productId = this.getAttribute('data-product-id');
+      if (productId) {
+        window.updateQuantity(productId, 1);
+      }
+    });
+  });
+
+  // Remove buttons
+  document.querySelectorAll('.remove-from-cart').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const productId = this.getAttribute('data-product-id');
+      if (productId) {
+        window.removeFromCart(productId);
+      }
+    });
+  });
+}
+
+// Also update the updateQuantity function to ensure cart is re-rendered properly
+window.updateQuantity = async function(productId, change) {
+  console.log('Updating quantity:', productId, change);
+  
+  const itemIndex = cart.findIndex(item => item.id === productId);
+  if (itemIndex === -1) return;
+
+  const product = products.find(p => p.id === productId);
+  const item = cart[itemIndex];
+  const newQuantity = item.quantity + change;
+
+  if (newQuantity <= 0) {
+    cart.splice(itemIndex, 1);
+    console.log('Item removed');
+  } else if (product && newQuantity > product.stock) {
+    alert('Sorry, not enough stock available!');
+    return;
+  } else {
+    item.quantity = newQuantity;
+    console.log('Quantity updated to:', newQuantity);
+  }
+
+  // Save to localStorage immediately
+  saveCartToLocalStorage();
+
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
+  updateCartCount();
+  
+  // Re-render cart items if cart modal is open
+  const cartModal = document.getElementById('cart-modal');
+  if (cartModal && cartModal.classList.contains('show')) {
+    console.log('Re-rendering cart items');
+    renderCartItems();
+  }
+};
+
+window.removeFromCart = async function(productId) {
+  console.log('Removing from cart:', productId);
+  
+  cart = cart.filter(item => item.id !== productId);
+  
+  // Save to localStorage immediately
+  saveCartToLocalStorage();
+
+  // Save to Firebase if user is logged in
+  if (currentUser) {
+    await saveCartToFirebase();
+  }
+  
+  updateCartCount();
+  
+  // Re-render cart items if cart modal is open
+  const cartModal = document.getElementById('cart-modal');
+  if (cartModal && cartModal.classList.contains('show')) {
+    console.log('Re-rendering cart items');
+    renderCartItems();
+  }
+};
 
 function updateCartCount() {
   const cartCount = document.getElementById('cart-count');
