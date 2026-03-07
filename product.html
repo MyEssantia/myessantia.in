@@ -467,373 +467,255 @@
       100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5); }
     }
 
-    /* ===== CUSTOMER REVIEW SECTION ONLY - DESKTOP OPTIMIZED ===== */
-
-    /* Reviews header */
-    .reviews-header {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: #000;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 15px;
-      margin-bottom: 25px;
-      text-transform: uppercase;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      letter-spacing: 1px;
-    }
-
-    .reviews-header span:last-child {
-      background: #000;
-      color: #d4af37;
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-size: 1.1rem;
-      border: 2px solid #d4af37;
-    }
-
-    /* Main container for all reviews - FULL WIDTH */
+    /* ========== REVIEW SECTION - UPDATED ========== */
     .reviews-common-frame {
       background: #ffffff;
       border: 2px solid #000;
-      border-radius: 0;
-      padding: 35px;
-      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
-      margin: 20px 0 30px;
+      border-radius: 0; /* No curved edges on outer frame */
+      padding: 30px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+      margin-top: 20px;
       width: 100%;
     }
 
-    /* Grid layout - NO COMPRESSION on desktop */
+    /* Grid layout - allowing natural alignment */
     .reviews-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr); /* Fixed 6 columns on desktop */
-      gap: 30px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
       margin: 0;
-      width: 100%;
     }
 
-    /* Individual review card */
+    /* Individual review item - LIGHT GREY FRAME around complete review */
     .review-item {
       display: flex;
       flex-direction: column;
-      background: transparent;
-      border: none;
-      padding: 0;
-      transition: transform 0.2s ease;
-      min-width: 0; /* Prevents overflow */
+      background: #f5f5f5; /* Light grey background */
+      border: 2px solid #e0e0e0; /* Light grey border */
+      border-radius: 0; /* No curved edges - completely square */
+      padding: 20px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
     }
 
     .review-item:hover {
-      transform: translateY(-5px);
+      transform: translateY(-3px);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
+      border-color: #d4af37; /* Gold border on hover */
     }
 
-    /* 1080×1920 PORTRAIT IMAGE FRAME - NO STROKE */
-    .review-image-portrait {
+    /* Square image - NO BLACK FRAME */
+    .review-image-square {
       width: 100%;
-      aspect-ratio: 9/16; /* 1080/1920 = 9/16 - perfect portrait ratio */
+      aspect-ratio: 1/1; /* Square ratio */
       overflow: hidden;
-      border: none; /* NO BLACK STROKE */
+      border: none; /* NO BORDER on image */
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: transform 0.2s;
       margin-bottom: 15px;
-      background-color: #f5f5f5;
-      box-shadow: 8px 8px 0 rgba(0,0,0,0.08); /* Shadow only, no border */
+      background-color: #e0e0e0; /* Light grey background for empty space */
     }
 
-    .review-image-portrait:hover {
+    .review-image-square:hover {
       transform: scale(1.02);
-      box-shadow: 10px 10px 0 rgba(212, 175, 55, 0.15); /* Gold shadow on hover */
     }
 
-    .review-image-portrait img {
+    .review-image-square img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
     }
 
-    /* Portrait avatar for no-image reviews - same 9:16 ratio, NO STROKE */
-    .review-avatar-portrait {
+    /* When image fails to load */
+    .review-image-square.image-error {
+      display: none;
+    }
+
+    /* Avatar for no-image reviews - matches frame style */
+    .review-avatar-square {
       width: 100%;
-      aspect-ratio: 9/16; /* Same portrait ratio as images */
-      background: linear-gradient(135deg, #1a1a1a, #333);
+      aspect-ratio: 1/1; /* Square ratio */
+      background: #d4af37; /* Gold background for avatar */
+      border-radius: 0; /* No curved edges */
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 3rem;
-      color: #d4af37;
+      font-size: 2.5rem; /* Larger initials */
+      color: #000;
       margin-bottom: 15px;
-      border: none; /* NO STROKE */
-      box-shadow: 8px 8px 0 rgba(0,0,0,0.08);
-      transition: all 0.3s ease;
-      text-align: center;
-      word-break: break-word;
-      padding: 15px;
+      border: none; /* NO BORDER */
     }
 
-    .review-avatar-portrait:hover {
-      transform: scale(1.02);
-      box-shadow: 10px 10px 0 rgba(212, 175, 55, 0.15);
-    }
-
-    /* Review content - smaller text */
+    /* Review content */
     .review-content {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      padding: 5px 0;
+      gap: 10px;
+      flex: 1;
     }
 
-    /* SMALL user name */
+    /* User name - larger */
     .review-user-name {
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #333;
+      font-weight: 800;
+      font-size: 1.2rem; /* Larger font */
+      color: #000;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.5px;
       word-wrap: break-word;
       line-height: 1.3;
     }
 
-    /* SMALL rating stars */
+    /* Rating stars - larger */
     .review-stars {
       color: #d4af37;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      margin: 2px 0;
+      font-size: 1.1rem; /* Larger stars */
+      letter-spacing: 3px;
+      margin: 5px 0;
     }
 
-    /* SMALL review description */
+    /* Review description - larger with proper spacing */
     .review-description {
-      font-size: 0.8rem;
-      line-height: 1.4;
-      color: #666;
-      margin-top: 2px;
+      font-size: 1rem; /* Larger text */
+      line-height: 1.6;
+      color: #333;
+      margin-top: 5px;
       word-wrap: break-word;
-      max-height: 70px;
+      max-height: 150px;
       overflow-y: auto;
-      padding-right: 5px;
+      padding-right: 8px;
       scrollbar-width: thin;
-      scrollbar-color: #d4af37 #f0f0f0;
+      scrollbar-color: #d4af37 #e0e0e0;
     }
 
     .review-description::-webkit-scrollbar {
-      width: 4px;
+      width: 6px;
     }
 
     .review-description::-webkit-scrollbar-track {
-      background: #f0f0f0;
+      background: #e0e0e0;
     }
 
     .review-description::-webkit-scrollbar-thumb {
       background: #d4af37;
+      border-radius: 0; /* Square scrollbar */
     }
 
-    /* DESKTOP OPTIMIZATION - NO COMPRESSION, FULL WIDTH */
-    @media (min-width: 1024px) {
-      .desktop-reviews {
-        width: 100%;
-        margin-top: 30px;
-        grid-column: 1 / -1;
-      }
-      
-      .desktop-reviews .reviews-common-frame {
-        width: 100%;
-        padding: 40px;
-        margin-bottom: 0;
-      }
-      
-      .desktop-reviews .reviews-grid {
-        grid-template-columns: repeat(6, 1fr); /* FIXED 6 columns - no compression */
-        gap: 35px;
-      }
-      
-      /* Ensure images maintain their size */
-      .desktop-reviews .review-image-portrait,
-      .desktop-reviews .review-avatar-portrait {
-        width: 100%;
-        box-shadow: 10px 10px 0 rgba(0,0,0,0.08);
-      }
-      
-      .desktop-reviews .review-user-name {
-        font-size: 0.95rem;
-      }
-      
-      .desktop-reviews .review-stars {
-        font-size: 0.85rem;
-      }
-      
-      .desktop-reviews .review-description {
-        font-size: 0.85rem;
-        max-height: 80px;
-      }
-    }
-
-    /* Large desktop screens */
+    /* Responsive grid - more columns on larger screens */
     @media (min-width: 1400px) {
-      .desktop-reviews .reviews-grid {
-        grid-template-columns: repeat(6, 1fr); /* STILL 6 columns - consistent */
-        gap: 40px;
-      }
-      
-      .desktop-reviews .reviews-common-frame {
-        padding: 45px;
-      }
-    }
-
-    /* Extra large screens - maintain 6 columns but increase spacing */
-    @media (min-width: 1800px) {
-      .desktop-reviews .reviews-grid {
-        grid-template-columns: repeat(6, 1fr); /* STILL 6 columns */
-        gap: 50px;
-      }
-    }
-
-    /* Tablet and below - responsive */
-    @media (max-width: 1023px) and (min-width: 800px) {
       .reviews-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(6, 1fr); /* 6 per line on extra large screens */
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 1399px) and (min-width: 1100px) {
+      .reviews-grid {
+        grid-template-columns: repeat(5, 1fr); /* 5 per line on large screens */
         gap: 25px;
+      }
+    }
+
+    @media (max-width: 1099px) and (min-width: 800px) {
+      .reviews-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 per line on medium screens */
       }
     }
 
     @media (max-width: 799px) and (min-width: 500px) {
       .reviews-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(3, 1fr); /* 3 per line on tablets */
       }
     }
 
     @media (max-width: 499px) {
       .reviews-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* 2 per line on mobile */
         gap: 15px;
       }
       
-      .review-image-portrait,
-      .review-avatar-portrait {
-        box-shadow: 6px 6px 0 rgba(0,0,0,0.08);
+      .review-item {
+        padding: 15px;
       }
       
       .review-user-name {
-        font-size: 0.8rem;
+        font-size: 1rem;
       }
       
       .review-stars {
-        font-size: 0.75rem;
-        letter-spacing: 1px;
+        font-size: 0.9rem;
       }
       
       .review-description {
-        font-size: 0.75rem;
-        max-height: 60px;
+        font-size: 0.9rem;
+        max-height: 120px;
       }
       
-      .review-avatar-portrait {
-        font-size: 2.2rem;
+      .review-avatar-square {
+        font-size: 2rem;
       }
     }
 
     /* For very small screens */
     @media (max-width: 350px) {
       .reviews-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr; /* 1 per line on very small screens */
       }
     }
 
-    /* Position reviews at the bottom - FULL WIDTH */
+    /* Keep reviews at the bottom */
     .mobile-reviews {
       display: flex;
       flex-direction: column;
-      margin-top: 30px;
-      width: 100%;
     }
 
     .mobile-reviews .rating-chart-card {
       order: 1;
       margin-bottom: 20px;
-      width: 100%;
     }
 
     .mobile-reviews .reviews-header {
       order: 2;
-      margin-bottom: 0;
-      width: 100%;
+      margin-bottom: 15px;
     }
 
     .mobile-reviews .reviews-common-frame {
       order: 3;
-      width: 100%;
     }
 
-    /* For desktop section - FULL WIDTH AT BOTTOM */
+    /* For desktop section */
     .desktop-reviews {
       display: flex;
       flex-direction: column;
-      margin-top: 30px;
-      width: 100%;
-      grid-column: 1 / -1; /* Span full width in grid */
     }
 
     .desktop-reviews .rating-chart-card {
       order: 1;
-      margin-bottom: 25px;
-      width: 100%;
+      margin-bottom: 20px;
     }
 
     .desktop-reviews .reviews-header {
       order: 2;
-      margin-bottom: 0;
-      width: 100%;
+      margin-bottom: 15px;
     }
 
     .desktop-reviews .reviews-common-frame {
       order: 3;
-      width: 100%;
-      box-sizing: border-box;
     }
 
-    /* Ensure the product grid allows full width for reviews */
-    @media (min-width: 1024px) {
-      .product-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      
-      /* Make reviews span both columns */
-      .desktop-reviews {
-        grid-column: 1 / -1;
-        margin-top: 40px;
-      }
-    }
-
-    /* Empty state styling */
-    .reviews-common-frame .empty-state {
-      text-align: center;
-      padding: 80px 20px;
-      color: #666;
-      background: #f9f9f9;
-      border: 2px dashed #000;
-      width: 100%;
-    }
-
-    .reviews-common-frame .empty-state i {
-      font-size: 5rem;
-      color: #d4af37;
-      margin-bottom: 25px;
-    }
-
-    .reviews-common-frame .empty-state h3 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 15px;
+    /* Reviews header styling */
+    .reviews-header {
+      font-size: 1.2rem;
+      font-weight: 700;
       color: #000;
-    }
-
-    .reviews-common-frame .empty-state p {
-      font-size: 1.1rem;
-      color: #666;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .reviews-container {
@@ -2210,14 +2092,14 @@
         </div>
       `;
 
-      // Generate reviews HTML with common frame - 1080×1920 PORTRAIT FRAMES (NO STROKE)
+      // Generate reviews HTML with common frame
       let reviewsHTML = '';
 
       if (productReviews && productReviews.length > 0) {
         // Add reviews header
         reviewsHTML = `<div class="reviews-header">
-          <span>Customer Reviews</span>
-          <span>★ ${(product.rating || 4.5).toFixed(1)} (${productReviews.length})</span>
+          <span>Customer Reviews (${productReviews.length})</span>
+          <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
         </div>`;
         
         // Create a common frame container
@@ -2245,26 +2127,26 @@
           
           return `
             <div class="review-item">
-              <!-- 1080×1920 PORTRAIT IMAGE FRAME - NO BLACK STROKE -->
+              <!-- Square image - NO BLACK FRAME -->
               ${imageUrl ? `
-              <div class="review-image-portrait" onclick="window.open('${imageUrl}', '_blank')">
+              <div class="review-image-square" onclick="window.open('${imageUrl}', '_blank')">
                 <img src="${imageUrl}" alt="Review image" onerror="this.style.display='none'; this.parentElement.classList.add('image-error');">
               </div>
               ` : `
-              <!-- Portrait avatar for no-image reviews - NO BLACK STROKE -->
-              <div class="review-avatar-portrait">
+              <!-- No image - avatar fills the space naturally -->
+              <div class="review-avatar-square">
                 ${initials}
               </div>
               `}
               
               <div class="review-content">
-                <!-- SMALL user name -->
+                <!-- User name -->
                 <div class="review-user-name">${review.reviewerName}</div>
                 
-                <!-- SMALL rating stars -->
+                <!-- Rating stars -->
                 <div class="review-stars">${stars}</div>
                 
-                <!-- SMALL review description -->
+                <!-- Review description -->
                 <div class="review-description">${review.comment}</div>
               </div>
             </div>
@@ -2277,46 +2159,36 @@
         reviewsHTML = `
           <div class="reviews-header">
             <span>Customer Reviews</span>
-            <span>★ ${(product.rating || 4.5).toFixed(1)} (0)</span>
+            <span>★ ${(product.rating || 4.5).toFixed(1)}</span>
           </div>
           <div class="reviews-common-frame">
-            <div class="empty-state">
-              <i class="fa-regular fa-star"></i>
-              <h3>No reviews yet</h3>
-              <p>Be the first to review this product!</p>
+            <div style="text-align: center; padding: 60px 20px; color: #666;">
+              <i class="fa-regular fa-star" style="font-size: 4rem; color: #d4af37; margin-bottom: 20px; display: block;"></i>
+              <h3 style="font-size: 1.5rem; margin-bottom: 10px; color: #000;">No reviews yet</h3>
+              <p style="font-size: 1rem;">Be the first to review this product!</p>
             </div>
           </div>
         `;
       }
-
-      // DESKTOP REVIEWS SECTION - placed at the bottom of the product grid (full width)
-      const desktopReviewsHTML = `
-        <div class="desktop-reviews">
-          ${ratingChartHTML}
-          ${reviewsHTML}
-        </div>
-      `;
-
-      // MOBILE REVIEWS SECTION (hidden on desktop)
-      const mobileReviewsHTML = `
-        <div class="mobile-reviews">
-          ${ratingChartHTML}
-          ${reviewsHTML}
-        </div>
-      `;
-
+      
       const container = document.getElementById('product-container');
       container.innerHTML = `
         <div class="product-grid">
-          <!-- GALLERY COLUMN -->
+          <!-- GALLERY -->
           <div class="gallery-section">
             <div class="main-image"><img src="${images[0]}" id="mainImage"></div>
             <div class="thumbnail-grid">
               ${images.map((img, i) => `<div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage('${img}', this)"><img src="${img}"></div>`).join('')}
             </div>
+            
+            <!-- DESKTOP REVIEWS (hidden on mobile) -->
+            <div class="desktop-reviews">
+              ${ratingChartHTML}
+              ${reviewsHTML}
+            </div>
           </div>
           
-          <!-- INFO COLUMN -->
+          <!-- INFO -->
           <div class="product-info">
             <div class="social-strip">
               <span class="sold-badge"><i class="fa-solid fa-fire"></i> ${soldCount}+ sold</span>
@@ -2410,7 +2282,7 @@
                 </div>
                 
                 <div class="popup-bullets">
-                  <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                  <div class="popup-bullets-item" style="display: flex; gap: 12px; margin-bottom: 16px;">
                     <i class="fa-solid fa-circle-check" style="color: #d4af37; font-size: 1rem;"></i>
                     <span><strong>100% refund</strong> on non-delivery or damaged/defective items</span>
                   </div>
@@ -2471,7 +2343,7 @@
               </button>
             </div>
 
-            <!-- TABS (description, specs, videos) -->
+            <!-- TABS (description appears first on mobile) -->
             <div class="tabs">
               <div class="tab-headers">
                 <div class="tab-header active" onclick="switchTab('desc')">Description</div>
@@ -2507,12 +2379,12 @@
               </div>
             </div>
             
-            <!-- MOBILE REVIEWS SECTION (visible only on mobile) -->
-            ${mobileReviewsHTML}
+            <!-- MOBILE REVIEWS SECTION (includes rating chart) -->
+            <div class="mobile-reviews">
+              ${ratingChartHTML}
+              ${reviewsHTML}
+            </div>
           </div>
-          
-          <!-- DESKTOP REVIEWS SECTION - FULL WIDTH AT BOTTOM (spans both columns) -->
-          ${desktopReviewsHTML}
         </div>
       `;
 
@@ -2525,6 +2397,31 @@
       const dates = getDeliveryDates();
       document.getElementById('deliveryDates').textContent = dates.display;
     }
+
+    // Separate toggle functions for desktop and mobile
+    window.toggleReviewsDesktop = function() {
+      const container = document.getElementById('reviews-container-desktop');
+      const btn = document.getElementById('view-more-btn-desktop');
+      if (container.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> View More Reviews';
+      } else {
+        container.classList.add('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
+      }
+    };
+
+    window.toggleReviewsMobile = function() {
+      const container = document.getElementById('reviews-container-mobile');
+      const btn = document.getElementById('view-more-btn-mobile');
+      if (container.classList.contains('expanded')) {
+        container.classList.remove('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> View More Reviews';
+      } else {
+        container.classList.add('expanded');
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Show Less';
+      }
+    };
 
     window.changeImage = function(src, el) { 
       document.getElementById('mainImage').src = src; 
@@ -2645,11 +2542,17 @@
       };
     }
 
+    document.addEventListener('DOMContentLoaded', () => { 
+      // Don't load components here - common.js will handle it
+      loadProduct(); 
+    });
+
     window.addEventListener('scroll', () => { 
       document.getElementById('scrollTop').classList.toggle('visible', window.scrollY > 200); 
     });
 
     // Make sure cart icon works by ensuring common.js functions are available
+    // This is just a safety check
     window.ensureCartFunctionality = function() {
       console.log('Product page ready, cart functions should be available from common.js');
     };
