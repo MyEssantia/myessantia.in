@@ -540,207 +540,169 @@
       color: #000;
     }
 
-    /* Reviews header with write review button */
-    .reviews-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
+/* Reviews header with write review button - REDUCED SIZE */
+.reviews-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px; /* Reduced from 30px */
+  flex-wrap: wrap;
+  gap: 10px; /* Reduced from 15px */
+}
 
-    .reviews-title {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #000;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+.reviews-title {
+  font-size: 1.2rem; /* Reduced from 2rem */
+  font-weight: 700;
+  color: #000;
+  border-bottom: 2px solid #d4af37; /* Thinner border */
+  padding-bottom: 6px; /* Reduced from 10px */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-    .reviews-stats {
-      background: #000;
-      color: #d4af37;
-      padding: 10px 24px;
-      border-radius: 40px;
-      font-size: 1.2rem;
-      font-weight: 700;
-      border: 2px solid #d4af37;
-      white-space: nowrap;
-    }
+.reviews-stats {
+  background: #000;
+  color: #d4af37;
+  padding: 6px 16px; /* Reduced from 10px 24px */
+  border-radius: 30px; /* Slightly smaller */
+  font-size: 0.9rem; /* Reduced from 1.2rem */
+  font-weight: 600;
+  border: 1px solid #d4af37; /* Thinner border */
+  white-space: nowrap;
+}
 
-    .write-review-btn {
-      background: #d4af37;
-      color: #000;
-      border: 2px solid #000;
-      padding: 12px 28px;
-      border-radius: 40px;
-      font-weight: 800;
-      font-size: 1rem;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.3s;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-    }
+.write-review-btn {
+  background: #d4af37;
+  color: #000;
+  border: 1px solid #000; /* Thinner border */
+  padding: 8px 18px; /* Reduced from 12px 28px */
+  border-radius: 30px; /* Slightly smaller */
+  font-weight: 700; /* Reduced from 800 */
+  font-size: 0.85rem; /* Reduced from 1rem */
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px; /* Reduced from 8px */
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.1); /* Smaller shadow */
+}
 
-    .write-review-btn:hover {
-      background: #000;
-      color: #d4af37;
-      border-color: #d4af37;
-      transform: translateY(-2px);
-      box-shadow: 6px 6px 0 rgba(212, 175, 55, 0.3);
-    }
+.write-review-btn:hover {
+  background: #000;
+  color: #d4af37;
+  border-color: #d4af37;
+  transform: translateY(-1px); /* Smaller movement */
+  box-shadow: 3px 3px 0 rgba(212, 175, 55, 0.2); /* Smaller shadow */
+}
 
-    .write-review-btn i {
-      font-size: 1.1rem;
-    }
+.write-review-btn i {
+  font-size: 0.9rem; /* Reduced from 1.1rem */
+}
 
-    /* Main container for all reviews - NO FRAME */
-    .reviews-common-frame {
-      width: 100%;
-      margin: 20px 0 30px;
-    }
+/* Review card sizes - REDUCED */
+.review-card {
+  background-color: #fff;
+  margin: 8px auto; /* Reduced from 10px */
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.2); /* Lighter shadow */
+  overflow: hidden;
+  max-width: 350px; /* Reduced from 500px */
+  width: 100%;
+  border: 0;
+}
 
-    /* Grid layout for reviews */
-    .reviews-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 40px;
-      margin: 0;
-      width: 100%;
-    }
+.review-media img {
+  width: 100%;
+  max-height: 280px; /* Reduced from 400px */
+  object-fit: cover;
+  display: block;
+}
 
-    .review-item {
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-      border: none;
-      padding: 0;
-      transition: transform 0.2s ease;
-      min-width: 0;
-    }
+.review-details {
+  padding: 12px; /* Reduced from 20px */
+}
 
-    .review-item:hover {
-      transform: translateY(-5px);
-    }
+.review-header {
+  margin-bottom: 6px; /* Reduced from 10px */
+}
 
-    .review-item .review-card {
-      margin: 0;
-      max-width: 100%;
-      box-shadow: 0 0 2px rgba(0, 0, 0, 0.25);
-    }
+.author-name-w-details {
+  margin-bottom: 4px; /* Reduced from 6px */
+}
 
-    /* Desktop reviews section */
-    .desktop-reviews-section {
-      margin-top: 40px;
-      width: 100%;
-    }
+.author-name {
+  font-weight: bold;
+  font-size: 14px; /* Reduced from 18px */
+  line-height: 1.2;
+}
 
-    .desktop-reviews {
-      display: none;
-    }
+.tydal-star-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 2px; /* Reduced from 3px */
+  margin-bottom: 6px; /* Reduced from 10px */
+}
 
-    @media (min-width: 1024px) { 
-      .desktop-reviews { 
-        display: block;
-        margin-top: 20px;
-      }
-      
-      .desktop-reviews .reviews-common-frame {
-        width: 100%;
-        margin-bottom: 0;
-      }
-      
-      .desktop-reviews .reviews-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 30px;
-      }
-      
-      .desktop-reviews .review-card {
-        max-width: 100%;
-      }
-    }
+.star {
+  height: 14px; /* Reduced from 18px */
+  width: 14px; /* Reduced from 18px */
+  fill: #F1C645;
+}
 
-    /* Tablet and below - responsive grid */
-    @media (max-width: 1023px) and (min-width: 800px) {
-      .reviews-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 30px;
-      }
-      
-      .review-card {
-        max-width: 450px;
-      }
-    }
+.review-text {
+  font-size: 13px; /* Reduced from 16px */
+  line-height: 1.4;
+  color: #000;
+}
 
-    @media (max-width: 799px) and (min-width: 500px) {
-      .reviews-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 25px;
-      }
-      
-      .review-card {
-        max-width: 400px;
-      }
-    }
+/* Grid layout for reviews - adjusted spacing */
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px; /* Reduced from 40px */
+  margin: 0;
+  width: 100%;
+}
 
-    @media (max-width: 499px) {
-      .reviews-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-      }
-      
-      .review-card {
-        max-width: 350px;
-      }
-      
-      .author-name {
-        font-size: 16px;
-      }
-      
-      .star {
-        height: 16px;
-        width: 16px;
-      }
-      
-      .review-text {
-        font-size: 14px;
-      }
-    }
+@media (min-width: 1024px) { 
+  .desktop-reviews .reviews-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px; /* Reduced from 30px */
+  }
+  
+  .desktop-reviews .review-card {
+    max-width: 100%;
+  }
+}
 
-    /* Empty state styling */
-    .reviews-common-frame .empty-state {
-      text-align: center;
-      padding: 100px 30px;
-      color: #666;
-      background: #f9f9f9;
-      border: 2px dashed #000;
-      width: 100%;
-    }
+/* Empty state styling - reduced */
+.reviews-common-frame .empty-state {
+  text-align: center;
+  padding: 40px 20px; /* Reduced from 100px 30px */
+  color: #666;
+  background: #f9f9f9;
+  border: 1px dashed #000; /* Thinner border */
+  width: 100%;
+}
 
-    .reviews-common-frame .empty-state i {
-      font-size: 6rem;
-      color: #d4af37;
-      margin-bottom: 30px;
-    }
+.reviews-common-frame .empty-state i {
+  font-size: 3rem; /* Reduced from 6rem */
+  color: #d4af37;
+  margin-bottom: 15px; /* Reduced from 30px */
+}
 
-    .reviews-common-frame .empty-state h3 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      margin-bottom: 20px;
-      color: #000;
-    }
+.reviews-common-frame .empty-state h3 {
+  font-size: 1.4rem; /* Reduced from 2.2rem */
+  font-weight: 700;
+  margin-bottom: 10px; /* Reduced from 20px */
+  color: #000;
+}
 
-    .reviews-common-frame .empty-state p {
-      font-size: 1.2rem;
-      color: #666;
-    }
+.reviews-common-frame .empty-state p {
+  font-size: 0.9rem; /* Reduced from 1.2rem */
+  color: #666;
+}
 
     /* Mobile reviews */
     .mobile-reviews {
@@ -771,115 +733,106 @@
       .mobile-reviews { display: none; }
     }
 
-    /* ===== FAQ SECTION ===== */
-    .faq-section {
-      margin-top: 50px;
-      margin-bottom: 40px;
-      width: 100%;
-      background: #ffffff;
-      border: 2px solid #000;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 8px 8px 0 rgba(0,0,0,0.1);
-    }
+ /* ===== FAQ SECTION - REDUCED SIZE ===== */
+.faq-section {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 100%;
+}
 
-    .faq-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
+.faq-header {
+  margin-bottom: 20px;
+}
 
-    .faq-title {
-      font-size: 2rem;
-      font-weight: 800;
-      color: #000;
-      border-bottom: 3px solid #d4af37;
-      padding-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
+.faq-title {
+  font-size: 1.2rem; /* Reduced from 2rem */
+  font-weight: 700;
+  color: #000;
+  border-bottom: 2px solid #d4af37; /* Thinner border */
+  padding-bottom: 6px; /* Reduced from 10px */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 
-    .faq-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 20px;
-    }
+.faq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px; /* Reduced from 20px */
+}
 
-    @media (min-width: 768px) {
-      .faq-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-      }
-    }
+@media (min-width: 768px) {
+  .faq-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px; /* Reduced from 30px */
+  }
+}
 
-    .faq-item {
-      background: #f9f9f9;
-      border: 2px solid #000;
-      border-radius: 16px;
-      padding: 0;
-      transition: all 0.3s;
-      overflow: hidden;
-    }
+.faq-item {
+  background: #f9f9f9;
+  border: 1px solid #000; /* Thinner border */
+  border-radius: 8px; /* Reduced from 16px */
+  padding: 0;
+  transition: all 0.2s;
+  overflow: hidden;
+}
 
-    .faq-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 6px 6px 0 rgba(212, 175, 55, 0.2);
-    }
+.faq-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 3px 3px 0 rgba(212, 175, 55, 0.2); /* Smaller shadow */
+}
 
-    .faq-question {
-      padding: 18px 20px;
-      background: #000;
-      color: #d4af37;
-      font-weight: 800;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-      border-bottom: 2px solid #d4af37;
-    }
+.faq-question {
+  padding: 10px 12px; /* Reduced from 18px 20px */
+  background: #000;
+  color: #d4af37;
+  font-weight: 600; /* Reduced from 800 */
+  font-size: 0.85rem; /* Reduced from 1.1rem */
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Reduced from 12px */
+  cursor: pointer;
+  border-bottom: 1px solid #d4af37; /* Thinner border */
+}
 
-    .faq-question i {
-      font-size: 1.2rem;
-      color: #d4af37;
-      transition: transform 0.3s;
-    }
+.faq-question i {
+  font-size: 0.9rem; /* Reduced from 1.2rem */
+  color: #d4af37;
+  transition: transform 0.3s;
+}
 
-    .faq-question.active i {
-      transform: rotate(90deg);
-    }
+.faq-question.active i {
+  transform: rotate(90deg);
+}
 
-    .faq-answer {
-      padding: 0 20px;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease, padding 0.3s ease;
-      background: #fff;
-      color: #333;
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
+.faq-answer {
+  padding: 0 12px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  background: #fff;
+  color: #333;
+  font-size: 0.8rem; /* Reduced from 0.95rem */
+  line-height: 1.5; /* Reduced from 1.6 */
+}
 
-    .faq-answer.show {
-      padding: 20px;
-      max-height: 200px;
-    }
+.faq-answer.show {
+  padding: 12px; /* Reduced from 20px */
+  max-height: 150px; /* Reduced from 200px */
+}
 
-    .faq-answer p {
-      margin-bottom: 10px;
-    }
+.faq-answer p {
+  margin-bottom: 6px; /* Reduced from 10px */
+}
 
-    .faq-answer ul {
-      padding-left: 20px;
-      margin-bottom: 10px;
-    }
+.faq-answer ul {
+  padding-left: 16px; /* Reduced from 20px */
+  margin-bottom: 6px; /* Reduced from 10px */
+}
 
-    .faq-answer li {
-      margin-bottom: 5px;
-    }
+.faq-answer li {
+  margin-bottom: 3px; /* Reduced from 5px */
+}
 
     /* ========== PRODUCT INFO ========== */
     .social-strip { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
@@ -2292,7 +2245,7 @@
         `;
       }
 
-      // FAQ Section HTML
+            // FAQ Section HTML - reduced size to match rating chart
       const faqHTML = `
         <div class="faq-section">
           <div class="faq-header">
@@ -2302,55 +2255,55 @@
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>What is the return policy?</span>
+                <span>Return policy?</span>
               </div>
               <div class="faq-answer">
-                <p>We offer a 7-day easy return policy. If you're not satisfied with your purchase, you can return it within 7 days of delivery for a full refund or exchange. Items must be unused and in original packaging.</p>
+                <p>7-day easy returns. Items unused, original packaging.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>How long does shipping take?</span>
+                <span>Shipping time?</span>
               </div>
               <div class="faq-answer">
-                <p>Standard shipping takes 5-7 business days. Express shipping (2-3 business days) is available at checkout. Free shipping on orders above ₹1,299.</p>
+                <p>5-7 days standard. Free above ₹1,299.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>Is this product genuine?</span>
+                <span>Product genuine?</span>
               </div>
               <div class="faq-answer">
-                <p>Yes, all our products are 100% genuine and sourced directly from authorized manufacturers. We offer a 6-month warranty on all products.</p>
+                <p>100% genuine with 6-month warranty.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>Do you offer COD?</span>
+                <span>COD available?</span>
               </div>
               <div class="faq-answer">
-                <p>Yes, Cash on Delivery is available for orders up to ₹10,000. A nominal fee of ₹40 applies for COD orders below ₹500.</p>
+                <p>Yes, up to ₹10,000. ₹40 fee below ₹500.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>How to track my order?</span>
+                <span>Track order?</span>
               </div>
               <div class="faq-answer">
-                <p>Once your order ships, you'll receive a tracking link via email and SMS. You can also track your order in the "My Orders" section of your account.</p>
+                <p>Tracking link via email/SMS after shipping.</p>
               </div>
             </div>
             <div class="faq-item">
               <div class="faq-question" onclick="toggleFaq(this)">
                 <i class="fa-solid fa-chevron-right"></i>
-                <span>Is this product waterproof?</span>
+                <span>Waterproof?</span>
               </div>
               <div class="faq-answer">
-                <p>This product is water-resistant but not fully waterproof. It can withstand light rain but should not be submerged in water.</p>
+                <p>Water-resistant, not fully waterproof.</p>
               </div>
             </div>
           </div>
