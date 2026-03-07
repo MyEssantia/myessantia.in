@@ -516,14 +516,6 @@
     }
 
 
-    /* Review content */
-    .review-content {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      flex: 1;
-    }
-
     /* Make the image container take full width of the review item */
 .review-image-square {
   width: 100%; /* This ensures it takes full width of parent */
@@ -574,38 +566,68 @@
   border: none;
 }
 
-    /* User name - larger */
-    .review-user-name {
-      font-weight: 800;
-      font-size: 1.2rem; /* Larger font */
-      color: #000;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      word-wrap: break-word;
-      line-height: 1.3;
-    }
+    /* Review content - reduce gaps */
+.review-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Reduced from 10px to 4px */
+  flex: 1;
+}
 
-    /* Rating stars - larger */
-    .review-stars {
-      color: #d4af37;
-      font-size: 1.1rem; /* Larger stars */
-      letter-spacing: 3px;
-      margin: 5px 0;
-    }
+/* User name - slightly smaller margin */
+.review-user-name {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  word-wrap: break-word;
+  line-height: 1.2; /* Slightly reduced line height */
+  margin-bottom: 0; /* Remove any default margin */
+}
 
-    /* Review description - larger with proper spacing */
-    .review-description {
-      font-size: 1rem; /* Larger text */
-      line-height: 1.6;
-      color: #333;
-      margin-top: 5px;
-      word-wrap: break-word;
-      max-height: 150px;
-      overflow-y: auto;
-      padding-right: 8px;
-      scrollbar-width: thin;
-      scrollbar-color: #d4af37 #e0e0e0;
-    }
+/* Rating stars - reduce margin */
+.review-stars {
+  color: #d4af37;
+  font-size: 1.1rem;
+  letter-spacing: 2px; /* Slightly reduced letter spacing */
+  margin: 2px 0; /* Reduced from 5px 0 to 2px 0 */
+  line-height: 1.2;
+}
+
+/* Review description - reduce top margin */
+.review-description {
+  font-size: 1rem;
+  line-height: 1.4; /* Slightly reduced line height */
+  color: #333;
+  margin-top: 2px; /* Reduced from 5px to 2px */
+  word-wrap: break-word;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: #d4af37 #e0e0e0;
+}
+
+/* If you want even tighter spacing, use this alternative */
+.review-content.tight {
+  gap: 2px;
+}
+
+.review-content.tight .review-user-name {
+  font-size: 1.1rem; /* Slightly smaller if needed */
+  margin-bottom: 0;
+}
+
+.review-content.tight .review-stars {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.review-content.tight .review-description {
+  margin-top: 0;
+  font-size: 0.95rem;
+}
 
     .review-description::-webkit-scrollbar {
       width: 6px;
