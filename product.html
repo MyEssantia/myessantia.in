@@ -70,191 +70,173 @@
   background: #ffffff;
   border: 2px solid #000;
   border-radius: 20px;
-  padding: 24px;
+  padding: 30px;
   box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
   margin-top: 16px;
   width: 100%;
 }
 
-/* Wider grid - more than 2 reviews per line */
+/* Masonry-style grid - no forced alignment */
 .reviews-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 24px;
   margin: 0;
 }
 
-/* Individual review item - WITH LIGHT GREY FRAME AROUND ENTIRE REVIEW */
+/* Individual review item - LIGHT GREY FRAME, NO BLACK BORDER ON IMAGE */
 .review-item {
   display: flex;
   flex-direction: column;
-  padding: 16px;
+  padding: 20px;
   background: #ffffff;
-  border: 2px solid #e0e0e0; /* Light grey frame */
-  border-radius: 0; /* NO curved edges - completely square */
+  border: 3px solid #e0e0e0; /* Thicker light grey frame */
+  border-radius: 0; /* Square edges */
   transition: transform 0.2s ease, border-color 0.2s ease;
-  box-shadow: 2px 2px 0 rgba(0,0,0,0.05);
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.05);
+  /* Allow natural height based on content */
+  height: auto;
+  /* Ensure cards don't stretch unnaturally */
+  align-self: flex-start;
 }
 
 .review-item:hover {
-  transform: translateY(-2px);
-  border-color: #d4af37; /* Turns gold on hover */
-  box-shadow: 4px 4px 0 rgba(212, 175, 55, 0.15);
+  transform: translateY(-3px);
+  border-color: #d4af37;
+  box-shadow: 5px 5px 0 rgba(212, 175, 55, 0.15);
 }
 
-/* Square image frame - WITHIN the review frame */
-.review-image-square {
+/* Image container - NO BLACK BORDER */
+.review-image-container {
+  width: 100%;
+  margin-bottom: 15px;
+  /* No border on the container */
+}
+
+/* Image styling - SQUARE but with NO BLACK BORDER */
+.review-image {
   width: 100%;
   aspect-ratio: 1/1; /* Square ratio */
-  overflow: hidden;
-  border: 2px solid #000;
-  border-radius: 0; /* NO rounded corners - completely square */
+  object-fit: cover;
+  display: block;
   cursor: pointer;
   transition: transform 0.2s;
-  margin-bottom: 12px;
   background-color: #f5f5f5;
+  /* NO BORDER at all */
 }
 
-.review-image-square:hover {
+.review-image:hover {
   transform: scale(1.02);
 }
 
-.review-image-square img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+/* For when image fails to load */
+.review-image[style*="display: none"] + .review-avatar {
+  display: flex;
 }
 
-.review-image-square.image-error {
-  display: none;
-}
-
-/* Square avatar for no-image reviews */
-.review-avatar-square {
+/* Avatar for no-image reviews - fits within the card naturally */
+.review-avatar {
   width: 100%;
   aspect-ratio: 1/1; /* Square ratio */
   background: #000;
-  border-radius: 0; /* NO rounded corners - completely square */
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 2rem;
+  font-size: 2.5rem; /* Larger text for avatar */
   color: #d4af37;
-  border: 2px solid #d4af37;
-  margin-bottom: 12px;
+  border: 3px solid #d4af37; /* Gold border for avatar (still stylish) */
+  margin-bottom: 15px;
 }
 
-/* Review content */
+/* Review content - larger text */
 .review-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
-/* User name */
+/* User name - larger */
 .review-user-name {
   font-weight: 800;
-  font-size: 0.95rem;
+  font-size: 1.1rem; /* Larger */
   color: #000;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #e0e0e0; /* Light separator */
+  letter-spacing: 0.5px;
+  word-wrap: break-word;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #f0f0f0; /* Lighter separator */
 }
 
-/* Rating stars */
+/* Rating stars - larger */
 .review-stars {
   color: #d4af37;
-  font-size: 0.85rem;
-  letter-spacing: 2px;
-  padding: 2px 0;
+  font-size: 1rem; /* Larger */
+  letter-spacing: 3px;
+  padding: 4px 0;
 }
 
-/* Review description - fixed height with scroll if needed */
+/* Review description - larger with auto height */
 .review-description {
-  font-size: 0.8rem;
-  line-height: 1.5;
+  font-size: 0.95rem; /* Larger */
+  line-height: 1.6;
   color: #333;
-  max-height: 100px;
-  overflow-y: auto;
-  padding-right: 4px;
-  margin-top: 4px;
-  scrollbar-width: thin;
-  scrollbar-color: #d4af37 #f0f0f0;
+  /* No max-height - let it expand naturally */
+  overflow: visible;
+  padding: 6px 0;
+  word-wrap: break-word;
 }
 
-.review-description::-webkit-scrollbar {
-  width: 4px;
-}
-
-.review-description::-webkit-scrollbar-track {
-  background: #f0f0f0;
-  border-radius: 0; /* Square scrollbar track */
-}
-
-.review-description::-webkit-scrollbar-thumb {
-  background: #d4af37;
-  border-radius: 0; /* Square scrollbar thumb */
-}
-
-/* Responsive grid - adjust columns based on screen size */
+/* Responsive grid - adjust columns but maintain natural heights */
 @media (min-width: 1200px) {
   .reviews-grid {
-    grid-template-columns: repeat(5, 1fr); /* 5 per line on large screens */
+    grid-template-columns: repeat(4, 1fr); /* 4 per line */
   }
 }
 
 @media (max-width: 1199px) and (min-width: 900px) {
   .reviews-grid {
-    grid-template-columns: repeat(4, 1fr); /* 4 per line on medium-large screens */
+    grid-template-columns: repeat(3, 1fr); /* 3 per line */
   }
 }
 
 @media (max-width: 899px) and (min-width: 600px) {
   .reviews-grid {
-    grid-template-columns: repeat(3, 1fr); /* 3 per line on tablets */
+    grid-template-columns: repeat(2, 1fr); /* 2 per line */
   }
 }
 
 @media (max-width: 599px) {
   .reviews-grid {
     grid-template-columns: repeat(2, 1fr); /* 2 per line on mobile */
-    gap: 15px;
+    gap: 16px;
   }
   
   .review-item {
-    padding: 12px;
-  }
-  
-  .review-image-square,
-  .review-avatar-square {
-    aspect-ratio: 1/1; /* Keep square ratio even on mobile */
-    margin-bottom: 8px;
+    padding: 16px;
   }
   
   .review-user-name {
-    font-size: 0.85rem;
+    font-size: 1rem;
   }
   
   .review-stars {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
   
   .review-description {
-    font-size: 0.75rem;
-    max-height: 80px;
+    font-size: 0.85rem;
+  }
+  
+  .review-avatar {
+    font-size: 2rem;
   }
 }
 
 /* For very small screens */
-@media (max-width: 380px) {
+@media (max-width: 450px) {
   .reviews-grid {
-    grid-template-columns: 1fr; /* 1 per line on very small screens */
+    grid-template-columns: 1fr; /* 1 per line */
   }
 }
 
@@ -266,12 +248,12 @@
 
 .mobile-reviews .rating-chart-card {
   order: 1;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .mobile-reviews .reviews-header {
   order: 2;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .mobile-reviews .reviews-common-frame {
@@ -286,12 +268,12 @@
 
 .desktop-reviews .rating-chart-card {
   order: 1;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .desktop-reviews .reviews-header {
   order: 2;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .desktop-reviews .reviews-common-frame {
@@ -2124,16 +2106,15 @@ if (productReviews && productReviews.length > 0) {
     
     return `
       <div class="review-item">
-        <!-- Square image frame -->
-        ${imageUrl ? `
-        <div class="review-image-square" onclick="window.open('${imageUrl}', '_blank')">
-          <img src="${imageUrl}" alt="Review image" onerror="this.style.display='none'; this.parentElement.classList.add('image-error');">
+        <!-- Image container - NO BLACK BORDER -->
+        <div class="review-image-container">
+          ${imageUrl ? `
+          <img class="review-image" src="${imageUrl}" alt="Review image" onclick="window.open('${imageUrl}', '_blank')" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="review-avatar" style="display: none;">${initials}</div>
+          ` : `
+          <div class="review-avatar">${initials}</div>
+          `}
         </div>
-        ` : `
-        <div class="review-avatar-square">
-          ${initials}
-        </div>
-        `}
         
         <div class="review-content">
           <!-- User name -->
@@ -2153,10 +2134,10 @@ if (productReviews && productReviews.length > 0) {
   reviewsHTML += `</div>`; // Close reviews-common-frame
 } else {
   reviewsHTML = `
-    <div style="text-align: center; padding: 40px 20px; color: #666;">
-      <i class="fa-regular fa-star" style="font-size: 3rem; color: #d4af37; margin-bottom: 15px; display: block;"></i>
-      <h3 style="font-size: 1.2rem; margin-bottom: 8px; color: #000;">No reviews yet</h3>
-      <p style="font-size: 0.9rem;">Be the first to review this product!</p>
+    <div style="text-align: center; padding: 60px 30px; color: #666;">
+      <i class="fa-regular fa-star" style="font-size: 4rem; color: #d4af37; margin-bottom: 20px; display: block;"></i>
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px; color: #000;">No reviews yet</h3>
+      <p style="font-size: 1rem;">Be the first to review this product!</p>
     </div>
   `;
 }
