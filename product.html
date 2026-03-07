@@ -66,42 +66,40 @@
       .product-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
     }
 
-  /* Reviews grid layout */
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-top: 16px;
-}
-
-/* Review card */
-.review-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 16px;
-  border: 2px solid #000;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
-  transition: all 0.3s ease;
+/* Reviews container - stacked layout */
+.reviews-container-compact {
   display: flex;
   flex-direction: column;
+  gap: 32px;
+  margin: 20px 0;
 }
 
-.review-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 6px 6px 0 rgba(212, 175, 55, 0.25);
+/* Individual review item - no frame */
+.review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #eaeaea;
 }
 
-/* Tall square image frame */
+.review-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* Tall square image - no frame, just image */
 .review-image-tall {
   width: 100%;
+  max-width: 280px; /* Limit width on larger screens */
   aspect-ratio: 3/4; /* Tall square ratio - height is 4/3 of width */
-  border-radius: 12px;
+  border-radius: 0; /* No border radius for cleaner look */
   overflow: hidden;
-  border: 2px solid #000;
   cursor: pointer;
   transition: transform 0.2s;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   background-color: #f5f5f5;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.1); /* Optional: subtle shadow instead of frame */
 }
 
 .review-image-tall:hover {
@@ -122,64 +120,83 @@
 /* Tall avatar for no-image reviews */
 .review-avatar-tall {
   width: 100%;
-  aspect-ratio: 3/4; /* Same tall square ratio */
+  max-width: 280px;
+  aspect-ratio: 3/4;
   background: #000;
-  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: #d4af37;
-  border: 2px solid #d4af37;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
+  box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+}
+
+/* Review content */
+.review-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 /* User name */
 .review-user-name {
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: #000;
-  margin-bottom: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 }
 
 /* Rating stars */
 .review-stars {
   color: #d4af37;
-  font-size: 0.9rem;
+  font-size: 1rem;
   letter-spacing: 2px;
-  margin-bottom: 10px;
 }
 
 /* Review description */
 .review-description {
-  font-size: 0.85rem;
-  line-height: 1.5;
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: #333;
-  padding-top: 8px;
-  border-top: 1px dashed #ddd;
+  max-width: 600px;
 }
 
 /* Mobile responsive */
 @media (max-width: 640px) {
-  .reviews-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  .review-image-tall,
+  .review-avatar-tall {
+    max-width: 100%;
+    aspect-ratio: 3/4;
+  }
+  
+  .review-user-name {
+    font-size: 1rem;
+  }
+  
+  .review-description {
+    font-size: 0.85rem;
+  }
+}
+
+/* Optional: If you want them side by side on larger screens */
+@media (min-width: 1024px) {
+  .reviews-container-compact {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+  
+  .review-item {
+    border-bottom: none;
+    padding-bottom: 0;
   }
   
   .review-image-tall,
   .review-avatar-tall {
-    aspect-ratio: 3/4; /* Keep tall ratio even on mobile */
-  }
-  
-  .review-user-name {
-    font-size: 0.95rem;
-  }
-  
-  .review-description {
-    font-size: 0.8rem;
+    max-width: 100%;
   }
 }
     /* ========== GALLERY ========== */
@@ -1981,10 +1998,14 @@ async function loadProductReviews(productId) {
       `;
 
 
+// Replace the reviewsHTML generation section in renderProduct() function
+// with this version (no frames):
+
+// Generate reviews HTML with tall square images - NO FRAMES
 let reviewsHTML = '';
 
 if (productReviews && productReviews.length > 0) {
-  reviewsHTML = `<div class="reviews-grid">`;
+  reviewsHTML = `<div class="reviews-container-compact">`;
   
   reviewsHTML += productReviews.map(review => {
     // Generate star rating
@@ -2006,8 +2027,8 @@ if (productReviews && productReviews.length > 0) {
     const initials = nameParts.map(n => n[0]).join('').substring(0, 2).toUpperCase();
     
     return `
-      <div class="review-card">
-        <!-- Tall square image frame -->
+      <div class="review-item">
+        <!-- Tall square image -->
         ${imageUrl ? `
         <div class="review-image-tall" onclick="window.open('${imageUrl}', '_blank')">
           <img src="${imageUrl}" alt="Review image" onerror="this.style.display='none'; this.parentElement.classList.add('image-error');">
@@ -2018,14 +2039,12 @@ if (productReviews && productReviews.length > 0) {
         </div>
         `}
         
-        <!-- User name -->
-        <div class="review-user-name">${review.reviewerName}</div>
-        
-        <!-- Rating stars -->
-        <div class="review-stars">${stars}</div>
-        
-        <!-- Review description -->
-        <div class="review-description">${review.comment}</div>
+        <!-- Review content -->
+        <div class="review-content">
+          <div class="review-user-name">${review.reviewerName}</div>
+          <div class="review-stars">${stars}</div>
+          <div class="review-description">${review.comment}</div>
+        </div>
       </div>
     `;
   }).join('');
